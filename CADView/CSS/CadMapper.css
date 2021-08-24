@@ -1,0 +1,253 @@
+﻿/* layout.css contents here ============================*/
+html, body {
+  /*height: 100%; width: 100%; margin: 0;*/
+}
+
+body {
+  background-color: white;
+  /*overflow:hidden;*/
+  /*font-family: "Trebuchet MS";*/
+}
+
+#header {
+  /*background-image: url(../images/banner.jpg); background-repeat: repeat-x;*/
+  /*margin: 2px;*/
+  border: solid 4px #224a54;
+  color: white;
+  font-size: 18pt;
+  text-align: left;
+  font-weight: bold;
+  height: 70px;
+  display: block;
+}
+
+#subheader {
+  font-size: small;
+  color: white;
+  padding-left: 20px;
+}
+
+#rightPane {
+  background-color: white;
+  color: #3f3f3f;
+  border: solid 2px #224a54;
+  width: 20%;
+}
+
+#leftPane {
+  /*margin: 5px;*/
+  padding: 2px;
+  background-color: white;
+  color: #3f3f3f;
+  border: solid 2px #224a54;
+  width: 20%;
+}
+
+#map {
+  /*margin: 5px;*/
+  border: solid 1px #224a54;
+  /*-moz-border-radius: 4px;*/
+  border-radius: 4px;
+}
+
+#footer {
+  /*margin: 2px;*/
+  border: solid 2px #224a54;
+  background-color: #ecefe4;
+  color: #3f3f3f;
+  font-size: 10pt;
+  text-align: center;
+  height: 40px;
+}
+
+.dijitTabInnerDiv {
+  background-color: #ecefe4;
+}
+
+#tabs {
+  padding: 5px;
+}
+
+/* End layout.css contents ==============================*/
+html, body {
+  margin: 0;
+  padding: 0;
+}
+
+#mapWindow {
+  height: calc(100% - 41px);
+  width: 100%;
+  overflow: hidden;
+}
+/*#mapWindow{
+        margin:.5em;
+    }*/
+#header {
+  height: 40px;
+  display: none;
+  visibility: hidden;
+}
+
+#leftPane {
+  width: 20%;
+}
+
+#map, #map_root, .esriMapContainer {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+#leading, #trailing {
+  margin: 0;
+  padding: 0;
+}
+
+/*body {
+        background-color:#FFF;
+        overflow:hidden;
+        font-family:"Trebuchet MS";
+      }*/
+#search {
+  display: block;
+  position: absolute;
+  z-index: 2;
+  width: 60px;
+}
+
+
+
+
+.spotlight {
+  z-index: -1;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  border-radius: 50%;
+  opacity: 0;
+  box-shadow: inset rgba(0,0,0,0.25) 0 0 20px 20px, rgba(0,0,0,0.25) 0 0 0 1000px;
+  -o-transition: all 1000ms;
+  -moz-transition: all 1000ms;
+  -webkit-transition: all 1000ms;
+  transition: all 1000ms;
+}
+
+.spotlight-active {
+  z-index: 2;
+  opacity: 1;
+}
+
+#display {
+  padding-top: 200px;
+  position: absolute;
+  z-index: 5;
+  top: 200px;
+  left: 75px;
+}
+
+#BasemapToggle {
+  position: absolute;
+  top: 60px;
+  right: 20px;
+  z-index: 50;
+}
+
+
+#LocateButton {
+  position: absolute;
+  top: 95px;
+  left: 20px;
+  z-index: 50;
+}
+
+#HomeButton {
+  position: absolute;
+  top: 135px;
+  left: 20px;
+  z-index: 50;
+}
+
+#History, #USNG, #Radar, #WeatherWarnings, #ShowAvailable, #TestGrid, #ExtraMapPoints, #CallerLocations{
+  z-index: 50;
+  right: 20px;
+  background-color: white;
+  width: 90px;
+  border: 1px solid black;
+  text-align: center;
+  display: block;
+  position: absolute;
+  border-radius: 4px;
+  user-select: none;
+}
+
+#History {
+  top: 150px;
+}
+
+#USNG {
+  top: 180px;
+}
+
+#ShowAvailable {
+  top: 210px;
+}
+#ShowAvailable img
+{
+  height: 24px;
+  width: 24px;
+  cursor: pointer;
+  border-bottom: 2px solid white;
+}
+
+#Radar {
+  top: 290px;
+}
+
+#WeatherWarnings {
+  top: 340px;
+}
+
+#ExtraMapPoints
+{
+  top: 410px;
+  padding-bottom: 7.5px;
+}
+
+#ExtraMapPoints img
+{
+  margin-bottom: -7.5px;
+
+}
+
+
+#CallerLocations
+{
+  top: 450px;
+  padding-bottom: 5px;
+}
+
+#CallerLocations svg
+{
+  margin-bottom: -5px;
+}
+
+  #TestGrid
+{
+  top: 400px;
+}
+
+.NotesInfoTemplate {
+  display: block;
+  width: 100%;
+  border: 1px solid black;
+  padding: 3px;
+}
+
+.notesInfoTemplateHeader {
+  text-align: center;
+  display: block;
+  width: 100%;
+  border-bottom: 1px solid black;
+  font-weight: bold;
+}

@@ -1,0 +1,50 @@
+﻿$unitStatuses: ("Available", "Dispatched", "Transport", 
+  "Hospital", "En-Route", "Arrived", 
+  "Available-Out-of-District", "Vehicle-Swap");
+$cornerStatus: ("green", "yellow", "red", "blank");
+$unitStatusBGColors: (white, mediumpurple, yellow, 
+  orange, lightgreen, cyan, fuchsia, navy);
+$unitStatusFontColors: (black, black, black, 
+  black, black, black, black, white);
+$cornerStatusColors: (#00db00, #CCCC00, red, white);
+
+@mixin linear-gradient($startColor, $middleColor, $endColor, $fontColor) {  
+  min-height: 20px;
+  background: -webkit-linear-gradient(-45deg, $startColor 0, $middleColor 15%, $middleColor 85%, $endColor 100%); 
+  background: linear-gradient(135deg, $startColor 0, $middleColor 15%, $middleColor 85%, $endColor 100%); 
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=$startColor, endColorstr=$endColor,GradientType=1 ); 
+  color: $fontColor;
+}
+
+@mixin linear-gradient-short-start($startColor, $endColor) {  
+  min-height: 20px;
+  background: -webkit-linear-gradient(-45deg, $startColor 0, $endColor 6%, $endColor 100%); 
+  background: linear-gradient(135deg, $startColor 0, $endColor 6%, $endColor 100%); 
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=$startColor, endColorstr=$endColor,GradientType=1 ); 
+}
+
+@mixin linear-gradient-short-end($startColor, $endColor) {  
+  min-height: 20px;
+  background: -webkit-linear-gradient(-45deg, $startColor 0, $startColor 94%, $endColor 100%); 
+  background: linear-gradient(135deg, $startColor 0, $startColor 94%, $endColor 100%); 
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=$startColor, endColorstr=$endColor,GradientType=1 ); 
+}
+
+@mixin mix-statuses {
+  @for $i from 1 to length($unitStatuses) + 1 {
+    @for $j from 1 to length($cornerStatus)+ 1 {
+      @for $k from 1 to length($cornerStatus)+ 1 {
+        .#{nth($unitStatuses, $i)}_#{nth($cornerStatus, $j)}_#{nth($cornerStatus, $k)} {
+          @if $j == length($cornerStatus) {
+            @include linear-gradient-short-end(nth($cornerStatusColors, $j), nth($cornerStatusColors, $k));
+          } @elseif $k == length($cornerStatus) {
+              @include linear-gradient-short-start(nth($cornerStatusColors, $j), nth($cornerStatusColors, $k));
+            } @else {
+                @include linear-gradient(nth($cornerStatusColors, $j), nth($unitStatusBGColors, $i), nth($cornerStatusColors, $k), nth($unitStatusFontColors, $i));
+            }
+        }
+      }
+    }
+  }
+}
+@include mix-statuses;

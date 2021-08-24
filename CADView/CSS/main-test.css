@@ -1,0 +1,840 @@
+﻿.Available_green_green {
+  min-height: 20px;
+  background: -webkit-linear-gradient(-45deg, #00db00 0, white 15%, white 85%, #00db00 100%);
+  background: linear-gradient(135deg, #00db00 0, white 15%, white 85%, #00db00 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=$startColor, endColorstr=$endColor,GradientType=1 );
+  color: black; }
+
+.Available_green_yellow {
+  min-height: 20px;
+  background: -webkit-linear-gradient(-45deg, #00db00 0, white 15%, white 85%, #CCCC00 100%);
+  background: linear-gradient(135deg, #00db00 0, white 15%, white 85%, #CCCC00 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=$startColor, endColorstr=$endColor,GradientType=1 );
+  color: black; }
+
+.Available_green_red {
+  min-height: 20px;
+  background: -webkit-linear-gradient(-45deg, #00db00 0, white 15%, white 85%, red 100%);
+  background: linear-gradient(135deg, #00db00 0, white 15%, white 85%, red 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=$startColor, endColorstr=$endColor,GradientType=1 );
+  color: black; }
+
+.Available_green_blank {
+  min-height: 20px;
+  background: -webkit-linear-gradient(-45deg, #00db00 0, white 6%, white 100%);
+  background: linear-gradient(135deg, #00db00 0, white 6%, white 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=$startColor, endColorstr=$endColor,GradientType=1 ); }
+
+.Available_yellow_green {
+  min-height: 20px;
+  background: -webkit-linear-gradient(-45deg, #CCCC00 0, white 15%, white 85%, #00db00 100%);
+  background: linear-gradient(135deg, #CCCC00 0, white 15%, white 85%, #00db00 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=$startColor, endColorstr=$endColor,GradientType=1 );
+  color: black; }
+
+.Available_yellow_yellow {
+  min-height: 20px;
+  background: -webkit-linear-gradient(-45deg, #CCCC00 0, white 15%, white 85%, #CCCC00 100%);
+  background: linear-gradient(135deg, #CCCC00 0, white 15%, white 85%, #CCCC00 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=$startColor, endColorstr=$endColor,GradientType=1 );
+  color: black; }
+
+.Available_yellow_red {
+  min-height: 20px;
+  background: -webkit-linear-gradient(-45deg, #CCCC00 0, white 15%, white 85%, red 100%);
+  background: linear-gradient(135deg, #CCCC00 0, white 15%, white 85%, red 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=$startColor, endColorstr=$endColor,GradientType=1 );
+  color: black; }
+
+.Available_yellow_blank {
+  min-height: 20px;
+  background: -webkit-linear-gradient(-45deg, #CCCC00 0, white 6%, white 100%);
+  background: linear-gradient(135deg, #CCCC00 0, white 6%, white 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=$startColor, endColorstr=$endColor,GradientType=1 ); }
+
+.Available_red_green {
+  min-height: 20px;
+  background: -webkit-linear-gradient(-45deg, red 0, white 15%, white 85%, #00db00 100%);
+  background: linear-gradient(135deg, red 0, white 15%, white 85%, #00db00 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=$startColor, endColorstr=$endColor,GradientType=1 );
+  color: black; }
+
+.Available_red_yellow {
+  min-height: 20px;
+  background: -webkit-linear-gradient(-45deg, red 0, white 15%, white 85%, #CCCC00 100%);
+  background: linear-gradient(135deg, red 0, white 15%, white 85%, #CCCC00 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=$startColor, endColorstr=$endColor,GradientType=1 );
+  color: black; }
+
+.Available_red_red {
+  min-height: 20px;
+  background: -webkit-linear-gradient(-45deg, red 0, white 15%, white 85%, red 100%);
+  background: linear-gradient(135deg, red 0, white 15%, white 85%, red 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=$startColor, endColorstr=$endColor,GradientType=1 );
+  color: black; }
+
+.Available_red_blank {
+  min-height: 20px;
+  background: -webkit-linear-gradient(-45deg, red 0, white 6%, white 100%);
+  background: linear-gradient(135deg, red 0, white 6%, white 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=$startColor, endColorstr=$endColor,GradientType=1 ); }
+
+.Available_blank_green {
+  min-height: 20px;
+  background: -webkit-linear-gradient(-45deg, white 0, white 94%, #00db00 100%);
+  background: linear-gradient(135deg, white 0, white 94%, #00db00 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=$startColor, endColorstr=$endColor,GradientType=1 ); }
+
+.Available_blank_yellow {
+  min-height: 20px;
+  background: -webkit-linear-gradient(-45deg, white 0, white 94%, #CCCC00 100%);
+  background: linear-gradient(135deg, white 0, white 94%, #CCCC00 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=$startColor, endColorstr=$endColor,GradientType=1 ); }
+
+.Available_blank_red {
+  min-height: 20px;
+  background: -webkit-linear-gradient(-45deg, white 0, white 94%, red 100%);
+  background: linear-gradient(135deg, white 0, white 94%, red 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=$startColor, endColorstr=$endColor,GradientType=1 ); }
+
+.Available_blank_blank {
+  min-height: 20px;
+  background: -webkit-linear-gradient(-45deg, white 0, white 94%, white 100%);
+  background: linear-gradient(135deg, white 0, white 94%, white 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=$startColor, endColorstr=$endColor,GradientType=1 ); }
+
+.Dispatched_green_green {
+  min-height: 20px;
+  background: -webkit-linear-gradient(-45deg, #00db00 0, mediumpurple 15%, mediumpurple 85%, #00db00 100%);
+  background: linear-gradient(135deg, #00db00 0, mediumpurple 15%, mediumpurple 85%, #00db00 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=$startColor, endColorstr=$endColor,GradientType=1 );
+  color: black; }
+
+.Dispatched_green_yellow {
+  min-height: 20px;
+  background: -webkit-linear-gradient(-45deg, #00db00 0, mediumpurple 15%, mediumpurple 85%, #CCCC00 100%);
+  background: linear-gradient(135deg, #00db00 0, mediumpurple 15%, mediumpurple 85%, #CCCC00 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=$startColor, endColorstr=$endColor,GradientType=1 );
+  color: black; }
+
+.Dispatched_green_red {
+  min-height: 20px;
+  background: -webkit-linear-gradient(-45deg, #00db00 0, mediumpurple 15%, mediumpurple 85%, red 100%);
+  background: linear-gradient(135deg, #00db00 0, mediumpurple 15%, mediumpurple 85%, red 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=$startColor, endColorstr=$endColor,GradientType=1 );
+  color: black; }
+
+.Dispatched_green_blank {
+  min-height: 20px;
+  background: -webkit-linear-gradient(-45deg, #00db00 0, white 6%, white 100%);
+  background: linear-gradient(135deg, #00db00 0, white 6%, white 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=$startColor, endColorstr=$endColor,GradientType=1 ); }
+
+.Dispatched_yellow_green {
+  min-height: 20px;
+  background: -webkit-linear-gradient(-45deg, #CCCC00 0, mediumpurple 15%, mediumpurple 85%, #00db00 100%);
+  background: linear-gradient(135deg, #CCCC00 0, mediumpurple 15%, mediumpurple 85%, #00db00 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=$startColor, endColorstr=$endColor,GradientType=1 );
+  color: black; }
+
+.Dispatched_yellow_yellow {
+  min-height: 20px;
+  background: -webkit-linear-gradient(-45deg, #CCCC00 0, mediumpurple 15%, mediumpurple 85%, #CCCC00 100%);
+  background: linear-gradient(135deg, #CCCC00 0, mediumpurple 15%, mediumpurple 85%, #CCCC00 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=$startColor, endColorstr=$endColor,GradientType=1 );
+  color: black; }
+
+.Dispatched_yellow_red {
+  min-height: 20px;
+  background: -webkit-linear-gradient(-45deg, #CCCC00 0, mediumpurple 15%, mediumpurple 85%, red 100%);
+  background: linear-gradient(135deg, #CCCC00 0, mediumpurple 15%, mediumpurple 85%, red 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=$startColor, endColorstr=$endColor,GradientType=1 );
+  color: black; }
+
+.Dispatched_yellow_blank {
+  min-height: 20px;
+  background: -webkit-linear-gradient(-45deg, #CCCC00 0, white 6%, white 100%);
+  background: linear-gradient(135deg, #CCCC00 0, white 6%, white 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=$startColor, endColorstr=$endColor,GradientType=1 ); }
+
+.Dispatched_red_green {
+  min-height: 20px;
+  background: -webkit-linear-gradient(-45deg, red 0, mediumpurple 15%, mediumpurple 85%, #00db00 100%);
+  background: linear-gradient(135deg, red 0, mediumpurple 15%, mediumpurple 85%, #00db00 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=$startColor, endColorstr=$endColor,GradientType=1 );
+  color: black; }
+
+.Dispatched_red_yellow {
+  min-height: 20px;
+  background: -webkit-linear-gradient(-45deg, red 0, mediumpurple 15%, mediumpurple 85%, #CCCC00 100%);
+  background: linear-gradient(135deg, red 0, mediumpurple 15%, mediumpurple 85%, #CCCC00 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=$startColor, endColorstr=$endColor,GradientType=1 );
+  color: black; }
+
+.Dispatched_red_red {
+  min-height: 20px;
+  background: -webkit-linear-gradient(-45deg, red 0, mediumpurple 15%, mediumpurple 85%, red 100%);
+  background: linear-gradient(135deg, red 0, mediumpurple 15%, mediumpurple 85%, red 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=$startColor, endColorstr=$endColor,GradientType=1 );
+  color: black; }
+
+.Dispatched_red_blank {
+  min-height: 20px;
+  background: -webkit-linear-gradient(-45deg, red 0, white 6%, white 100%);
+  background: linear-gradient(135deg, red 0, white 6%, white 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=$startColor, endColorstr=$endColor,GradientType=1 ); }
+
+.Dispatched_blank_green {
+  min-height: 20px;
+  background: -webkit-linear-gradient(-45deg, white 0, white 94%, #00db00 100%);
+  background: linear-gradient(135deg, white 0, white 94%, #00db00 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=$startColor, endColorstr=$endColor,GradientType=1 ); }
+
+.Dispatched_blank_yellow {
+  min-height: 20px;
+  background: -webkit-linear-gradient(-45deg, white 0, white 94%, #CCCC00 100%);
+  background: linear-gradient(135deg, white 0, white 94%, #CCCC00 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=$startColor, endColorstr=$endColor,GradientType=1 ); }
+
+.Dispatched_blank_red {
+  min-height: 20px;
+  background: -webkit-linear-gradient(-45deg, white 0, white 94%, red 100%);
+  background: linear-gradient(135deg, white 0, white 94%, red 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=$startColor, endColorstr=$endColor,GradientType=1 ); }
+
+.Dispatched_blank_blank {
+  min-height: 20px;
+  background: -webkit-linear-gradient(-45deg, white 0, white 94%, white 100%);
+  background: linear-gradient(135deg, white 0, white 94%, white 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=$startColor, endColorstr=$endColor,GradientType=1 ); }
+
+.Transport_green_green {
+  min-height: 20px;
+  background: -webkit-linear-gradient(-45deg, #00db00 0, yellow 15%, yellow 85%, #00db00 100%);
+  background: linear-gradient(135deg, #00db00 0, yellow 15%, yellow 85%, #00db00 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=$startColor, endColorstr=$endColor,GradientType=1 );
+  color: black; }
+
+.Transport_green_yellow {
+  min-height: 20px;
+  background: -webkit-linear-gradient(-45deg, #00db00 0, yellow 15%, yellow 85%, #CCCC00 100%);
+  background: linear-gradient(135deg, #00db00 0, yellow 15%, yellow 85%, #CCCC00 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=$startColor, endColorstr=$endColor,GradientType=1 );
+  color: black; }
+
+.Transport_green_red {
+  min-height: 20px;
+  background: -webkit-linear-gradient(-45deg, #00db00 0, yellow 15%, yellow 85%, red 100%);
+  background: linear-gradient(135deg, #00db00 0, yellow 15%, yellow 85%, red 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=$startColor, endColorstr=$endColor,GradientType=1 );
+  color: black; }
+
+.Transport_green_blank {
+  min-height: 20px;
+  background: -webkit-linear-gradient(-45deg, #00db00 0, white 6%, white 100%);
+  background: linear-gradient(135deg, #00db00 0, white 6%, white 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=$startColor, endColorstr=$endColor,GradientType=1 ); }
+
+.Transport_yellow_green {
+  min-height: 20px;
+  background: -webkit-linear-gradient(-45deg, #CCCC00 0, yellow 15%, yellow 85%, #00db00 100%);
+  background: linear-gradient(135deg, #CCCC00 0, yellow 15%, yellow 85%, #00db00 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=$startColor, endColorstr=$endColor,GradientType=1 );
+  color: black; }
+
+.Transport_yellow_yellow {
+  min-height: 20px;
+  background: -webkit-linear-gradient(-45deg, #CCCC00 0, yellow 15%, yellow 85%, #CCCC00 100%);
+  background: linear-gradient(135deg, #CCCC00 0, yellow 15%, yellow 85%, #CCCC00 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=$startColor, endColorstr=$endColor,GradientType=1 );
+  color: black; }
+
+.Transport_yellow_red {
+  min-height: 20px;
+  background: -webkit-linear-gradient(-45deg, #CCCC00 0, yellow 15%, yellow 85%, red 100%);
+  background: linear-gradient(135deg, #CCCC00 0, yellow 15%, yellow 85%, red 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=$startColor, endColorstr=$endColor,GradientType=1 );
+  color: black; }
+
+.Transport_yellow_blank {
+  min-height: 20px;
+  background: -webkit-linear-gradient(-45deg, #CCCC00 0, white 6%, white 100%);
+  background: linear-gradient(135deg, #CCCC00 0, white 6%, white 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=$startColor, endColorstr=$endColor,GradientType=1 ); }
+
+.Transport_red_green {
+  min-height: 20px;
+  background: -webkit-linear-gradient(-45deg, red 0, yellow 15%, yellow 85%, #00db00 100%);
+  background: linear-gradient(135deg, red 0, yellow 15%, yellow 85%, #00db00 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=$startColor, endColorstr=$endColor,GradientType=1 );
+  color: black; }
+
+.Transport_red_yellow {
+  min-height: 20px;
+  background: -webkit-linear-gradient(-45deg, red 0, yellow 15%, yellow 85%, #CCCC00 100%);
+  background: linear-gradient(135deg, red 0, yellow 15%, yellow 85%, #CCCC00 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=$startColor, endColorstr=$endColor,GradientType=1 );
+  color: black; }
+
+.Transport_red_red {
+  min-height: 20px;
+  background: -webkit-linear-gradient(-45deg, red 0, yellow 15%, yellow 85%, red 100%);
+  background: linear-gradient(135deg, red 0, yellow 15%, yellow 85%, red 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=$startColor, endColorstr=$endColor,GradientType=1 );
+  color: black; }
+
+.Transport_red_blank {
+  min-height: 20px;
+  background: -webkit-linear-gradient(-45deg, red 0, white 6%, white 100%);
+  background: linear-gradient(135deg, red 0, white 6%, white 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=$startColor, endColorstr=$endColor,GradientType=1 ); }
+
+.Transport_blank_green {
+  min-height: 20px;
+  background: -webkit-linear-gradient(-45deg, white 0, white 94%, #00db00 100%);
+  background: linear-gradient(135deg, white 0, white 94%, #00db00 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=$startColor, endColorstr=$endColor,GradientType=1 ); }
+
+.Transport_blank_yellow {
+  min-height: 20px;
+  background: -webkit-linear-gradient(-45deg, white 0, white 94%, #CCCC00 100%);
+  background: linear-gradient(135deg, white 0, white 94%, #CCCC00 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=$startColor, endColorstr=$endColor,GradientType=1 ); }
+
+.Transport_blank_red {
+  min-height: 20px;
+  background: -webkit-linear-gradient(-45deg, white 0, white 94%, red 100%);
+  background: linear-gradient(135deg, white 0, white 94%, red 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=$startColor, endColorstr=$endColor,GradientType=1 ); }
+
+.Transport_blank_blank {
+  min-height: 20px;
+  background: -webkit-linear-gradient(-45deg, white 0, white 94%, white 100%);
+  background: linear-gradient(135deg, white 0, white 94%, white 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=$startColor, endColorstr=$endColor,GradientType=1 ); }
+
+.Hospital_green_green {
+  min-height: 20px;
+  background: -webkit-linear-gradient(-45deg, #00db00 0, orange 15%, orange 85%, #00db00 100%);
+  background: linear-gradient(135deg, #00db00 0, orange 15%, orange 85%, #00db00 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=$startColor, endColorstr=$endColor,GradientType=1 );
+  color: black; }
+
+.Hospital_green_yellow {
+  min-height: 20px;
+  background: -webkit-linear-gradient(-45deg, #00db00 0, orange 15%, orange 85%, #CCCC00 100%);
+  background: linear-gradient(135deg, #00db00 0, orange 15%, orange 85%, #CCCC00 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=$startColor, endColorstr=$endColor,GradientType=1 );
+  color: black; }
+
+.Hospital_green_red {
+  min-height: 20px;
+  background: -webkit-linear-gradient(-45deg, #00db00 0, orange 15%, orange 85%, red 100%);
+  background: linear-gradient(135deg, #00db00 0, orange 15%, orange 85%, red 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=$startColor, endColorstr=$endColor,GradientType=1 );
+  color: black; }
+
+.Hospital_green_blank {
+  min-height: 20px;
+  background: -webkit-linear-gradient(-45deg, #00db00 0, white 6%, white 100%);
+  background: linear-gradient(135deg, #00db00 0, white 6%, white 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=$startColor, endColorstr=$endColor,GradientType=1 ); }
+
+.Hospital_yellow_green {
+  min-height: 20px;
+  background: -webkit-linear-gradient(-45deg, #CCCC00 0, orange 15%, orange 85%, #00db00 100%);
+  background: linear-gradient(135deg, #CCCC00 0, orange 15%, orange 85%, #00db00 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=$startColor, endColorstr=$endColor,GradientType=1 );
+  color: black; }
+
+.Hospital_yellow_yellow {
+  min-height: 20px;
+  background: -webkit-linear-gradient(-45deg, #CCCC00 0, orange 15%, orange 85%, #CCCC00 100%);
+  background: linear-gradient(135deg, #CCCC00 0, orange 15%, orange 85%, #CCCC00 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=$startColor, endColorstr=$endColor,GradientType=1 );
+  color: black; }
+
+.Hospital_yellow_red {
+  min-height: 20px;
+  background: -webkit-linear-gradient(-45deg, #CCCC00 0, orange 15%, orange 85%, red 100%);
+  background: linear-gradient(135deg, #CCCC00 0, orange 15%, orange 85%, red 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=$startColor, endColorstr=$endColor,GradientType=1 );
+  color: black; }
+
+.Hospital_yellow_blank {
+  min-height: 20px;
+  background: -webkit-linear-gradient(-45deg, #CCCC00 0, white 6%, white 100%);
+  background: linear-gradient(135deg, #CCCC00 0, white 6%, white 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=$startColor, endColorstr=$endColor,GradientType=1 ); }
+
+.Hospital_red_green {
+  min-height: 20px;
+  background: -webkit-linear-gradient(-45deg, red 0, orange 15%, orange 85%, #00db00 100%);
+  background: linear-gradient(135deg, red 0, orange 15%, orange 85%, #00db00 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=$startColor, endColorstr=$endColor,GradientType=1 );
+  color: black; }
+
+.Hospital_red_yellow {
+  min-height: 20px;
+  background: -webkit-linear-gradient(-45deg, red 0, orange 15%, orange 85%, #CCCC00 100%);
+  background: linear-gradient(135deg, red 0, orange 15%, orange 85%, #CCCC00 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=$startColor, endColorstr=$endColor,GradientType=1 );
+  color: black; }
+
+.Hospital_red_red {
+  min-height: 20px;
+  background: -webkit-linear-gradient(-45deg, red 0, orange 15%, orange 85%, red 100%);
+  background: linear-gradient(135deg, red 0, orange 15%, orange 85%, red 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=$startColor, endColorstr=$endColor,GradientType=1 );
+  color: black; }
+
+.Hospital_red_blank {
+  min-height: 20px;
+  background: -webkit-linear-gradient(-45deg, red 0, white 6%, white 100%);
+  background: linear-gradient(135deg, red 0, white 6%, white 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=$startColor, endColorstr=$endColor,GradientType=1 ); }
+
+.Hospital_blank_green {
+  min-height: 20px;
+  background: -webkit-linear-gradient(-45deg, white 0, white 94%, #00db00 100%);
+  background: linear-gradient(135deg, white 0, white 94%, #00db00 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=$startColor, endColorstr=$endColor,GradientType=1 ); }
+
+.Hospital_blank_yellow {
+  min-height: 20px;
+  background: -webkit-linear-gradient(-45deg, white 0, white 94%, #CCCC00 100%);
+  background: linear-gradient(135deg, white 0, white 94%, #CCCC00 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=$startColor, endColorstr=$endColor,GradientType=1 ); }
+
+.Hospital_blank_red {
+  min-height: 20px;
+  background: -webkit-linear-gradient(-45deg, white 0, white 94%, red 100%);
+  background: linear-gradient(135deg, white 0, white 94%, red 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=$startColor, endColorstr=$endColor,GradientType=1 ); }
+
+.Hospital_blank_blank {
+  min-height: 20px;
+  background: -webkit-linear-gradient(-45deg, white 0, white 94%, white 100%);
+  background: linear-gradient(135deg, white 0, white 94%, white 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=$startColor, endColorstr=$endColor,GradientType=1 ); }
+
+.En-Route_green_green {
+  min-height: 20px;
+  background: -webkit-linear-gradient(-45deg, #00db00 0, lightgreen 15%, lightgreen 85%, #00db00 100%);
+  background: linear-gradient(135deg, #00db00 0, lightgreen 15%, lightgreen 85%, #00db00 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=$startColor, endColorstr=$endColor,GradientType=1 );
+  color: black; }
+
+.En-Route_green_yellow {
+  min-height: 20px;
+  background: -webkit-linear-gradient(-45deg, #00db00 0, lightgreen 15%, lightgreen 85%, #CCCC00 100%);
+  background: linear-gradient(135deg, #00db00 0, lightgreen 15%, lightgreen 85%, #CCCC00 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=$startColor, endColorstr=$endColor,GradientType=1 );
+  color: black; }
+
+.En-Route_green_red {
+  min-height: 20px;
+  background: -webkit-linear-gradient(-45deg, #00db00 0, lightgreen 15%, lightgreen 85%, red 100%);
+  background: linear-gradient(135deg, #00db00 0, lightgreen 15%, lightgreen 85%, red 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=$startColor, endColorstr=$endColor,GradientType=1 );
+  color: black; }
+
+.En-Route_green_blank {
+  min-height: 20px;
+  background: -webkit-linear-gradient(-45deg, #00db00 0, white 6%, white 100%);
+  background: linear-gradient(135deg, #00db00 0, white 6%, white 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=$startColor, endColorstr=$endColor,GradientType=1 ); }
+
+.En-Route_yellow_green {
+  min-height: 20px;
+  background: -webkit-linear-gradient(-45deg, #CCCC00 0, lightgreen 15%, lightgreen 85%, #00db00 100%);
+  background: linear-gradient(135deg, #CCCC00 0, lightgreen 15%, lightgreen 85%, #00db00 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=$startColor, endColorstr=$endColor,GradientType=1 );
+  color: black; }
+
+.En-Route_yellow_yellow {
+  min-height: 20px;
+  background: -webkit-linear-gradient(-45deg, #CCCC00 0, lightgreen 15%, lightgreen 85%, #CCCC00 100%);
+  background: linear-gradient(135deg, #CCCC00 0, lightgreen 15%, lightgreen 85%, #CCCC00 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=$startColor, endColorstr=$endColor,GradientType=1 );
+  color: black; }
+
+.En-Route_yellow_red {
+  min-height: 20px;
+  background: -webkit-linear-gradient(-45deg, #CCCC00 0, lightgreen 15%, lightgreen 85%, red 100%);
+  background: linear-gradient(135deg, #CCCC00 0, lightgreen 15%, lightgreen 85%, red 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=$startColor, endColorstr=$endColor,GradientType=1 );
+  color: black; }
+
+.En-Route_yellow_blank {
+  min-height: 20px;
+  background: -webkit-linear-gradient(-45deg, #CCCC00 0, white 6%, white 100%);
+  background: linear-gradient(135deg, #CCCC00 0, white 6%, white 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=$startColor, endColorstr=$endColor,GradientType=1 ); }
+
+.En-Route_red_green {
+  min-height: 20px;
+  background: -webkit-linear-gradient(-45deg, red 0, lightgreen 15%, lightgreen 85%, #00db00 100%);
+  background: linear-gradient(135deg, red 0, lightgreen 15%, lightgreen 85%, #00db00 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=$startColor, endColorstr=$endColor,GradientType=1 );
+  color: black; }
+
+.En-Route_red_yellow {
+  min-height: 20px;
+  background: -webkit-linear-gradient(-45deg, red 0, lightgreen 15%, lightgreen 85%, #CCCC00 100%);
+  background: linear-gradient(135deg, red 0, lightgreen 15%, lightgreen 85%, #CCCC00 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=$startColor, endColorstr=$endColor,GradientType=1 );
+  color: black; }
+
+.En-Route_red_red {
+  min-height: 20px;
+  background: -webkit-linear-gradient(-45deg, red 0, lightgreen 15%, lightgreen 85%, red 100%);
+  background: linear-gradient(135deg, red 0, lightgreen 15%, lightgreen 85%, red 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=$startColor, endColorstr=$endColor,GradientType=1 );
+  color: black; }
+
+.En-Route_red_blank {
+  min-height: 20px;
+  background: -webkit-linear-gradient(-45deg, red 0, white 6%, white 100%);
+  background: linear-gradient(135deg, red 0, white 6%, white 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=$startColor, endColorstr=$endColor,GradientType=1 ); }
+
+.En-Route_blank_green {
+  min-height: 20px;
+  background: -webkit-linear-gradient(-45deg, white 0, white 94%, #00db00 100%);
+  background: linear-gradient(135deg, white 0, white 94%, #00db00 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=$startColor, endColorstr=$endColor,GradientType=1 ); }
+
+.En-Route_blank_yellow {
+  min-height: 20px;
+  background: -webkit-linear-gradient(-45deg, white 0, white 94%, #CCCC00 100%);
+  background: linear-gradient(135deg, white 0, white 94%, #CCCC00 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=$startColor, endColorstr=$endColor,GradientType=1 ); }
+
+.En-Route_blank_red {
+  min-height: 20px;
+  background: -webkit-linear-gradient(-45deg, white 0, white 94%, red 100%);
+  background: linear-gradient(135deg, white 0, white 94%, red 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=$startColor, endColorstr=$endColor,GradientType=1 ); }
+
+.En-Route_blank_blank {
+  min-height: 20px;
+  background: -webkit-linear-gradient(-45deg, white 0, white 94%, white 100%);
+  background: linear-gradient(135deg, white 0, white 94%, white 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=$startColor, endColorstr=$endColor,GradientType=1 ); }
+
+.Arrived_green_green {
+  min-height: 20px;
+  background: -webkit-linear-gradient(-45deg, #00db00 0, cyan 15%, cyan 85%, #00db00 100%);
+  background: linear-gradient(135deg, #00db00 0, cyan 15%, cyan 85%, #00db00 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=$startColor, endColorstr=$endColor,GradientType=1 );
+  color: black; }
+
+.Arrived_green_yellow {
+  min-height: 20px;
+  background: -webkit-linear-gradient(-45deg, #00db00 0, cyan 15%, cyan 85%, #CCCC00 100%);
+  background: linear-gradient(135deg, #00db00 0, cyan 15%, cyan 85%, #CCCC00 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=$startColor, endColorstr=$endColor,GradientType=1 );
+  color: black; }
+
+.Arrived_green_red {
+  min-height: 20px;
+  background: -webkit-linear-gradient(-45deg, #00db00 0, cyan 15%, cyan 85%, red 100%);
+  background: linear-gradient(135deg, #00db00 0, cyan 15%, cyan 85%, red 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=$startColor, endColorstr=$endColor,GradientType=1 );
+  color: black; }
+
+.Arrived_green_blank {
+  min-height: 20px;
+  background: -webkit-linear-gradient(-45deg, #00db00 0, white 6%, white 100%);
+  background: linear-gradient(135deg, #00db00 0, white 6%, white 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=$startColor, endColorstr=$endColor,GradientType=1 ); }
+
+.Arrived_yellow_green {
+  min-height: 20px;
+  background: -webkit-linear-gradient(-45deg, #CCCC00 0, cyan 15%, cyan 85%, #00db00 100%);
+  background: linear-gradient(135deg, #CCCC00 0, cyan 15%, cyan 85%, #00db00 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=$startColor, endColorstr=$endColor,GradientType=1 );
+  color: black; }
+
+.Arrived_yellow_yellow {
+  min-height: 20px;
+  background: -webkit-linear-gradient(-45deg, #CCCC00 0, cyan 15%, cyan 85%, #CCCC00 100%);
+  background: linear-gradient(135deg, #CCCC00 0, cyan 15%, cyan 85%, #CCCC00 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=$startColor, endColorstr=$endColor,GradientType=1 );
+  color: black; }
+
+.Arrived_yellow_red {
+  min-height: 20px;
+  background: -webkit-linear-gradient(-45deg, #CCCC00 0, cyan 15%, cyan 85%, red 100%);
+  background: linear-gradient(135deg, #CCCC00 0, cyan 15%, cyan 85%, red 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=$startColor, endColorstr=$endColor,GradientType=1 );
+  color: black; }
+
+.Arrived_yellow_blank {
+  min-height: 20px;
+  background: -webkit-linear-gradient(-45deg, #CCCC00 0, white 6%, white 100%);
+  background: linear-gradient(135deg, #CCCC00 0, white 6%, white 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=$startColor, endColorstr=$endColor,GradientType=1 ); }
+
+.Arrived_red_green {
+  min-height: 20px;
+  background: -webkit-linear-gradient(-45deg, red 0, cyan 15%, cyan 85%, #00db00 100%);
+  background: linear-gradient(135deg, red 0, cyan 15%, cyan 85%, #00db00 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=$startColor, endColorstr=$endColor,GradientType=1 );
+  color: black; }
+
+.Arrived_red_yellow {
+  min-height: 20px;
+  background: -webkit-linear-gradient(-45deg, red 0, cyan 15%, cyan 85%, #CCCC00 100%);
+  background: linear-gradient(135deg, red 0, cyan 15%, cyan 85%, #CCCC00 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=$startColor, endColorstr=$endColor,GradientType=1 );
+  color: black; }
+
+.Arrived_red_red {
+  min-height: 20px;
+  background: -webkit-linear-gradient(-45deg, red 0, cyan 15%, cyan 85%, red 100%);
+  background: linear-gradient(135deg, red 0, cyan 15%, cyan 85%, red 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=$startColor, endColorstr=$endColor,GradientType=1 );
+  color: black; }
+
+.Arrived_red_blank {
+  min-height: 20px;
+  background: -webkit-linear-gradient(-45deg, red 0, white 6%, white 100%);
+  background: linear-gradient(135deg, red 0, white 6%, white 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=$startColor, endColorstr=$endColor,GradientType=1 ); }
+
+.Arrived_blank_green {
+  min-height: 20px;
+  background: -webkit-linear-gradient(-45deg, white 0, white 94%, #00db00 100%);
+  background: linear-gradient(135deg, white 0, white 94%, #00db00 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=$startColor, endColorstr=$endColor,GradientType=1 ); }
+
+.Arrived_blank_yellow {
+  min-height: 20px;
+  background: -webkit-linear-gradient(-45deg, white 0, white 94%, #CCCC00 100%);
+  background: linear-gradient(135deg, white 0, white 94%, #CCCC00 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=$startColor, endColorstr=$endColor,GradientType=1 ); }
+
+.Arrived_blank_red {
+  min-height: 20px;
+  background: -webkit-linear-gradient(-45deg, white 0, white 94%, red 100%);
+  background: linear-gradient(135deg, white 0, white 94%, red 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=$startColor, endColorstr=$endColor,GradientType=1 ); }
+
+.Arrived_blank_blank {
+  min-height: 20px;
+  background: -webkit-linear-gradient(-45deg, white 0, white 94%, white 100%);
+  background: linear-gradient(135deg, white 0, white 94%, white 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=$startColor, endColorstr=$endColor,GradientType=1 ); }
+
+.Available-Out-of-District_green_green {
+  min-height: 20px;
+  background: -webkit-linear-gradient(-45deg, #00db00 0, fuchsia 15%, fuchsia 85%, #00db00 100%);
+  background: linear-gradient(135deg, #00db00 0, fuchsia 15%, fuchsia 85%, #00db00 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=$startColor, endColorstr=$endColor,GradientType=1 );
+  color: black; }
+
+.Available-Out-of-District_green_yellow {
+  min-height: 20px;
+  background: -webkit-linear-gradient(-45deg, #00db00 0, fuchsia 15%, fuchsia 85%, #CCCC00 100%);
+  background: linear-gradient(135deg, #00db00 0, fuchsia 15%, fuchsia 85%, #CCCC00 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=$startColor, endColorstr=$endColor,GradientType=1 );
+  color: black; }
+
+.Available-Out-of-District_green_red {
+  min-height: 20px;
+  background: -webkit-linear-gradient(-45deg, #00db00 0, fuchsia 15%, fuchsia 85%, red 100%);
+  background: linear-gradient(135deg, #00db00 0, fuchsia 15%, fuchsia 85%, red 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=$startColor, endColorstr=$endColor,GradientType=1 );
+  color: black; }
+
+.Available-Out-of-District_green_blank {
+  min-height: 20px;
+  background: -webkit-linear-gradient(-45deg, #00db00 0, white 6%, white 100%);
+  background: linear-gradient(135deg, #00db00 0, white 6%, white 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=$startColor, endColorstr=$endColor,GradientType=1 ); }
+
+.Available-Out-of-District_yellow_green {
+  min-height: 20px;
+  background: -webkit-linear-gradient(-45deg, #CCCC00 0, fuchsia 15%, fuchsia 85%, #00db00 100%);
+  background: linear-gradient(135deg, #CCCC00 0, fuchsia 15%, fuchsia 85%, #00db00 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=$startColor, endColorstr=$endColor,GradientType=1 );
+  color: black; }
+
+.Available-Out-of-District_yellow_yellow {
+  min-height: 20px;
+  background: -webkit-linear-gradient(-45deg, #CCCC00 0, fuchsia 15%, fuchsia 85%, #CCCC00 100%);
+  background: linear-gradient(135deg, #CCCC00 0, fuchsia 15%, fuchsia 85%, #CCCC00 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=$startColor, endColorstr=$endColor,GradientType=1 );
+  color: black; }
+
+.Available-Out-of-District_yellow_red {
+  min-height: 20px;
+  background: -webkit-linear-gradient(-45deg, #CCCC00 0, fuchsia 15%, fuchsia 85%, red 100%);
+  background: linear-gradient(135deg, #CCCC00 0, fuchsia 15%, fuchsia 85%, red 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=$startColor, endColorstr=$endColor,GradientType=1 );
+  color: black; }
+
+.Available-Out-of-District_yellow_blank {
+  min-height: 20px;
+  background: -webkit-linear-gradient(-45deg, #CCCC00 0, white 6%, white 100%);
+  background: linear-gradient(135deg, #CCCC00 0, white 6%, white 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=$startColor, endColorstr=$endColor,GradientType=1 ); }
+
+.Available-Out-of-District_red_green {
+  min-height: 20px;
+  background: -webkit-linear-gradient(-45deg, red 0, fuchsia 15%, fuchsia 85%, #00db00 100%);
+  background: linear-gradient(135deg, red 0, fuchsia 15%, fuchsia 85%, #00db00 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=$startColor, endColorstr=$endColor,GradientType=1 );
+  color: black; }
+
+.Available-Out-of-District_red_yellow {
+  min-height: 20px;
+  background: -webkit-linear-gradient(-45deg, red 0, fuchsia 15%, fuchsia 85%, #CCCC00 100%);
+  background: linear-gradient(135deg, red 0, fuchsia 15%, fuchsia 85%, #CCCC00 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=$startColor, endColorstr=$endColor,GradientType=1 );
+  color: black; }
+
+.Available-Out-of-District_red_red {
+  min-height: 20px;
+  background: -webkit-linear-gradient(-45deg, red 0, fuchsia 15%, fuchsia 85%, red 100%);
+  background: linear-gradient(135deg, red 0, fuchsia 15%, fuchsia 85%, red 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=$startColor, endColorstr=$endColor,GradientType=1 );
+  color: black; }
+
+.Available-Out-of-District_red_blank {
+  min-height: 20px;
+  background: -webkit-linear-gradient(-45deg, red 0, white 6%, white 100%);
+  background: linear-gradient(135deg, red 0, white 6%, white 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=$startColor, endColorstr=$endColor,GradientType=1 ); }
+
+.Available-Out-of-District_blank_green {
+  min-height: 20px;
+  background: -webkit-linear-gradient(-45deg, white 0, white 94%, #00db00 100%);
+  background: linear-gradient(135deg, white 0, white 94%, #00db00 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=$startColor, endColorstr=$endColor,GradientType=1 ); }
+
+.Available-Out-of-District_blank_yellow {
+  min-height: 20px;
+  background: -webkit-linear-gradient(-45deg, white 0, white 94%, #CCCC00 100%);
+  background: linear-gradient(135deg, white 0, white 94%, #CCCC00 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=$startColor, endColorstr=$endColor,GradientType=1 ); }
+
+.Available-Out-of-District_blank_red {
+  min-height: 20px;
+  background: -webkit-linear-gradient(-45deg, white 0, white 94%, red 100%);
+  background: linear-gradient(135deg, white 0, white 94%, red 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=$startColor, endColorstr=$endColor,GradientType=1 ); }
+
+.Available-Out-of-District_blank_blank {
+  min-height: 20px;
+  background: -webkit-linear-gradient(-45deg, white 0, white 94%, white 100%);
+  background: linear-gradient(135deg, white 0, white 94%, white 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=$startColor, endColorstr=$endColor,GradientType=1 ); }
+
+.Vehicle-Swap_green_green {
+  min-height: 20px;
+  background: -webkit-linear-gradient(-45deg, #00db00 0, navy 15%, navy 85%, #00db00 100%);
+  background: linear-gradient(135deg, #00db00 0, navy 15%, navy 85%, #00db00 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=$startColor, endColorstr=$endColor,GradientType=1 );
+  color: white; }
+
+.Vehicle-Swap_green_yellow {
+  min-height: 20px;
+  background: -webkit-linear-gradient(-45deg, #00db00 0, navy 15%, navy 85%, #CCCC00 100%);
+  background: linear-gradient(135deg, #00db00 0, navy 15%, navy 85%, #CCCC00 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=$startColor, endColorstr=$endColor,GradientType=1 );
+  color: white; }
+
+.Vehicle-Swap_green_red {
+  min-height: 20px;
+  background: -webkit-linear-gradient(-45deg, #00db00 0, navy 15%, navy 85%, red 100%);
+  background: linear-gradient(135deg, #00db00 0, navy 15%, navy 85%, red 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=$startColor, endColorstr=$endColor,GradientType=1 );
+  color: white; }
+
+.Vehicle-Swap_green_blank {
+  min-height: 20px;
+  background: -webkit-linear-gradient(-45deg, #00db00 0, white 6%, white 100%);
+  background: linear-gradient(135deg, #00db00 0, white 6%, white 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=$startColor, endColorstr=$endColor,GradientType=1 ); }
+
+.Vehicle-Swap_yellow_green {
+  min-height: 20px;
+  background: -webkit-linear-gradient(-45deg, #CCCC00 0, navy 15%, navy 85%, #00db00 100%);
+  background: linear-gradient(135deg, #CCCC00 0, navy 15%, navy 85%, #00db00 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=$startColor, endColorstr=$endColor,GradientType=1 );
+  color: white; }
+
+.Vehicle-Swap_yellow_yellow {
+  min-height: 20px;
+  background: -webkit-linear-gradient(-45deg, #CCCC00 0, navy 15%, navy 85%, #CCCC00 100%);
+  background: linear-gradient(135deg, #CCCC00 0, navy 15%, navy 85%, #CCCC00 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=$startColor, endColorstr=$endColor,GradientType=1 );
+  color: white; }
+
+.Vehicle-Swap_yellow_red {
+  min-height: 20px;
+  background: -webkit-linear-gradient(-45deg, #CCCC00 0, navy 15%, navy 85%, red 100%);
+  background: linear-gradient(135deg, #CCCC00 0, navy 15%, navy 85%, red 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=$startColor, endColorstr=$endColor,GradientType=1 );
+  color: white; }
+
+.Vehicle-Swap_yellow_blank {
+  min-height: 20px;
+  background: -webkit-linear-gradient(-45deg, #CCCC00 0, white 6%, white 100%);
+  background: linear-gradient(135deg, #CCCC00 0, white 6%, white 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=$startColor, endColorstr=$endColor,GradientType=1 ); }
+
+.Vehicle-Swap_red_green {
+  min-height: 20px;
+  background: -webkit-linear-gradient(-45deg, red 0, navy 15%, navy 85%, #00db00 100%);
+  background: linear-gradient(135deg, red 0, navy 15%, navy 85%, #00db00 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=$startColor, endColorstr=$endColor,GradientType=1 );
+  color: white; }
+
+.Vehicle-Swap_red_yellow {
+  min-height: 20px;
+  background: -webkit-linear-gradient(-45deg, red 0, navy 15%, navy 85%, #CCCC00 100%);
+  background: linear-gradient(135deg, red 0, navy 15%, navy 85%, #CCCC00 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=$startColor, endColorstr=$endColor,GradientType=1 );
+  color: white; }
+
+.Vehicle-Swap_red_red {
+  min-height: 20px;
+  background: -webkit-linear-gradient(-45deg, red 0, navy 15%, navy 85%, red 100%);
+  background: linear-gradient(135deg, red 0, navy 15%, navy 85%, red 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=$startColor, endColorstr=$endColor,GradientType=1 );
+  color: white; }
+
+.Vehicle-Swap_red_blank {
+  min-height: 20px;
+  background: -webkit-linear-gradient(-45deg, red 0, white 6%, white 100%);
+  background: linear-gradient(135deg, red 0, white 6%, white 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=$startColor, endColorstr=$endColor,GradientType=1 ); }
+
+.Vehicle-Swap_blank_green {
+  min-height: 20px;
+  background: -webkit-linear-gradient(-45deg, white 0, white 94%, #00db00 100%);
+  background: linear-gradient(135deg, white 0, white 94%, #00db00 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=$startColor, endColorstr=$endColor,GradientType=1 ); }
+
+.Vehicle-Swap_blank_yellow {
+  min-height: 20px;
+  background: -webkit-linear-gradient(-45deg, white 0, white 94%, #CCCC00 100%);
+  background: linear-gradient(135deg, white 0, white 94%, #CCCC00 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=$startColor, endColorstr=$endColor,GradientType=1 ); }
+
+.Vehicle-Swap_blank_red {
+  min-height: 20px;
+  background: -webkit-linear-gradient(-45deg, white 0, white 94%, red 100%);
+  background: linear-gradient(135deg, white 0, white 94%, red 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=$startColor, endColorstr=$endColor,GradientType=1 ); }
+
+.Vehicle-Swap_blank_blank {
+  min-height: 20px;
+  background: -webkit-linear-gradient(-45deg, white 0, white 94%, white 100%);
+  background: linear-gradient(135deg, white 0, white 94%, white 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=$startColor, endColorstr=$endColor,GradientType=1 ); }
+

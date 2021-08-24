@@ -1,0 +1,361 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta http-equiv="refresh" content="43199">
+  <link rel="icon" type="image/png" href="//static.arcgis.com/images/Symbols/SafetyHealth/FireTruck.png" />
+  
+  <title>MiniCAD</title>
+  <link href="CSS/BackToTop.css" rel="stylesheet" />
+  <link href="CSS/CadMapper.css?v=202105111047" rel="stylesheet" type="text/css" />
+  <link href="CSS/Main.css?v=202105111047" rel="stylesheet" type="text/css" />
+  <link rel="stylesheet" href="//js.arcgis.com/3.21/esri/css/esri.css">
+  <link href="CSS/main-test.css" rel="stylesheet" />
+</head>
+<body>
+  <div class='container'>
+    <ul class="tabs">
+      <li id="li-tab-1" class="tab-link current" data-tab="tab-1" onclick="tabClick('tab-1')">Active Calls</li>
+      <li id="li-tab-2" class="tab-link" data-tab="tab-2" onclick="tabClick('tab-2')">Historical Calls</li>
+      <li id="li-tab-3" class="tab-link" data-tab="tab-3" onclick="tabClick('tab-3')">Unit Status</li>
+      <li id="li-tab-4" class="tab-link" data-tab="tab-4" onclick="tabClick('tab-4')">Advisories</li>
+      <li id="li-tab-5" class="tab-link" data-tab="tab-5" onclick="tabClick('tab-5')">Tracking</li>
+      <li id="li-tab-6" class="tab-link" data-tab="tab-6" onclick="tabClick('tab-6')">Map</li>
+      <li style="display: none;"
+          id="li-tab-7" class="tab-link" data-tab="tab-7" onclick="tabClick('tab-7')">Radio</li>
+    </ul>
+    <div id="tab-1" class="tab-content current">
+      <div id="active">
+      </div>
+    </div>
+    <div id="tab-2" class="tab-content">
+      <div id="historical">
+      </div>
+    </div>
+    <div id="tab-3" class="tab-content">
+      <div id="unit">
+        <fieldset>
+          <legend>Administration</legend>
+          <ol id="BC"></ol>
+        </fieldset>
+        <fieldset>
+          <legend>Engines</legend>
+          <ol id="ENGINE"></ol>
+        </fieldset>
+        <fieldset>
+          <legend>Ladders</legend>
+          <ol id="LADDER"></ol>
+        </fieldset>
+        <fieldset>
+          <legend>Rescue</legend>
+          <ol id="RESCUE"></ol>
+        </fieldset>
+        <fieldset>
+          <legend>Tender</legend>
+          <ol id="TENDER"></ol>
+        </fieldset>
+        <!--<fieldset>
+          <legend>Logistics</legend>
+          <ol id="LOGISTICS"></ol>
+        </fieldset>-->
+        <!--<fieldset>
+          <legend>Air</legend>
+          <ol id="AIR"></ol>
+        </fieldset>-->
+        <fieldset>
+          <legend>Special Unit</legend>
+          <ol id="SPECIALUNIT"></ol>
+        </fieldset>
+        <fieldset>
+          <legend>Wildland Group</legend>
+          <ol id="BRUSH"></ol>
+        </fieldset>
+        <fieldset>
+          <legend>Logistics</legend>
+          <ol id="LOGISTICS"></ol>
+        </fieldset>
+        <!--<fieldset>
+          <legend>Other</legend>
+          <ol id="OTHER"></ol>
+        </fieldset>-->
+        <fieldset>
+          <legend>Spare</legend>
+          <ol id="SPARE"></ol>
+        </fieldset>
+        <fieldset>
+          <legend onclick="$('#LEGEND').toggle();" class="clickable">Legend</legend>
+          <ol id="LEGEND">
+            <li><span class="legendcolor Available"></span><span class="legendtext">Unit is available for Unit Recommend</span></li>
+            <li><span class="legendcolor Out-of-Service"></span><span class="legendtext">Unit is not available for Unit Recommend</span></li>
+            <li><span class="legendcolor Vehicle-Swap"></span><span class="legendtext">Vehicle assigned to Another Unit</span></li>
+            <li><span class="legendcolor Broke"></span><span class="legendtext">Vehicle is out of service.</span></li>
+            <li><span class="legendcolor Available-Out-of-District"></span><span class="legendtext">Available in a district other than their home district</span></li>
+            <li><span class="legendcolor Dispatched"></span><span class="legendtext">Unit has been dispatched</span></li>
+            <li><span class="legendcolor En-Route"></span><span class="legendtext">Unit is en-route to a call</span></li>
+            <li><span class="legendcolor Arrived"></span><span class="legendtext">Unit has arrived at a call</span></li>
+            <li><span class="legendcolor Transport"></span><span class="legendtext">Unit is transporting to the hospital</span></li>
+            <li><span class="legendcolor Hospital"></span><span class="legendtext">Unit has arrived at the hospital</span></li>
+            <li><img src="//static.arcgis.com/images/Symbols/Shapes/GreenSquareLargeB.png" /><span class="legendtext">Unit's Location Updated in last 10 minutes</span></li>
+            <li><img src="//static.arcgis.com/images/Symbols/Shapes/YellowSquareLargeB.png" /><span class="legendtext">Unit's Location Updated in last 4 hours</span></li>
+            <li><img src="//static.arcgis.com/images/Symbols/Shapes/OrangeSquareLargeB.png" /><span class="legendtext">Unit's Location Updated in last 12 hours</span></li>
+            <li><img src="//static.arcgis.com/images/Symbols/Shapes/RedSquareLargeB.png" /><span class="legendtext">Unit's Location Updated in last 24 hours </span></li>
+            <li><img src="//static.arcgis.com/images/Symbols/Shapes/BlackSquareLargeB.png" /><span class="legendtext">Unit's Location Updated more than 24 hours ago</span></li>
+          </ol>
+        </fieldset>
+      </div>
+    </div>
+    <div id="tab-4" class="tab-content">
+      <div id="advisory"></div>
+    </div>
+    <div id="tab-5" class="tab-content">
+      <div id="tracking">
+        <div id="beta">
+          <h2>The tracking function is for testing only, please do not use it unless instructed to.</h2>
+        </div>
+        <div id="trackingStatus">
+          <div>
+            <label>Selected Group</label>
+            <span id="selectedGroup" onclick="showGroups()">None</span>
+          </div>
+          <div>
+            <label>User Identifier</label>
+            <span id="selectedUser" onclick="showUserIDChoice()">None</span>
+          </div>
+          <div>
+            <label>Tracking is currently</label>
+            <span id="trackingOn" class="clickable" onclick="ToggleTracking()">OFF</span>
+          </div>
+        </div>
+        <div id="trackingMessages">
+          <h2 id="trackingMessage"></h2>
+        </div>
+        <div id="startTracking">
+          <span class="clickable" id="trackingStart" onclick="showGroups()">To Select a Group and User Identifier, click here</span>
+        </div>
+        <!--<div id="trackingInfo">
+            <div id="trackingInfoContainer">
+
+            </div>
+        </div>-->
+        <div id="chooseGroups">
+          <h2 class="unclickable">Please choose from the following groups:</h2>
+          <div id="trackingOpsGroups">
+            <span id="opsGroups">Operations Groups</span>
+            <div id="OpsGroupsList"></div>
+          </div>
+          <div id="trackingEventGroups">
+            <span id="eventGroups">Event Groups</span>
+            <div id="EventGroupsList"></div>
+          </div>
+        </div>
+        <div id="chooseUserID">
+          <h2 class="unclickable">Enter a User ID, something unique to you, up to 10 characters</h2>
+          <div id="userid">
+            <label>Enter here:</label><input id="txtuserid" type="text" maxlength="10" />
+            <span class="clickable" id="saveUserID" onclick="saveUserID()">Save</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="tab-6" class="tab-content maptab">
+      <div id="mapWindow"
+           data-dojo-type="dijit/layout/BorderContainer"
+           data-dojo-props="design:'headline', gutters:false"
+           style="display: block; position: absolute;">
+        <div id="header" data-dojo-type="dijit/layout/ContentPane" data-dojo-props="region:'top'">
+          <div id="search"></div>
+        </div>
+        <div id="map" data-dojo-type="dijit/layout/ContentPane" data-dojo-props="region:'center'">
+          <div id="LocateButton"
+               onclick="ShowLocation(event)"
+               onmousedown="LocationZoom(event)"
+               style="cursor: pointer;"
+               class="LocateButton">
+            <div class="locateContainer">
+              <div id="innerLocateButton"
+                   class="zoomLocateButton">
+              </div>
+            </div>
+          </div>
+          <div id="HomeButton"></div>
+          <div id="BasemapToggle"></div>
+          <div id="History" onclick="ShowHistory()" style="cursor:pointer;">7 Days</div>
+          <div id="USNG" onclick="ShowUSNG()" style="cursor:pointer;">USNG</div>
+          <div id="ShowAvailable">
+            Show Available
+            <img onclick="ShowAvailable(event, 'rescue')"                 
+                 src="//static.arcgis.com/images/Symbols/SafetyHealth/Ambulance.png" />
+            <img onclick="ShowAvailable(event, 'engine')"                 
+                 src="//static.arcgis.com/images/Symbols/SafetyHealth/FireTruck.png" />
+            
+            <img onclick="ShowAvailable(event, 'animal')"                 
+                 src="//static.arcgis.com/images/Symbols/OutdoorRecreation/Deer.png" />
+          </div>
+          <div id="Radar" onclick="ShowRadar()" style="cursor:pointer;">Show Radar</div>
+          <div id="WeatherWarnings" onclick="ShowWeatherWarnings()" style="cursor:pointer;">Show Weather Warnings</div>
+          <!--<div id="ExtraMapPoints"
+               onclick="ShowExtraMapPointsLayer()"
+               style="cursor: pointer;"
+               title="Icons are shown based on proximity to active calls, otherwise you can toggle them all on or off here.">
+
+            <img src="//static.arcgis.com/images/Symbols/Basic/OrangeBeacon.png" style="height: 30px; width: 30px;" /> 
+            <span>Toggle</span>
+          </div>-->
+          <div id="CallerLocations"
+               onclick="ShowCallerLocationsLayer()"
+               style="cursor: pointer;"
+               title="This layer shows the calls that come in to the 911 circuit.  This includes all calls, not just Fire Rescue calls.">
+            <svg width="24" height="24" style="touch-action: none;">
+            <defs></defs>
+            <circle 
+                    fill="rgb(0, 255, 255)" 
+                    fill-opacity="0.5019607843137255" 
+                    stroke="rgb(0, 0, 0)" 
+                    stroke-opacity="1" 
+                    stroke-width=".66" 
+                    stroke-linecap="butt" 
+                    stroke-linejoin="miter" 
+                    stroke-miterlimit="1" 
+                    cx="0" 
+                    cy="0" 
+                    r="8" 
+                    fill-rule="evenodd" 
+                    stroke-dasharray="none" 
+                    dojoGfxStrokeStyle="solid" 
+                    transform="matrix(1.00000000,0.00000000,0.00000000,1.00000000,15.00000000,15.00000000)"></circle>
+            </svg>
+            Caller Locations
+          </div>
+
+          <!--<input id="History" type="button" value="7 Days">-->
+        </div>
+      </div>
+    </div>
+    <div id="tab-7" class="tab-content">
+      <table style="width: calc(100% - 2em); margin: 1em 1em 1em 1em;">
+        <thead>
+          <tr>
+            <th colspan="3"></th>
+            <th>
+              <button onclick="LoadRadioData()">
+                Refresh Data
+              </button>
+            </th>
+          </tr>
+          <tr>
+            <th style="width: 35%;">Name</th>
+            <th style="width: 15%;">Id</th>
+            <th style="width: 35%;">Timestamp</th>
+            <th style="width: 15%;"></th>
+          </tr>
+          <tr>
+            <th>
+              <input type="text"
+                     placeholder="Filter Name"
+                     onkeyup="FilterRadioName(this);"
+                     value=""
+                     style="width: 90%;" />
+            </th>
+            <th>
+              <input type="text"
+                     placeholder="Filter Id"
+                     onkeyup="FilterRadioId(this);"
+                     value=""
+                     style="width: 90%;" />
+            </th>
+            <th></th>
+            <th>
+              <button onclick="ToggleRadioLayer()">Toggle Radio Layer</button>
+            </th>
+          </tr>          
+        </thead>
+        <tbody id="radioList">
+
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div id="UnitStatusHover">
+    <ol></ol>
+  </div>
+  <a href="#0" class="cd-top">Top</a>
+  <script src="Scripts/jquery-1.11.1.js"></script>
+  <!--<script src="//code.jquery.com/jquery-1.10.2.js"></script>-->
+  <script src="//js.arcgis.com/3.21/"></script>
+  <script src="Scripts/CadMapper.js?v=202105111047"></script>
+  <script src="Scripts/modernizr-2.8.3.js"></script>
+  <script src="Scripts/Main.js?v=202105111047"></script>
+  <script src="Scripts/tracking.js?v=202105111047"></script>
+  <script src="Scripts/locate.js?v=202105111047"></script>
+
+  <script type="text/javascript">
+    Array.prototype.extend = function (other_array) {
+      /* you should include a test to check whether other_array really is an array */
+      other_array.forEach(function (v) { this.push(v) }, this);
+    }
+    String.prototype.toProperCase = function () {
+      return this.replace(/\w\S*/g, function (txt) { return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase(); });
+    };
+    var lastactivedata, currentactivedata, lasthistoricaldata = null, lastunitdata, currentunit = ''; // These two variables will store the last bit of json data returned for the server by each respective process.
+    var currenttab = 'tab-1', mapload, currentlat = null, currentlong, mapresizing = false;
+    var iTrackingCapture, iSaveTracking, trackingData = [], rawTrackingData = [];
+    $(document).ready(function () {
+      require(["dojo/domReady!"], function () {
+        $.ajaxSetup({ cache: false });// turn off ajax caching
+        // First part is for the tab UI
+        LoadUnitTableLayout();
+        LoadCADCalls('./CallData/GetActiveCalls', '#active');
+        
+        setTimeout(function () { LoadCADCalls('./CallData/GetHistoricalCalls', '#historical') }, 5000);
+        LoadAdvisoryTable();
+        setInterval(UpdateActiveCallsTable, 16500);
+        setInterval(UpdateUnitTable, 9000); // 1min, 1 sec to update Units
+        setInterval(updateHistoricalCallsTable, 65500 * 5); // 5 mins
+        setInterval(LoadAdvisoryTable, 63500 * 15); // 15 mins*/
+        //setInterval(LoadExtraMapPoints, 60000 * 5);
+        setInterval(LoadCallerLocations, 10050);
+
+        if ($(window).width() > 999) {
+          mapInit();
+        }
+        $(window).resize(function () {
+          if (map === null && $(window).width() > 999) {
+            mapInit();
+          } else {
+            tabClick(currenttab);
+            map.setExtent(defaultExtent);
+          }
+        });
+        //var offset = 300 // browser window scroll (in pixels) after which the "back to top" link is shown
+        //var offset_opacity = 1200 //browser window scroll (in pixels) after which the "back to top" link opacity is reduced
+        //var scroll_top_duration = 300 //duration of the top scrolling animation (in ms)
+        //$back_to_top = $('.cd-top');    //grab the "back to top" link
+        //$(window).scroll(function () { //hide or show the "back to top" link
+        //  ($(this).scrollTop() > offset) ? $back_to_top.addClass('cd-is-visible') : $back_to_top.removeClass('cd-is-visible cd-fade-out');
+        //  if ($(this).scrollTop() > offset_opacity) {
+        //    $back_to_top.addClass('cd-fade-out');
+        //  }
+        //});
+        //$back_to_top.on('click', function (event) { //smooth scroll to top
+        //  event.preventDefault();
+        //  $('body,html').animate({
+        //    scrollTop: 0,
+        //  }, scroll_top_duration
+        //  );
+        //});
+        //var m = document.getElementById('map');
+        //m.addEventListener('mousewheel', wheelEvent, true);
+        //m.addEventListener('DOMMouseScroll', wheelEvent, true);
+        //var b = document.body;
+        //b.addEventListener('mousewheel', wheelEvent, true);
+        //b.addEventListener('DOMMouseScroll', wheelEvent, true);
+      });
+      //require(["dojo/on"], function (on) {
+      //    document.getElementByTagName('Body').on('mouse-wheel', myMouseWheelHandler);
+      //});
+    });
+  </script>
+
+</body>
+</html>

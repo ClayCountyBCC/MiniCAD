@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.26430.12
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "CADView", "CADView\CADView.vbproj", "{12F6EC1C-FB8E-4346-AC59-DA9270C7A0BF}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|x86 = Debug|x86
+		Release|Any CPU = Release|Any CPU
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{12F6EC1C-FB8E-4346-AC59-DA9270C7A0BF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{12F6EC1C-FB8E-4346-AC59-DA9270C7A0BF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{12F6EC1C-FB8E-4346-AC59-DA9270C7A0BF}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{12F6EC1C-FB8E-4346-AC59-DA9270C7A0BF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{12F6EC1C-FB8E-4346-AC59-DA9270C7A0BF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{12F6EC1C-FB8E-4346-AC59-DA9270C7A0BF}.Release|x86.ActiveCfg = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

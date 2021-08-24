@@ -1,0 +1,1022 @@
+﻿/* START NORMALIZE CSS HERE */
+html, body
+{
+  box-sizing: border-box;
+  padding: 0 0 0 0;
+  margin: 0 0 0 0;
+  overflow: auto;
+  height: 100% !important;
+  width: 100% !important;
+}
+*, body, button, input, textarea, select {
+    text-rendering: optimizeLegibility;
+    font-size: 100%; 
+}
+
+body, div, dl, dt, dd, ul, ol, li, h1, h2, h3, h4, h5, h6, pre, form, fieldset, input, textarea, p, blockquote, th, td {
+    margin: 0;
+    padding: 0;
+}
+
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+fieldset, img {
+    border: 0;
+}
+
+address, caption, cite, code, dfn, em, strong, th, var {
+    font-style: normal;
+    font-weight: normal;
+}
+
+ol, ul {
+    list-style: none;
+}
+
+caption, th {
+    text-align: left;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-size: 100%;
+    font-weight: normal;
+}
+
+q:before, q:after {
+    content: '';
+}
+
+abbr, acronym {
+    border: 0;
+}
+/* apply a natural box layout model to all elements */
+*, *:before, *:after {
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+/* END NORMALIZE CSS HERE */
+
+html, body {    
+    width: 100%;
+    background-color: white;
+    color: black;
+    margin: 0 auto;    
+}
+
+body
+{
+  /*margin-top: .25em;*/
+  /*font-family: 'Trebuchet MS', serif;*/
+}
+
+header {
+    width: 95%;
+    margin-bottom: 2em;
+    display: block;
+    margin: 0 auto;
+}
+
+    header h1 {
+        font-size: xx-large;
+    }
+
+/*All of the tab UI is done here. */
+.container {
+    width: 100%;
+    height: 100%;
+    margin: 0 auto;
+    padding: 0;
+    overflow: auto;
+}
+ul.tabs {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    -ms-flex-flow: row wrap;
+    flex-flow: row wrap;
+    justify-content: flex-start;
+    /*height: 40px;*/
+}
+
+ul.tabs li {
+    color: inherit;
+    background: none;
+    display: inline-block;
+    padding: 10px 15px;
+    cursor: pointer;
+    border: 1px black dotted;
+    border-bottom: none;
+    text-align: center;
+    align-content: center;
+}
+
+ul.tabs li.current {
+    background: #ddd;
+    border: 1px black solid;
+    border-bottom: none;
+}
+
+
+
+div.current {
+    height: calc(100% - 40px);
+}
+
+ul.tabs li.title {
+    cursor: auto;
+    text-align: right;
+    margin-right: 1em;
+    /*width: 19%;*/
+}
+
+.tab-content {
+    display: none;
+    background: #ddd;
+    padding: .25em;
+    padding-top: .5em;
+    width: 100%;    
+    border-top: 1px solid black;
+    overflow: auto;
+    overflow-x: visible;
+    /*height: 100%;*/
+    /*height: 90%;
+    overflow: scroll;*/
+}
+
+.tab-content.current {
+    display: inherit;
+}
+/* end tab UI CSS */
+
+/*========== OVERALL UNIT STATUS CSS ==========*/
+
+
+li img {
+    margin: 0 auto;
+    margin-left: .5em;
+    width: 20px;
+    height: 100%;
+}
+li img.imghide {
+    display: none;
+}
+.Cancelled, .Cleared, .Available {
+    background-color: white;
+}
+
+
+
+
+
+#UnitStatusHover .Available {
+    background-color: darkgreen;
+    color: white;
+}
+
+
+
+.Dispatched {
+    background-color: mediumpurple;
+}
+
+.Transport {
+    background-color: yellow;
+}
+
+.Hospital {
+    background-color: orange;
+}
+
+.En-Route {
+    background-color: lightgreen;
+}
+
+.Arrived {
+    background-color: cyan;
+}
+.Vehicle-Swap{
+    background-color: navy;
+    color: white;
+}
+.Broke {
+    /*background-color: #F0C5AA;*/
+    background-color: coral;
+}
+.Out-of-Service {
+    background-color: red;
+}
+.Available-Out-of-District{
+    background-color: fuchsia;
+    /*background-color: navy;
+    color: white;*/    
+}
+#LEGEND {
+    display: none;
+}
+#LEGEND li {
+    /*float: left;*/
+    width: 100%;
+    color: black;
+    text-align: left !important;
+    height: 2em;
+    margin: 0 auto;
+    vertical-align: middle;
+    display: block;
+    cursor: auto !important;
+}
+#legendlegend legend {
+    cursor: pointer;
+}
+#LEGEND li span.legendcolor {
+    display:inline-block;
+    width: 2em;
+    height: 100%;
+    border: 1px solid black;
+}
+#LEGEND li span.legendtext {
+    display: inline-block;
+    height: 100%;
+    text-align: left;
+    margin-left: 1em;
+    font-size: medium;
+    font-weight: normal;
+}
+#LEGEND li img {
+    margin-left: .75em;
+    margin-right: .5em;
+}
+
+#UnitStatusHover {
+    width: 300px;
+    display: none;
+    position: fixed;
+    background-color: white;
+}
+
+    #UnitStatusHover ol, ol.mapUnit {
+        width: 100%;
+        font-size: inherit;
+        border: none;
+        list-style: none;
+        list-style-type: none;
+    }
+
+        #UnitStatusHover ol li, ol.mapUnit li {
+            border: 1px solid black;
+            padding-left: .5em;
+            list-style: none;
+            list-style-type: none;
+            /*list-style-image: url(data:0);*/
+        }
+
+
+
+
+
+#unit {
+    overflow: auto;
+}
+
+    #unit ol, #trackingGroups ol {
+        clear: both;
+    }
+
+    #unit li, .CenterAge li, .unitlist li, #trackingGroups li {
+        float: left;
+        margin: 0;
+        padding: 0;
+        border: solid 1px black;
+        min-width: 6em;
+        height: 20px;
+        text-align: center;
+        border-collapse: collapse;
+        /*color: inherit;*/
+        cursor: pointer;
+    }
+
+
+
+fieldset {
+    margin: 0 0 .25em .25em;
+    padding: 0;
+    float: left;
+    font-size: 1em;
+    border: 1px solid gray;
+    border-left: none;
+    background: #ffffff;
+    border-collapse: collapse;
+}
+
+    fieldset legend {
+        margin-left: -1px;
+        font-weight: bold;
+        font-size: .9em;
+        color: black;
+        background-color: lightyellow;
+        padding: 0 2em 0 2em;
+        border: 1px solid black;
+        border-bottom: none;
+    }
+
+#unit fieldset ol li {
+    margin-left: -1px;
+    margin-top: -1px;
+}
+/*=================END UNIT CSS =================*/
+
+/*=================CALL CSS STARTS HERE=================*/
+.Call, .advisory, #trackingGroups {
+    width: 100%;
+    float: left;
+    display: block;    
+    background-color: #ddd;
+    padding: 0;
+    margin: 0 auto;
+    margin-bottom: .5em;
+}
+
+.Call ol {
+    padding: 0;
+    margin: 0 auto;
+    margin-bottom: .5em;
+}
+.CADData li, .calldetail li, .advisory li {
+    float: left;
+    padding-right: .5em;
+    padding-left: .5em;
+    clear: none;
+    border: 1px darkgray dotted;
+    vertical-align: middle;
+}
+
+.CADData li span, .CADData li label, .calldetail li span, .calldetail li label, .advisory li span, .advisory li label {
+    width: 100%;
+    text-align: center;
+    margin-right: .25em;
+    vertical-align: middle;
+}
+.detailheader{
+    padding-left: 1em;
+
+}
+li label {
+    font-size: .9em;
+}
+
+fieldset li span {
+    font-size: 1em;
+    font-weight: normal;
+}
+
+li span {
+    font-size: 1.2em;
+    font-weight: bold;
+}
+
+.unitlist {
+    clear: left;
+    padding: .25em;
+    margin: 0;
+    float: left;
+    margin-bottom: .5em;
+}
+
+.notes, li.historynotes {
+    clear: left;
+    width: 100%;
+    text-align: left;
+    padding: .5em;
+    font-size: medium;
+}
+    .notes a, li.historynotes a {
+        text-decoration: none;
+        color: black;
+    }
+
+.dispatch {
+    display: none;
+    font-size: inherit;
+}
+
+.linesep {
+    display: inline-block;
+    visibility: visible;
+    width: .5em;
+    height: .5em;
+    vertical-align: middle;
+    background-color: lightblue;
+    border: 1px black solid;
+    margin-left: .5em;
+    margin-right: .5em;
+    border-radius: 5px;
+}
+
+    .linesep:nth-last-child(1), .linesep:nth-last-child(2) {
+        display: none;
+    }
+
+.CADDatabuttons {
+    clear: both;
+    float: left;
+    overflow: auto;
+    width: 100%;
+    margin: 0 auto;
+    padding: 0;
+    background-color: inherit;
+    margin-bottom: .5em;
+}
+.CADDatabuttons li {
+    width: 32%;
+    text-align: center;
+    padding-right: .5em;
+    font-weight: normal;
+    border: solid black 1px;
+    margin-top: .25em;
+    border-radius: 5px;
+    color: black;
+    font-size: 1.2em;
+    float: left;
+    margin-right: 1%;
+    cursor: pointer;
+}
+
+.CADDatabuttons li a {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+    height: 100%;
+    width: 100%;
+}
+
+.CADDatabuttons .historybutton, .historybyaddressbase, #opsGroups, .Ops {
+    background-color: lightsalmon;
+}
+
+.CADDatabuttons .detailbutton, .calldetailbase, .calldetailbase .detailheader, #eventGroups, .Events {
+    background-color: lightgoldenrodyellow;
+}
+
+#active .CADData .age, #historical .CADData .calltime, .CADData .historyage {
+    display: block;
+    visibility: visible;
+}
+
+#active .CADData .calltime, #historical .CADData .age {
+    display: none;
+    visibility: hidden;
+}
+
+/*#historical .CADDatabuttons .historybutton {
+    /*display: none;
+    visibility: hidden;
+}*/
+
+.CADDatabuttons .mapbutton {
+    background-color: lightblue;
+}
+
+.CADDatabuttons li:hover, #trackingbuttons span:hover {
+    background-color: green;
+    font-weight: bold;
+    color: #ffffff;
+}
+
+.calldetailbase, .calldetailbase .calldetail, .historybyaddressbase, .historybyaddressbase .CADData{
+    clear: left;
+    overflow: auto;
+    width: 100%;
+}
+
+.calldetailbase, .historybyaddressbase {
+    border: 1px solid black;
+}
+
+.Call:nth-of-type(even), .calldetailbase li.detailrow:nth-of-type(even), .historybyaddressbase li.historyrow:nth-of-type(even), div#advisory ol.advisory:nth-of-type(odd) {
+    background-color: #eee;
+}
+
+    .calldetailbase .userid, .calldetailbase .desc, .calldetailbase .timestamp {
+        width: 33%;
+    }
+    .calldetailbase .comments, .calldetailbase .usertyped{
+        width: 50%;
+    }
+/*.historynotes {
+    /*overflow: auto;
+    width: 100%;
+}*/
+/* Tracking Groups CSS */
+#startTracking, #chooseGroups, #chooseUserID, #userid, #trackingMessages, #beta{
+    margin-top: 1em;
+    width: 100%;
+}
+#trackingStart, #beta h2, #chooseGroups h2, #chooseUserID h2, #userid span {    
+    width: 100%;
+    height: 2em;
+    font-size: larger;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    border: 1px solid black;
+}
+#beta {
+    margin-bottom: 1em;
+}
+#beta h2 {
+    background-color: orangered;
+    color: white;
+
+}
+#chooseGroups h2 {
+    border-bottom: none;
+}
+#trackingInfo {    
+    display: block;
+    width: 100%;
+}
+#userid, #trackingStatus, #trackingMessages {
+    display: flex;
+    -ms-flex: 1 0 auto;
+    flex: 1 0 auto;
+    -ms-flex-flow: row wrap;
+    flex-flow: row wrap;    
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+#chooseGroups h2, #trackingMessage {
+    cursor: auto;
+}
+#trackingEventGroups, #trackingOpsGroups {
+    width: 50%;
+    display: block;
+    float: left;
+    border: 1px solid black;
+}
+#trackingOpsGroups {
+    background-color: #eee;
+}
+#trackingEventGroups {
+    border-left: none;
+    background-color: inherit;
+}
+#EventGroupsList, #OpsGroupsList{
+    width: 100%;
+    background-color: inherit;
+}
+#trackingOpsGroups, #trackingEventGroups {
+    margin: 0;
+    padding: 0;
+}
+#trackingOpsGroups span, #trackingEventGroups span{
+    width: 100%;
+    display: block;
+    text-align: center;
+    border-bottom: 1px solid black;
+}
+#trackingOpsGroups ol, #trackingEventGroups ol {    
+    padding: 1em 3em 1em 3em;
+    display: flex;
+    justify-content: center;
+    align-items: center;    
+    -ms-flex-flow: row wrap;
+    flex-flow: row wrap;
+    overflow: auto;    
+    -ms-flex: 1 0 6em;
+    flex: 1 0 6em;
+}
+#trackingStatus div {
+    border: 1px solid black;
+}
+#OpsGroupsList li, #EventGroupsList li, #trackingStatus span, #trackingStatus label {
+    height: 2em;
+    min-width: 6em;
+    padding: 0;
+    margin: .50em;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    float: none;
+    clear: both;
+    border: 1px solid black;    
+ }
+#trackingInfo label, #trackingStatus label {
+    background-color: #eee;
+}
+#OpsGroupsList li:hover, #EventGroupsList li:hover {
+    margin: -.5em;
+    font-size: 150%;
+    z-index: 9999;
+    background-color: green;
+    color: white;
+}
+#trackingStatus span {
+    min-width: 10em;
+}
+#trackingStatus label {
+    width: 12em;
+}
+#chooseGroups, #chooseUserID {
+    display: none;
+    visibility: hidden;
+}
+#trackingstatustext, #trackingstatustextspan #userid label {
+    margin-right: 1em;
+}
+#userid input {
+    margin: 1em;
+    padding-left: 1em;
+}
+#userid span { 
+    margin-left: 1em;
+    width: 6em;
+    display: inline-flex;
+}
+.clickable {
+    background-color: green;
+    color: white;
+    cursor: pointer;
+}
+.unclickable {
+    background-color: darkblue;
+    color: white;
+}
+/*#trackingStatus span, #trackingStatus label {
+    display: block;
+}*/
+/*================= BEGIN ADVISORY CSS=================*/
+#advisory, #active, #historical, #tracking {
+    /*, #mapWindow*/
+    width: 100%;
+    margin: 0 auto;
+    overflow: auto;
+    font-size: smaller;
+    padding: 0;
+}
+#advisory ol.advisory {
+    margin-bottom: .5em;
+}
+.advisorytitle, .advisorylocation {
+    width: 50%;
+    margin: 0;
+}
+.advisorynotes {
+    width: 100%;
+}
+
+/*#historical {
+    height: 600px;
+    overflow: auto;
+    overflow-y: auto;
+}*/
+/*================= END ADVISORY CSS=================*/
+/* ========== Begin media queries ========== */
+@media all and (min-width: 1000px) {
+    html, body {
+        height: 100% !important;
+    }
+    .tab-content{
+        height: calc(100% - 40px);
+        width: 45%;
+        float: left;
+        margin: 0 auto;
+        padding: 0;
+    }    
+    .tab-content > div {
+        height: calc(100% - 40px);
+    }
+    .maptab{
+        float: right;
+        display: inherit;
+        background: #ddd;
+        border: 1px black solid;
+        border-bottom: none;        
+        width: 55%;
+    }
+    #mapWindow {
+        width: 54%;
+        margin: 0 auto;
+        padding: 0;
+        border: none;
+    }
+
+    #map {        
+        margin: 0 auto;
+        padding: 0;
+    }
+
+    .CADDatabuttons {
+        float: left;
+        width: 100%;
+        margin: 0 auto;
+        padding: 0;
+        height: 2em;
+        display: block;
+        margin-bottom: .5em;
+    }
+
+        .CADDatabuttons li a {
+            display: block;
+            text-align: center;
+            width: 100%;
+            height: 100%;
+            margin: 0 auto;
+            /*padding-top: .5em;
+            padding-bottom: .5em;*/
+            vertical-align: middle;
+            font-size: larger;
+        }
+
+        .CADDatabuttons li {
+            float: left;
+            margin: 0 auto;
+            width: 33.3%;
+            min-width: 0;
+            border-radius: 0;
+            padding: 0;
+            height: 100%;
+        }
+
+        .CADDatabuttons .detailbutton {
+            border-bottom-left-radius: 3px;
+            border-top-left-radius: 3px;
+            border-right: none;
+        }
+
+        .CADDatabuttons .mapbutton {
+            border-bottom-right-radius: 3px;
+            border-top-right-radius: 3px;
+            border-left: none;
+        }
+
+    /*#historical .CADDatabuttons li {
+        width: 50%;
+    }
+
+    #historical .CADDatabuttons .mapbutton {
+        border-left: 1px solid black;
+    }*/
+    .CADData {
+        float: left;
+        clear: none;
+    }
+    .CADData li, .CADData li label, .CADData li span{
+        min-width: 25%;
+    }
+    .CADData, .notes, li.historynotes {
+        font-size: 1.2em;
+        padding-left: 1em;
+    }
+
+        .CADData li, .calldetail li {
+            height: auto;
+        }
+
+        .CADData .nature, .CADData .street, .CADData .usng {
+            width: 100%;
+        }
+        /*.CADData .historynature,*/
+    .unitlist {
+        font-size: larger;
+    }
+
+    /*#UnitStatusHover {
+        width: 25%;
+    }*/
+    .calldetailbase .userid, .calldetailbase .desc{
+        width: 50%;
+    }
+    .calldetailbase .comments, .calldetailbase .usertyped, .calldetailbase .timestamp {
+        width: 100%;
+    }
+
+}
+@media all and (min-width: 361px) and (max-width: 640px) {    
+    html, body, .tab-content, .tab-content > div {
+        height: auto;
+    }
+    .Call {
+        font-size: smaller;
+    }
+    ul.tabs { /* Nav Bar Tabs */
+        overflow: auto;
+        font-size: larger;
+
+    }
+        ul.tabs li {
+            /*float: left;
+            width: 50%;*/
+            margin: 0 auto;
+            /*text-align: center;*/
+            cursor: default;
+            flex-basis: 50%;
+        }
+        ul.tabs li:last-child {
+            /*width: 100%;*/
+            flex-grow: 2;
+        }
+    /* End Nav Bar Tabs */
+    .CADDatabuttons {
+        float: left;
+        width: 100%;
+        margin: 0 auto;
+        padding: 0;
+        height: 2em;
+        display: block;
+        margin-bottom: .5em;
+    }
+
+        .CADDatabuttons li a {
+            display: block;
+            text-align: center;
+            width: 100%;
+            height: 100%;
+            margin: 0 auto;
+            /*padding-top: .5em;
+            padding-bottom: .5em;*/
+            vertical-align: middle;
+            font-size: larger;
+        }
+
+        .CADDatabuttons li {
+            float: left;
+            margin: 0 auto;
+            width: 33.3%;
+            min-width: 0;
+            border-radius: 0;
+            padding: 0;
+            height: 100%;
+        }
+
+        .CADDatabuttons .detailbutton {
+            border-bottom-left-radius: 3px;
+            border-top-left-radius: 3px;
+            border-right: none;
+        }
+
+        .CADDatabuttons .mapbutton {
+            border-bottom-right-radius: 3px;
+            border-top-right-radius: 3px;
+            border-left: none;
+        }
+
+    /*#historical .CADDatabuttons li {
+        width: 50%;
+    }
+
+    #historical .CADDatabuttons .mapbutton {
+        border-left: 1px solid black;
+    }*/
+    .CADData {
+        float: left;
+        clear: none;
+    }
+    .CADData li, .CADData li label, .CADData li span{
+        min-width: 25%;
+    }
+    .CADData, .notes, li.historynotes {
+        font-size: 1.2em;
+        padding-left: 1em;
+    }
+
+        .CADData li, .calldetail li {
+            height: auto;
+        }
+
+        .CADData .nature, .CADData .historynature, .CADData .street, .CADData .usng {
+            width: 100%;
+        }
+
+    .unitlist {
+        font-size: larger;
+    }
+
+    #UnitStatusHover {
+        width: 50%;
+    }
+    .calldetailbase .userid, .calldetailbase .desc{
+        width: 50%;
+    }
+    .calldetailbase .comments, .calldetailbase .usertyped, .calldetailbase .timestamp {
+        width: 100%;
+    }
+}
+@media all and (max-width: 360px) {
+    html, body, .tab-content, .tab-content > div {
+        height: auto;
+    }
+    .Call {
+        font-size: smaller;
+    }
+    ul.tabs { /* Nav Bar Tabs */
+        overflow: auto;
+        font-size: larger;
+        -ms-flex-flow: column wrap;
+        flex-flow: column wrap;        
+        text-align: center;
+    }
+    ul.tabs li {
+        /*float: left;
+        width: 50%;*/
+        /*margin: 0 auto;*/
+        text-align: center;
+        cursor: default;
+        /*min-height: 4em;*/
+        /*vertical-align: middle;*/
+    }
+    ul.tabs li:last-child {
+        /*width: 100%;*/
+        /*min-height: 0;*/
+    }
+    /* End Nav Bar Tabs */
+    .CADDatabuttons, #trackingbuttons {
+        float: left;
+        width: 100%;
+        margin: 0 auto;
+        padding: 0;
+        height: 3em;
+        display: block;
+    }
+
+        .CADDatabuttons li a {
+            display: block;
+            text-align: center;
+            width: 100%;
+            height: 100%;
+            margin: 0 auto;
+            padding-top: .5em;
+            padding-bottom: .5em;
+            vertical-align: middle;
+            font-size: larger;
+        }
+
+        .CADDatabuttons li, #trackingbuttons span {
+            float: left;
+            margin: 0 auto;
+            width: 33.3%;
+            min-width: 0;
+            border-radius: 0;
+            padding: 0;
+            height: 100%;
+        }
+
+        .CADDatabuttons .detailbutton {
+            border-bottom-left-radius: 3px;
+            border-top-left-radius: 3px;
+            border-right: none;
+        }
+
+        .CADDatabuttons .mapbutton {
+            border-bottom-right-radius: 3px;
+            border-top-right-radius: 3px;
+            border-left: none;
+        }
+
+    /*#historical .CADDatabuttons li {
+        width: 50%;
+    }
+
+    #historical .CADDatabuttons .mapbutton {
+        border-left: 1px solid black;
+    }*/
+    .CADData {
+        float: left;
+        clear: none;
+    }
+    .CADData li, .CADData li label, .CADData li span{
+        min-width: 25%;
+    }
+    .CADData, .notes, li.historynotes {
+        font-size: 1.2em;
+        padding-left: 1em;
+    }
+
+        .CADData li, .calldetail li {
+            height: auto;
+        }
+
+        .CADData .nature, .CADData .street, .CADData .historynature, .CADData .usng {
+            width: 100%;
+        }
+
+    .unitlist {
+        font-size: larger;
+    }
+
+    #UnitStatusHover {
+        width: 50%;
+    }
+    .calldetailbase .userid, .calldetailbase .desc{
+        width: 50%;
+    }
+    .calldetailbase .comments, .calldetailbase .usertyped, .calldetailbase .timestamp {
+        width: 100%;
+    }
+}
