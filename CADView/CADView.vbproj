@@ -163,6 +163,7 @@
     <None Include="compilerconfig.json.defaults">
       <DependentUpon>compilerconfig.json</DependentUpon>
     </None>
+    <Content Include="ConnectionStrings.config" />
     <None Include="My Project\PublishProfiles\CADView Production.pubxml" />
     <None Include="My Project\PublishProfiles\CADView DV10.pubxml" />
     <Content Include="Scripts\angular-esri-core.js" />
