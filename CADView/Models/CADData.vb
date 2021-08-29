@@ -596,8 +596,12 @@ ORDER  BY
       ' Here we get the data from the database.
       Dim D As New Tools.DB(CAD, AppID, ErrorHandling)
       'Dim AU As List(Of ActiveUnit) = GetShortActiveUnitStat(Stafflist)
-      Dim H As List(Of CaDCall) = GetAllHistoricalCallsByAddressForActiveCalls()
-      Dim AD As List(Of CADCallDetail) = GetAllActiveCallsDetail()
+      ' 8/25/2021 removed preloading active calls history and call details
+      ' =================================================================
+      'Dim H As List(Of CaDCall) = GetAllHistoricalCallsByAddressForActiveCalls()
+      'Dim AD As List(Of CADCallDetail) = GetAllActiveCallsDetail()
+      ' =================================================================
+      Dim Notes As List(Of Note) = Note.GetCachedNotes()
       'Dim sbQuery As New StringBuilder
       'With sbQuery
       '  ' Old version, testing new one that is rebid aware.
@@ -667,6 +671,7 @@ SELECT
   ,I.inci_id
   ,nature
   ,calltime
+  ,NULL timeclose
   ,( CASE
        WHEN PATINDEX('%IST:%'
                      ,addtst) > 0
@@ -682,9 +687,13 @@ SELECT
   ,LTRIM(RTRIM(street)) + ', '
    + LTRIM(RTRIM(citydesc)) + ' FL, '
    + LTRIM(RTRIM(zip)) AS mapurl
+  ,ISNULL(NMD.call_type, 'EMS') CallType
+  ,ISNULL(NMD.is_emergency, 1) IsEmergency
 FROM
   incident I
   LEFT OUTER JOIN MobileCallers MC ON I.callerph = MC.phonenumfixed
+  LEFT OUTER JOIN cad.dbo.nature N ON I.naturecode = N.naturecode
+  LEFT OUTER JOIN Tracking.dbo.naturecode_meta_data NMD ON N.natureid = NMD.natureid
 WHERE
   I.cancelled = 0
   AND I.inci_id <> ''
@@ -694,7 +703,10 @@ ORDER  BY
       Try
         Dim DS As DataSet = D.Get_Dataset(query, "CAD")
         Dim L As New List(Of CaDCall)(From dbRow In DS.Tables(0).AsEnumerable()
-                                      Select GetCallByDataRow(dbRow, AU, H, AD))
+                                      Select GetCallByDataRow(dbRow, AU, Notes))
+        ' Old version that loaded historical calls and call detail
+        'Dim L As New List(Of CaDCall)(From dbRow In DS.Tables(0).AsEnumerable()
+        '                              Select GetCallByDataRow(dbRow, AU, H, AD, Notes))
         Return L
       Catch ex As Exception
         Tools.Log(ex, AppID, MachineName, Tools.Logging.LogType.Database)
@@ -710,7 +722,9 @@ ORDER  BY
       ' Here we get the data from the database.
       Dim D As New Tools.DB(CAD, AppID, ErrorHandling)
       Dim au As List(Of ActiveUnit) = GetUnitStatus()
-      Dim ad As List(Of CADCallDetail) = GetAllCallsDetail()
+      Dim Notes As List(Of Note) = Note.GetCachedNotes()
+      Dim test = (From n In Notes Where n.log_id > 0 Select n).ToList
+      'Dim ad As List(Of CADCallDetail) = GetAllCallsDetail()
       Dim query As String = "
 SELECT
   NULL AS latitude
@@ -724,6 +738,7 @@ SELECT
   ,inci_id
   ,nature
   ,calltime
+  ,timeclose
   ,( CASE
        WHEN PATINDEX('%IST:%'
                      ,addtst) > 0
@@ -768,7 +783,7 @@ ORDER  BY
       Try
         Dim DS As DataSet = D.Get_Dataset(query, "CAD")
         Dim L As New List(Of CaDCall)(From dbRow In DS.Tables(0).AsEnumerable()
-                                      Select GetCallByDataRow(dbRow, au, Nothing, ad))
+                                      Select GetCallByDataRow(dbRow, au, Notes))
         Return L
       Catch ex As Exception
         Tools.Log(ex, AppID, MachineName, Tools.Logging.LogType.Database)
@@ -907,98 +922,98 @@ ORDER  BY
     '  End Try
     'End Function
 
-    Public Function GetAllHistoricalCallsByAddressForActiveCalls() As List(Of CaDCall)
-      ' This function will be used on the active calls table to view any previous calls at that
-      ' street address.  I want to load this data as a subtable to the regular data row and do it on click
-      Dim D As New Tools.DB(CAD, AppID, ErrorHandling)
-      'Dim au As List(Of ActiveUnit) = GetUnitStatus()
-      Dim query As String = "
-SELECT
-  NULL AS latitude
-  ,NULL AS longitude
-  ,NULL AS confidence
-  ,NULL AS proctime
-  ,IM.business
-  ,IM.crossroad1
-  ,IM.geox
-  ,IM.geoy
-  ,IM.inci_id
-  ,IM.nature
-  ,IM.calltime
-  ,( CASE
-       WHEN PATINDEX('%IST:%'
-                     ,IM.addtst) > 0
-       THEN LTRIM(RTRIM(IM.street))
-       WHEN LEN(LTRIM(RTRIM(IM.addtst))) = 0
-       THEN LTRIM(RTRIM(IM.street))
-       ELSE LTRIM(RTRIM(IM.street)) + ' - ' + IM.addtst
-     END ) AS fullstreet
-  ,LTRIM(RTRIM(IM.street)) AS street
-  --,ISNULL(LTRIM(RTRIM(notes)), '') notes
-  ,IM.district
-  ,IM.case_id
-  ,LTRIM(RTRIM(IM.street)) + ', '
-   + LTRIM(RTRIM(IM.citydesc)) + ' FL, '
-   + LTRIM(RTRIM(IM.zip)) AS mapurl
-   ,ISNULL(NMD.call_type, 'EMS') CallType
-   ,ISNULL(NMD.is_emergency, 1) IsEmergency
-FROM
-  inmain IM 
-  INNER JOIN incident I ON IM.street = I.street AND I.cancelled=0 AND I.inci_id != ''
-  LEFT OUTER JOIN cad.dbo.nature N ON IM.naturecode = N.naturecode
-  LEFT OUTER JOIN Tracking.dbo.naturecode_meta_data NMD ON N.natureid = NMD.natureid
-WHERE
-  IM.cancelled = 0
-  AND IM.inci_id <> ''
-ORDER  BY
-  inci_id DESC
-  ,calltime DESC "
-      ' 08/22/2021 removed old query replaced with new one that had a few more fields.
-      'Dim sbQuery As New StringBuilder
-      'With sbQuery ' 6/3/2014, restricted results to the top 20.
-      '  .AppendLine("SELECT NULL as latitude, NULL as longitude, geox, geoy, business, crossroad1, inci_id, nature, calltime, ")
-      '  .AppendLine("(CASE WHEN PATINDEX('%IST:%',addtst) > 0 THEN LTRIM(RTRIM(street)) ")
-      '  .AppendLine("WHEN LEN(LTRIM(RTRIM(addtst))) = 0 THEN LTRIM(RTRIM(street)) ")
-      '  .AppendLine("ELSE LTRIM(RTRIM(street)) + ' - ' + addtst END) AS fullstreet, LTRIM(RTRIM(street)) as street, notes, district, case_id, ")
-      '  .AppendLine("LTRIM(RTRIM(street)) + ', ' + LTRIM(RTRIM(citydesc)) + ' FL, ' + LTRIM(RTRIM(zip)) AS mapurl")
-      '  .AppendLine("FROM inmain WHERE cancelled=0 AND inci_id <> '' ")
-      '  .AppendLine("AND street IN (SELECT street FROM incident WHERE cancelled=0 AND inci_id <> '') ORDER BY inci_id DESC, calltime DESC ")
-      'End With
-      Try
-        Dim DS As DataSet = D.Get_Dataset(query, "CAD")
-        Dim L As New List(Of CaDCall)(From dbRow In DS.Tables(0).AsEnumerable() Select GetCallByDataRow(dbRow, Nothing))
-        Return L
-      Catch ex As Exception
-        Tools.Log(ex, AppID, MachineName, Tools.Logging.LogType.Database)
-        Return Nothing
-      End Try
-    End Function
+    '    Public Function GetAllHistoricalCallsByAddressForActiveCalls() As List(Of CaDCall)
+    '      ' This function will be used on the active calls table to view any previous calls at that
+    '      ' street address.  I want to load this data as a subtable to the regular data row and do it on click
+    '      Dim D As New Tools.DB(CAD, AppID, ErrorHandling)
+    '      'Dim au As List(Of ActiveUnit) = GetUnitStatus()
+    '      Dim query As String = "
+    'SELECT
+    '  NULL AS latitude
+    '  ,NULL AS longitude
+    '  ,NULL AS confidence
+    '  ,NULL AS proctime
+    '  ,IM.business
+    '  ,IM.crossroad1
+    '  ,IM.geox
+    '  ,IM.geoy
+    '  ,IM.inci_id
+    '  ,IM.nature
+    '  ,IM.calltime
+    '  ,( CASE
+    '       WHEN PATINDEX('%IST:%'
+    '                     ,IM.addtst) > 0
+    '       THEN LTRIM(RTRIM(IM.street))
+    '       WHEN LEN(LTRIM(RTRIM(IM.addtst))) = 0
+    '       THEN LTRIM(RTRIM(IM.street))
+    '       ELSE LTRIM(RTRIM(IM.street)) + ' - ' + IM.addtst
+    '     END ) AS fullstreet
+    '  ,LTRIM(RTRIM(IM.street)) AS street
+    '  --,ISNULL(LTRIM(RTRIM(notes)), '') notes
+    '  ,IM.district
+    '  ,IM.case_id
+    '  ,LTRIM(RTRIM(IM.street)) + ', '
+    '   + LTRIM(RTRIM(IM.citydesc)) + ' FL, '
+    '   + LTRIM(RTRIM(IM.zip)) AS mapurl
+    '   ,ISNULL(NMD.call_type, 'EMS') CallType
+    '   ,ISNULL(NMD.is_emergency, 1) IsEmergency
+    'FROM
+    '  inmain IM 
+    '  INNER JOIN incident I ON IM.street = I.street AND I.cancelled=0 AND I.inci_id != ''
+    '  LEFT OUTER JOIN cad.dbo.nature N ON IM.naturecode = N.naturecode
+    '  LEFT OUTER JOIN Tracking.dbo.naturecode_meta_data NMD ON N.natureid = NMD.natureid
+    'WHERE
+    '  IM.cancelled = 0
+    '  AND IM.inci_id <> ''
+    'ORDER  BY
+    '  inci_id DESC
+    '  ,calltime DESC "
+    '      ' 08/22/2021 removed old query replaced with new one that had a few more fields.
+    '      'Dim sbQuery As New StringBuilder
+    '      'With sbQuery ' 6/3/2014, restricted results to the top 20.
+    '      '  .AppendLine("SELECT NULL as latitude, NULL as longitude, geox, geoy, business, crossroad1, inci_id, nature, calltime, ")
+    '      '  .AppendLine("(CASE WHEN PATINDEX('%IST:%',addtst) > 0 THEN LTRIM(RTRIM(street)) ")
+    '      '  .AppendLine("WHEN LEN(LTRIM(RTRIM(addtst))) = 0 THEN LTRIM(RTRIM(street)) ")
+    '      '  .AppendLine("ELSE LTRIM(RTRIM(street)) + ' - ' + addtst END) AS fullstreet, LTRIM(RTRIM(street)) as street, notes, district, case_id, ")
+    '      '  .AppendLine("LTRIM(RTRIM(street)) + ', ' + LTRIM(RTRIM(citydesc)) + ' FL, ' + LTRIM(RTRIM(zip)) AS mapurl")
+    '      '  .AppendLine("FROM inmain WHERE cancelled=0 AND inci_id <> '' ")
+    '      '  .AppendLine("AND street IN (SELECT street FROM incident WHERE cancelled=0 AND inci_id <> '') ORDER BY inci_id DESC, calltime DESC ")
+    '      'End With
+    '      Try
+    '        Dim DS As DataSet = D.Get_Dataset(query, "CAD")
+    '        Dim L As New List(Of CaDCall)(From dbRow In DS.Tables(0).AsEnumerable() Select GetCallByDataRow(dbRow, Nothing))
+    '        Return L
+    '      Catch ex As Exception
+    '        Tools.Log(ex, AppID, MachineName, Tools.Logging.LogType.Database)
+    '        Return Nothing
+    '      End Try
+    '    End Function
 
-    Public Function GetHistoricalCallsByAddressForHistoricalCall(ByVal IncidentID As String) As List(Of CaDCall)
-      ' This function will be used on the active calls table to view any previous calls at that
-      ' street address.  I want to load this data as a subtable to the regular data row and do it on click
-      Dim D As New Tools.DB(CAD, AppID, ErrorHandling)
-      'Dim au As List(Of ActiveUnit) = GetUnitStatus()
-      Dim sbQuery As New StringBuilder
-      With sbQuery ' 6/3/2014, restricted results to the top 20.
-        .AppendLine("SELECT NULL as latitude, NULL as longitude, geox, geoy, business, crossroad1, inci_id, nature, calltime, ")
-        .AppendLine("(CASE WHEN PATINDEX('%IST:%',addtst) > 0 THEN LTRIM(RTRIM(street)) ")
-        .AppendLine("WHEN LEN(LTRIM(RTRIM(addtst))) = 0 THEN LTRIM(RTRIM(street)) ")
-        .AppendLine("ELSE LTRIM(RTRIM(street)) + ' - ' + addtst END) AS fullstreet, LTRIM(RTRIM(street)) as street, notes, district, case_id, ")
-        .AppendLine("LTRIM(RTRIM(street)) + ', ' + LTRIM(RTRIM(citydesc)) + ' FL, ' + LTRIM(RTRIM(zip)) AS mapurl")
-        .Append("FROM inmain WHERE cancelled=0 AND inci_id <> '' AND inci_id <> '").Append(IncidentID).Append("'")
-        .Append("AND street IN (SELECT street FROM inmain WHERE cancelled=0 AND inci_id = '").Append(IncidentID)
-        .Append("') ORDER BY inci_id DESC, calltime DESC ")
-      End With
-      Try
-        Dim DS As DataSet = D.Get_Dataset(sbQuery.ToString, "CAD")
-        Dim L As New List(Of CaDCall)(From dbRow In DS.Tables(0).AsEnumerable() Select GetCallByDataRow(dbRow, Nothing))
-        Return L
-      Catch ex As Exception
-        Tools.Log(ex, AppID, MachineName, Tools.Logging.LogType.Database)
-        Return Nothing
-      End Try
-    End Function
+    '    Public Function GetHistoricalCallsByAddressForHistoricalCall(ByVal IncidentID As String) As List(Of CaDCall)
+    '      ' This function will be used on the active calls table to view any previous calls at that
+    '      ' street address.  I want to load this data as a subtable to the regular data row and do it on click
+    '      Dim D As New Tools.DB(CAD, AppID, ErrorHandling)
+    '      'Dim au As List(Of ActiveUnit) = GetUnitStatus()
+    '      Dim sbQuery As New StringBuilder
+    '      With sbQuery ' 6/3/2014, restricted results to the top 20.
+    '        .AppendLine("SELECT NULL as latitude, NULL as longitude, geox, geoy, business, crossroad1, inci_id, nature, calltime, ")
+    '        .AppendLine("(CASE WHEN PATINDEX('%IST:%',addtst) > 0 THEN LTRIM(RTRIM(street)) ")
+    '        .AppendLine("WHEN LEN(LTRIM(RTRIM(addtst))) = 0 THEN LTRIM(RTRIM(street)) ")
+    '        .AppendLine("ELSE LTRIM(RTRIM(street)) + ' - ' + addtst END) AS fullstreet, LTRIM(RTRIM(street)) as street, notes, district, case_id, ")
+    '        .AppendLine("LTRIM(RTRIM(street)) + ', ' + LTRIM(RTRIM(citydesc)) + ' FL, ' + LTRIM(RTRIM(zip)) AS mapurl")
+    '        .Append("FROM inmain WHERE cancelled=0 AND inci_id <> '' AND inci_id <> '").Append(IncidentID).Append("'")
+    '        .Append("AND street IN (SELECT street FROM inmain WHERE cancelled=0 AND inci_id = '").Append(IncidentID)
+    '        .Append("') ORDER BY inci_id DESC, calltime DESC ")
+    '      End With
+    '      Try
+    '        Dim DS As DataSet = D.Get_Dataset(sbQuery.ToString, "CAD")
+    '        Dim L As New List(Of CaDCall)(From dbRow In DS.Tables(0).AsEnumerable() Select GetCallByDataRow(dbRow, Nothing))
+    '        Return L
+    '      Catch ex As Exception
+    '        Tools.Log(ex, AppID, MachineName, Tools.Logging.LogType.Database)
+    '        Return Nothing
+    '      End Try
+    '    End Function
 
     Public Function GetAllActiveCallsDetail() As List(Of CADCallDetail)
       ' This will be used when they click on an Inci_id on the Active call or Historical call list
@@ -1093,7 +1108,7 @@ ORDER  BY
       'End Try
     End Function
 
-    Public Function GetCallDetail(IncidentID As String) As List(Of CADCallDetail)
+    Public Function GetCallDetail(IncidentID As String, Timestamp As Date) As List(Of CADCallDetail)
       ' This will be used when they click on an Inci_id on the Active call or Historical call list
       ' This will pull a list of all of the incilog data for a particular inci_id
       'Dim D As New Tools.DB(CAD, AppID, ErrorHandling)
@@ -1104,6 +1119,12 @@ ORDER  BY
       'End With
       Dim dp As New DynamicParameters()
       dp.Add("@IncidentID", IncidentID)
+      If Timestamp.Year = 1 Then
+        dp.Add("@Timestamp", Nothing)
+      Else
+        dp.Add("@Timestamp", Timestamp)
+      End If
+
 
       Dim query As String = "
 SELECT
@@ -1119,12 +1140,36 @@ FROM
   incilog
 WHERE
   inci_id = @IncidentID
+  AND transtype NOT IN ('ARM', 'EVT')
+  
+
+UNION
+
+SELECT
+  logid LogID
+  ,LTRIM(RTRIM(inci_id)) IncidentID
+  ,LTRIM(RTRIM(userid)) UserID
+  ,LTRIM(RTRIM(descript)) Description
+  ,timestamp Timestamp
+  ,LTRIM(RTRIM(comments)) Comments
+  ,LTRIM(RTRIM(usertyped)) UserTyped
+  ,LTRIM(RTRIM(unitcode)) Unit
+FROM
+  log
+WHERE
+  inci_id = @IncidentID
+AND transtype NOT IN ('ARM', 'EVT')
 ORDER  BY
   timestamp DESC 
 "
       'Dim DS As DataSet = D.Get_Dataset(sbQuery.ToString)
       Dim C As New CADData()
-      Return C.Get_Data(Of CADCallDetail)(query, dp, C.CAD)
+      Dim calldetail = C.Get_Data(Of CADCallDetail)(query, dp, C.CAD)
+      Dim calldetailnotes = Note.GetCachedNotesToCallDetail()
+      calldetail.AddRange(From cdn In calldetailnotes
+                          Where cdn.IncidentID = IncidentID
+                          Select cdn)
+      Return (From cd In calldetail Order By cd.Timestamp Descending Select cd).ToList
       'Try
       '  Dim L As New List(Of CADCallDetail)(From dbRow In DS.Tables(0).AsEnumerable() Select GetCallDetailByDataRow(dbRow))
       '  Return L
@@ -1134,60 +1179,68 @@ ORDER  BY
       'End Try
     End Function
 
-    Private Function UpdateIncidentNotesWithCallDetail(ByRef AD As List(Of CADCallDetail), Notes As String, IncidentID As String) As List(Of CADCallDetail)
-      Try
-        ' This function is going to pull out a specific Incident ID's call detail and format and add the call's notes into it.
-        Dim sNotes() As String = Notes.Split(New String() {"]" & vbCrLf}, StringSplitOptions.None)
-        For a As Integer = sNotes.GetLowerBound(0) To sNotes.GetUpperBound(0)
-          If sNotes(a).Trim.Length > 0 Then
-            Dim detail() As String = sNotes(a).Split(New String() {"  ["}, StringSplitOptions.None)
-            If detail(0).Trim <> "CCFR" Then
-              Dim raw() As String = detail(1).Split(" ")
-              Dim x As New CADCallDetail
-              x.Comments = detail(0).Trim
-              x.UserTyped = x.Comments.Trim
-              x.UserID = raw(2).Trim
-              x.Timestamp = CType(raw(0) & " " & raw(1), Date)
-              x.IncidentID = IncidentID
-              x.Description = "NOTE"
-              AD.Add(x)
-            End If
-          End If
-        Next
-        Dim tmpA As New List(Of CADCallDetail)
-        For Each a In AD
-          If a.Description.Contains("}") Then
-            Dim x As New CADCallDetail
-            x.Comments = a.Description.Substring(a.Description.IndexOf("}") + 1).Trim
-            x.Unit = a.Unit
-            x.Description = "MISC. RADIO"
-            x.Timestamp = a.Timestamp
-            x.UserID = a.UserID
-            x.UserTyped = a.UserTyped.Trim
-            x.IncidentID = a.IncidentID
-            tmpA.Add(x)
-          End If
-        Next
-        If tmpA.Count > 0 Then AD.AddRange(tmpA)
-        Dim ignore() As String = {"MOBILE COMPUTER CHANGE", "MILEAGE"}
-        Dim only() As String = {"MISC. RADIO", "NOTE"}
-        'a.Description.Trim.ToUpper = "MISC. RADIO" _
-        Dim adl = (From a In AD Where a.IncidentID = IncidentID And only.Contains(a.Description.Trim.ToUpper) _
-                  And Not a.UserTyped.Trim.ToUpper.Contains(ignore(0)) And Not a.UserTyped.Trim.ToUpper.Contains(ignore(1))
-                   Order By a.Timestamp Descending Select a).ToList
-        Return adl
-      Catch ex As Exception
-        Tools.Log(ex, AppID, MachineName, Tools.Logging.LogType.Database)
-        Return Nothing
-      End Try
-    End Function
+    'Private Function UpdateIncidentNotesWithCallDetail(ByRef AD As List(Of CADCallDetail), Notes As String, IncidentID As String) As List(Of CADCallDetail)
+    '  Try
+    '    ' This function is going to pull out a specific Incident ID's call detail and format and add the call's notes into it.
+    '    Dim sNotes() As String = Notes.Split(New String() {"]" & vbCrLf}, StringSplitOptions.None)
+    '    For a As Integer = sNotes.GetLowerBound(0) To sNotes.GetUpperBound(0)
+    '      If sNotes(a).Trim.Length > 0 Then
+    '        Dim detail() As String = sNotes(a).Split(New String() {"  ["}, StringSplitOptions.None)
+    '        If detail(0).Trim <> "CCFR" Then
+    '          Dim raw() As String = detail(1).Split(" ")
+    '          Dim x As New CADCallDetail
+    '          x.Comments = detail(0).Trim
+    '          x.UserTyped = x.Comments.Trim
+    '          x.UserID = raw(2).Trim
+    '          x.Timestamp = CType(raw(0) & " " & raw(1), Date)
+    '          x.IncidentID = IncidentID
+    '          x.Description = "NOTE"
+    '          AD.Add(x)
+    '        End If
+    '      End If
+    '    Next
+    '    Dim tmpA As New List(Of CADCallDetail)
+    '    For Each a In AD
+    '      If a.Description.Contains("}") Then
+    '        Dim x As New CADCallDetail
+    '        x.Comments = a.Description.Substring(a.Description.IndexOf("}") + 1).Trim
+    '        x.Unit = a.Unit
+    '        x.Description = "MISC. RADIO"
+    '        x.Timestamp = a.Timestamp
+    '        x.UserID = a.UserID
+    '        x.UserTyped = a.UserTyped.Trim
+    '        x.IncidentID = a.IncidentID
+    '        tmpA.Add(x)
+    '      End If
+    '    Next
+    '    If tmpA.Count > 0 Then AD.AddRange(tmpA)
+    '    Dim ignore() As String = {"MOBILE COMPUTER CHANGE", "MILEAGE"}
+    '    Dim only() As String = {"MISC. RADIO", "NOTE"}
+    '    'a.Description.Trim.ToUpper = "MISC. RADIO" _
+    '    Dim adl = (From a In AD Where a.IncidentID = IncidentID And only.Contains(a.Description.Trim.ToUpper) _
+    '              And Not a.UserTyped.Trim.ToUpper.Contains(ignore(0)) And Not a.UserTyped.Trim.ToUpper.Contains(ignore(1))
+    '               Order By a.Timestamp Descending Select a).ToList
+    '    Return adl
+    '  Catch ex As Exception
+    '    Tools.Log(ex, AppID, MachineName, Tools.Logging.LogType.Database)
+    '    Return Nothing
+    '  End Try
+    'End Function
 
-    Private Function GetCallByDataRow(dr As DataRow, au As List(Of ActiveUnit), Optional h As List(Of CaDCall) = Nothing,
-                                          Optional ad As List(Of CADCallDetail) = Nothing) As CaDCall
+    Private Function GetCallByDataRow(dr As DataRow,
+                                      au As List(Of ActiveUnit),
+                                      Notes As List(Of Note),
+                                      Optional h As List(Of CaDCall) = Nothing,
+                                      Optional ad As List(Of CADCallDetail) = Nothing) As CaDCall
+
       Dim c As New CaDCall
       Try
         With c
           .IncidentID = CType(dr("inci_id"), String).Trim
+          .Notes = (From n In Notes
+                    Where n.inci_id = c.IncidentID
+                    Select n
+                    Order By n.timestamp Descending).ToList()
           '.Notes = CType(IIf(IsDBNull(dr("notes")), "", dr("notes")), String).Trim
           '.Notes = dr("notes")
           'If dr("case_id").ToString.Trim().Length > 0 Then .Notes &= vbCrLf & "CCFR  [CCFR Report Number: " & dr("case_id").ToString.Trim() & "]" & vbCrLf
@@ -1206,6 +1259,7 @@ ORDER  BY
           .IsEmergency = dr("IsEmergency")
           .MapURL = CType(dr("mapurl"), String).Trim.Replace("/", "&")
           .CallTime = dr("calltime")
+          .CloseTime = IIf(IsDBNull(dr("timeclose")), Nothing, dr("timeclose"))
           .NatureCode = CType(dr("nature"), String).Trim
           .Location = CType(dr("fullstreet"), String).Trim
           .Street = dr("street").ToString.Trim
@@ -1235,6 +1289,7 @@ ORDER  BY
           End If
           ' Here we should do some sort of test to figure out if we've already inserted the note for the USNG into the notes field.
           'If .Notes.IndexOf("USNG Location") = 0 Then Add_USNG_To_Notes(.IncidentID, .CallLocationUSNG)
+
           If .District.Length = 0 Then
             If .Age > 1 Then .District = "OOC" Else .District = "?"
           End If
@@ -1448,6 +1503,7 @@ ORDER  BY
       Public Property Street As String ' a trimmed street field.
       Public Property MapURL As String ' This is a calculated field based on the Street address, City, State, and zip code
       Public Property CallTime As DateTime ' The calltime field in CAD
+      Public Property CloseTime As DateTime? ' The date the call was closed.  NULL if 
       Public Property District As String ' The district the call is from.
       Public Property IsEmergency As Boolean
       Public Property CallType As String
@@ -1467,8 +1523,9 @@ ORDER  BY
           Return CallTime.ToString
         End Get
       End Property
-
-      Public Property Notes As String = "" ' The notes field in CAD, just text.
+      ' Old notes was just the raw string from the notes column in the inmain table
+      'Public Property Notes As String = "" ' The notes field in CAD, just text.
+      Public Property Notes As New List(Of Note)
       Property CrossStreet As String
       Property BusinessName As String
       Property Units() As List(Of ActiveUnit)
@@ -1585,6 +1642,7 @@ ORDER  BY
       ' This class will contain the incilog detail data for a particular inci_id, it will be populated
       ' when the user clicks on the inci_id.
       Public Property LogID As Long ' The primary key of the row.  This field is the logid in the log table, and the incilogid in the incilog table.
+      Public Property NoteID As Long = 0 ' If this detail object was created from a note, this will be the ID of that note.
       Public Property IncidentID As String ' The incidentID for the call
       Public Property UserID As String ' The userid field in incilog
       Public Property Unit As String ' The Unit's code identifier.

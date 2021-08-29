@@ -8,8 +8,8 @@
   
   <title>MiniCAD</title>
   <link href="CSS/BackToTop.css" rel="stylesheet" />
-  <link href="CSS/CadMapper.css?v=202105111047" rel="stylesheet" type="text/css" />
-  <link href="CSS/Main.css?v=202105111047" rel="stylesheet" type="text/css" />
+  <link href="CSS/CadMapper.css?v=202108282206" rel="stylesheet" type="text/css" />
+  <link href="CSS/Main.css?v=202108282206" rel="stylesheet" type="text/css" />
   <link rel="stylesheet" href="//js.arcgis.com/3.21/esri/css/esri.css">
   <link href="CSS/main-test.css" rel="stylesheet" />
 </head>
@@ -29,8 +29,50 @@
       <div id="active">
       </div>
     </div>
-    <div id="tab-2" class="tab-content">
+    <div id="tab-2" class="tab-content">      
       <div id="historical">
+        <!--<fieldset style="padding: .5em 1em .5em 1em; margin-left: 0; display: flex; flex-wrap: wrap; flex-direction: row; width: 100%;"
+                  id="historyfilterscontainer">
+          <div class="historyheader"
+               style="display: flex; flex-direction: row; width: 100%;">
+            <span style="width: 50%; font-weight: bolder; font-size: 1.2em;"
+                  class="historyfiltertitle">Historical Call Filters</span>
+            <a onclick="ToggleHistoryFilters()"
+               style="width: 50%; padding-right: 1em; text-align: end; cursor: pointer;"
+               class="filterbutton">Hide Filters</a>
+          </div>
+          <div id="historyfilters"
+               class="show"
+               width="100%;">
+            <div style="display: flex; flex-direction: column; width: 50%; flex-wrap: wrap;">
+              <div style="display: flex; flex-direction: row; flex-wrap: wrap; width: 100%;">
+                <input type="radio" id="call_type_all" name="call_type" value="all" checked />
+                <label for="call_type_all">All Call Types</label>
+                <input style="margin-left: 1em;"
+                       type="radio" id="call_type_fire" name="call_type" value="fire" />
+                <label for="call_type_fire">Fire</label>
+                <input style="margin-left: 1em;"
+                       type="radio" id="call_type_ems" name="call_type" value="ems" />
+                <label for="call_type_ems">EMS</label>
+                <input style="margin-left: 1em;"
+                       type="radio" id="call_type_admin" name="call_type" value="admin" />
+                <label for="call_type_admin">Admin</label>
+              </div>
+            </div>
+            <div style="display: flex; flex-direction: column; width: 50%; flex-wrap: wrap;">
+              <div style="display: flex; flex-direction: row; flex-wrap: wrap; width: 100%;">
+                <input type="radio" id="emergency_all" name="emergency" value="all" checked />
+                <label for="emergency_all">All Calls</label>
+                <input style="margin-left: 1em;"
+                       type="radio" id="emergency_emergency" name="emergency" value="emergency" />
+                <label for="emergency_emergency">Emergency</label>
+                <input style="margin-left: 1em;"
+                       type="radio" id="emergency_non_emergency" name="emergency" value="non_emergency" />
+                <label for="emergency_non_emergency">Non Emergency</label>
+              </div>
+            </div>
+          </div>
+        </fieldset>-->
       </div>
     </div>
     <div id="tab-3" class="tab-content">
@@ -297,7 +339,7 @@
     String.prototype.toProperCase = function () {
       return this.replace(/\w\S*/g, function (txt) { return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase(); });
     };
-    var lastactivedata, currentactivedata, lasthistoricaldata = null, lastunitdata, currentunit = ''; // These two variables will store the last bit of json data returned for the server by each respective process.
+    var lastactivedata, currentactivedata, lasthistoricaldata = null, filteredlasthistoricaldata = null, lastunitdata, currentunit = ''; // These two variables will store the last bit of json data returned for the server by each respective process.
     var currenttab = 'tab-1', mapload, currentlat = null, currentlong, mapresizing = false;
     var iTrackingCapture, iSaveTracking, trackingData = [], rawTrackingData = [];
     $(document).ready(function () {

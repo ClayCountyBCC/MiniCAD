@@ -746,7 +746,7 @@ function UpdateActiveCallsMap(data) {
                 callersymbol.url = "//static.arcgis.com/images/Symbols/PeoplePlaces/CellPhone.png";
                 var callerloc = new Point([data.Records[i].CallerLongitude, data.Records[i].CallerLatitude], new SpatialReference({ wkid: 4326 }));
                 var callergraphic = new Graphic(callerloc);
-                callergraphic.setAttributes({ "InciID": data.Records[i].IncidentID, "NatureCode": data.Records[i].NatureCode, "Notes": data.Records[i].Notes.replace(/\[(.*?)\]/g, "") });
+                callergraphic.setAttributes({ "InciID": data.Records[i].IncidentID, "NatureCode": data.Records[i].NatureCode, "Notes": "Loading Notes..." });//data.Records[i].Notes.replace(/\[(.*?)\]/g, "") });
                 callergraphic.setInfoTemplate(infoTemplate);
                 callergraphic.setSymbol(callersymbol);
                 InciLayer.add(callergraphic);
@@ -755,14 +755,14 @@ function UpdateActiveCallsMap(data) {
                 var polyline = new Polyline(polylineJson);
                 var polylineSymbol = new SimpleLineSymbol(SimpleLineSymbol.STYLE_SOLID, new dojo.Color([255, 0, 0]), 1);
                 var myLineGraphic = new Graphic(polyline, polylineSymbol, null, null);
-                map.graphics.add(myLineGraphic);
+                //map.graphics.add(myLineGraphic);
                 InciLayer.add(myLineGraphic);
               }
 
               var incident = new Point([xcoord, ycoord], new SpatialReference({ wkid: 4326 }));
               var wmIncident = esri.geometry.geographicToWebMercator(incident);
               var graphic = new Graphic(wmIncident);
-              graphic.setAttributes({ "InciID": data.Records[i].IncidentID, "NatureCode": data.Records[i].NatureCode, "Notes": data.Records[i].Notes.replace(/\[(.*?)\]/g, "") });
+              graphic.setAttributes({ "InciID": data.Records[i].IncidentID, "NatureCode": data.Records[i].NatureCode, "Notes": "Loading Notes..." });// data.Records[i].Notes.replace(/\[(.*?)\]/g, "") });
               graphic.setInfoTemplate(infoTemplate);
               graphic.setSymbol(symbol);
               InciLayer.add(graphic);
@@ -893,7 +893,7 @@ function UpdateHistoricalCallsMap(data) {
               var incident = new Point([xcoord, ycoord], new SpatialReference({ wkid: 4326 }));
               var wmIncident = esri.geometry.geographicToWebMercator(incident);
               var graphic = new Graphic(wmIncident);
-              graphic.setAttributes({ "InciID": data.Records[i].IncidentID, "NatureCode": data.Records[i].NatureCode, "Notes": data.Records[i].Notes.replace(/\[(.*?)\]/g, "") });
+              graphic.setAttributes({ "InciID": data.Records[i].IncidentID, "NatureCode": data.Records[i].NatureCode, "Notes": "Loading Notes..." });//data.Records[i].Notes.replace(/\[(.*?)\]/g, "") });
               graphic.setInfoTemplate(infoTemplate);
               graphic.setSymbol(symbol);
               HistoryLayer.add(graphic);

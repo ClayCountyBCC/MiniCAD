@@ -141,6 +141,7 @@
     <Content Include="Content\images\circle-red128.png" />
     <Content Include="Content\images\circle-yellow128.png" />
     <Content Include="Content\images\Fire-engine.png" />
+    <Content Include="Content\images\LineSep.png" />
     <Content Include="Content\images\list_metro.png" />
     <Content Include="Content\images\Pick-up.png" />
     <Content Include="Content\images\red64.png" />

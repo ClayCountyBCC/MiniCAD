@@ -40,7 +40,9 @@ Namespace Models
     Private Shared Function InitItem(key As String) As Object
       ' Do something expensive to initialize item
       Dim c As New CADData
-      Select Case key
+      Dim split = key.Split("-")
+
+      Select Case split(0)
         Case "ExtraMapPoints"
           Return Extra_Map_Points.Get_Points()
         Case "TelestaffStaff"
@@ -55,7 +57,15 @@ Namespace Models
           Return CallerLocation.GetLatest()
         Case "ActiveCalls"
 
+        Case "CallDetails"
+
         Case "Advisories"
+        Case "AllNotes"
+          Return Note.GetAllNotes()
+
+        Case "AllNotesCADCallDetail"
+          Return Note.GetAllNotesToCallDetail()
+
         Case "HistoricalCalls"
         Case "MotorolaLocations"
           Return MotorolaLocation.GetLocations()

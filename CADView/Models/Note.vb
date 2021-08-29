@@ -1,4 +1,5 @@
 ﻿Imports Dapper
+Imports System.Runtime.Caching
 Imports System.Text.RegularExpressions
 Imports System.Data
 Imports System.Data.SqlClient
@@ -10,7 +11,7 @@ Namespace Models
 
 
   Public Class Note
-    Private Const regex_match As String = "\s+\[\d\d/\d\d/\d\d\s\d\d:\d\d:\d\d\s\w+]|\[\w+\-\w+\] {(?<unit>\w+)}\s+"
+    Private Const regex_match As String = "\s+\[\d\d/\d\d/\d+\s\d\d:\d\d:\d\d\s\w+]|\[\w+\-\w+\] {(?<unit>\w+)}\s+"
     Public Property note_id As Integer = 0
     Public Property log_id As Integer = 0
     Public Property timestamp As Date
@@ -28,6 +29,11 @@ Namespace Models
         Dim matches = Regex.Matches(raw_note, regex_match)
         If matches.Count() = 0 Then Return ""
         Return matches.Item(0).Groups("unit").Value
+      End Get
+    End Property
+    Public ReadOnly Property formatted_timestamp As String
+      Get
+        Return timestamp.ToString("MM/dd/yyyy HH:mm:ss")
       End Get
     End Property
 
@@ -75,7 +81,7 @@ Namespace Models
           ,0 log_id
           ,N.datetime timestamp
           ,N.eventid inci_id
-          ,N.notes note  
+          ,N.notes raw_note  
           ,'' raw_unitcode
           ,userid          
         FROM cad.dbo.incinotes N
@@ -87,10 +93,10 @@ Namespace Models
           0 note_id
           ,L.logid log_id
           ,L.timestamp
-          ,L.inci_id
-          ,L.comments note
+          ,LTRIM(RTRIM(L.inci_id)) inci_id
+          ,LTRIM(RTRIM(L.unitcode)) + ' > ' + L.comments raw_note
           ,L.unitcode raw_unitcode
-          ,L.userid
+          ,LTRIM(RTRIM(L.userid)) userid
         FROM cad.dbo.log L
         INNER JOIN OpenIncidents I ON L.inci_id = I.inci_id
         WHERE 
@@ -104,10 +110,10 @@ Namespace Models
           0 note_id
           ,L.incilogid log_id
           ,L.timestamp
-          ,L.inci_id
-          ,L.comments note
+          ,LTRIM(RTRIM(L.inci_id)) inci_id
+          ,LTRIM(RTRIM(L.unitcode)) + ' > ' + L.comments raw_note
           ,L.unitcode raw_unitcode
-          ,L.userid
+          ,LTRIM(RTRIM(L.userid)) userid
         FROM cad.dbo.incilog L
         INNER JOIN ClosedIncidents I ON L.inci_id = I.inci_id
         WHERE 
@@ -121,10 +127,10 @@ Namespace Models
           0 note_id
           ,L.logid log_id
           ,L.timestamp
-          ,L.inci_id
-          ,L.comments note
+          ,LTRIM(RTRIM(L.inci_id)) inci_id
+          ,LTRIM(RTRIM(L.unitcode)) + ' > ' + L.comments raw_note
           ,L.unitcode raw_unitcode
-          ,L.userid
+          ,LTRIM(RTRIM(L.userid)) userid
         FROM cad.dbo.log L
         INNER JOIN OpenIncidents I ON L.inci_id = I.inci_id
         WHERE 
@@ -136,24 +142,89 @@ Namespace Models
           0 note_id
           ,L.incilogid log_id
           ,L.timestamp
-          ,L.inci_id
-          ,L.comments note
+          ,LTRIM(RTRIM(L.inci_id)) inci_id
+          ,LTRIM(RTRIM(L.unitcode)) + ' > ' + L.comments raw_note
           ,L.unitcode raw_unitcode
-          ,L.userid
+          ,LTRIM(RTRIM(L.userid)) userid
         FROM cad.dbo.incilog L
         INNER JOIN ClosedIncidents I ON L.inci_id = I.inci_id
         WHERE 
           transtype='M'
+
+        UNION ALL
+
+        SELECT
+          0 note_id
+          ,L.logid log_id
+          ,L.timestamp
+          ,LTRIM(RTRIM(L.inci_id)) inci_id
+          ,LTRIM(RTRIM(REPLACE(REPLACE(descript, '{', ''), '}', '>'))) raw_note
+          ,L.unitcode raw_unitcode
+          ,LTRIM(RTRIM(L.userid)) userid
+        FROM cad.dbo.log L
+        INNER JOIN OpenIncidents I ON L.inci_id = I.inci_id
+        WHERE           
+          LEFT(descript, 1) = '{'
+
+        UNION ALL
+
+        SELECT
+          0 note_id
+          ,L.incilogid log_id
+          ,L.timestamp
+          ,LTRIM(RTRIM(L.inci_id)) inci_id
+          ,LTRIM(RTRIM(REPLACE(REPLACE(descript, '{', ''), '}', '>'))) raw_note
+          ,L.unitcode raw_unitcode
+          ,LTRIM(RTRIM(L.userid)) userid
+        FROM cad.dbo.incilog L
+        INNER JOIN ClosedIncidents I ON L.inci_id = I.inci_id
+        WHERE           
+          LEFT(descript, 1) = '{'
         ORDER BY timestamp DESC
 "
       Dim C As New CADData()
       Return C.Get_Data(Of Note)(query, C.CAD)
     End Function
 
+    Public Shared Function GetCachedNotes() As List(Of Note)
+      Dim CIP As New CacheItemPolicy
+      CIP.AbsoluteExpiration = Now.AddSeconds(30)
+      Return myCache.GetItem("AllNotes", CIP)
+    End Function
+
+    Public Function ToCADCallDetail() As CADData.CADCallDetail
+      Dim ccd As New CADData.CADCallDetail With {
+        .Comments = Me.note.Trim,
+        .UserTyped = Me.note.Trim,
+        .Timestamp = Me.timestamp,
+        .IncidentID = Me.inci_id.Trim,
+        .LogID = 0,
+        .NoteID = Me.note_id,
+        .UserID = Me.userid.Trim,
+        .Description = "NOTE"
+      }
+      Return ccd
+    End Function
+
+    Public Shared Function GetAllNotesToCallDetail() As List(Of CADData.CADCallDetail)
+      Dim notes = GetCachedNotes()
+      Dim details = (From n In notes
+                     Where n.note_id > 0
+                     Select n.ToCADCallDetail()).ToList
+      Return details
+    End Function
+
+    Public Shared Function GetCachedNotesToCallDetail() As List(Of CADData.CADCallDetail)
+      Dim CIP As New CacheItemPolicy
+      CIP.AbsoluteExpiration = Now.AddSeconds(30)
+      Return myCache.GetItem("AllNotesCADCallDetail", CIP)
+    End Function
+
     Public Shared Function GetNewNotes() As List(Of Note)
       Dim dp As New DynamicParameters
-      ' Get max note_id
-      ' Get max log_id
+      ' Get Last timestamp from cached data
+      Dim timestamp As DateTime = GetCachedNotes().First().timestamp
+      dp.Add("@timestamp", timestamp)
       Dim query As String = "
         SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
 
@@ -194,7 +265,7 @@ Namespace Models
           ,0 log_id
           ,N.datetime timestamp
           ,N.eventid inci_id
-          ,N.notes note  
+          ,N.notes raw_note  
           ,'' raw_unitcode
           ,userid          
         FROM cad.dbo.incinotes N
@@ -209,7 +280,7 @@ Namespace Models
           ,L.logid log_id
           ,L.timestamp
           ,L.inci_id
-          ,L.comments note
+          ,LTRIM(RTRIM(L.unitcode)) + ' > ' + L.comments raw_note
           ,L.unitcode raw_unitcode
           ,L.userid
         FROM cad.dbo.log L
@@ -227,7 +298,7 @@ Namespace Models
           ,L.incilogid log_id
           ,L.timestamp
           ,L.inci_id
-          ,L.comments note
+          ,LTRIM(RTRIM(L.unitcode)) + ' > ' + L.comments raw_note
           ,L.unitcode raw_unitcode
           ,L.userid
         FROM cad.dbo.incilog L
@@ -245,7 +316,7 @@ Namespace Models
           ,L.logid log_id
           ,L.timestamp
           ,L.inci_id
-          ,L.comments note
+          ,LTRIM(RTRIM(L.unitcode)) + ' > ' + L.comments raw_note
           ,L.unitcode raw_unitcode
           ,L.userid
         FROM cad.dbo.log L
@@ -261,7 +332,7 @@ Namespace Models
           ,L.incilogid log_id
           ,L.timestamp
           ,L.inci_id
-          ,L.comments note
+          ,LTRIM(RTRIM(L.unitcode)) + ' > ' + L.comments raw_note
           ,L.unitcode raw_unitcode
           ,L.userid
         FROM cad.dbo.incilog L
@@ -272,13 +343,93 @@ Namespace Models
         ORDER BY timestamp DESC
 "
       Dim C As New CADData()
-      Return C.Get_Data(Of Note)(query, C.CAD)
+      Return C.Get_Data(Of Note)(query, dp, C.CAD)
     End Function
 
     ' GetHistoricalCallNotes by InciId and the calls that match that Incid's street
 
     ' GetClosedCallNotes optional CallDate arg
 
+    Public Shared Function GetHistoricalCallNotes(IncidentID As String) As List(Of Note)
+      Dim dp As New DynamicParameters
+      ' Get Last timestamp from cached data
+      dp.Add("@IncidentID", IncidentID)
+      Dim query As String = "
+
+WITH Streets
+     AS (SELECT
+           street
+         FROM
+           inmain
+         WHERE
+          inci_id = @IncidentID
+         UNION
+         SELECT
+           street
+         FROM
+           incident
+         WHERE
+          inci_id = @IncidentID
+)
+    ,Incidents
+     AS (SELECT TOP 20
+           inci_id
+         FROM
+           inmain I
+           INNER JOIN Streets S ON I.street = S.street
+         WHERE
+          inci_id != ''
+          AND cancelled = 0
+          AND inci_id != @IncidentID
+         ORDER  BY
+          calltime DESC) 
+SELECT
+  N.id note_id
+  ,0 log_id
+  ,N.datetime timestamp
+  ,N.eventid inci_id
+  ,N.notes raw_note
+  ,'' raw_unitcode
+  ,userid
+FROM
+  cad.dbo.incinotes N
+  INNER JOIN Incidents I ON N.eventid = I.inci_id
+UNION ALL
+SELECT
+  0 note_id
+  ,L.incilogid log_id
+  ,L.timestamp
+  ,L.inci_id
+  ,LTRIM(RTRIM(L.unitcode)) + ' > ' + L.comments raw_note
+  ,L.unitcode raw_unitcode
+  ,L.userid
+FROM
+  cad.dbo.incilog L
+  INNER JOIN Incidents I ON L.inci_id = I.inci_id
+WHERE
+  transtype = 'A'
+  AND LEN(comments) > 0
+  AND PATINDEX('%STAT/BEAT%'
+               ,UPPER(comments)) = 0
+UNION ALL
+SELECT
+  0 note_id
+  ,L.incilogid log_id
+  ,L.timestamp
+  ,L.inci_id
+  ,LTRIM(RTRIM(L.unitcode)) + ' > ' + L.comments raw_note
+  ,L.unitcode raw_unitcode
+  ,L.userid
+FROM
+  cad.dbo.incilog L
+  INNER JOIN Incidents I ON L.inci_id = I.inci_id
+WHERE
+  transtype = 'M'
+ORDER  BY
+  timestamp DESC "
+      Dim C As New CADData()
+      Return C.Get_Data(Of Note)(query, dp, C.CAD)
+    End Function
 
 
   End Class

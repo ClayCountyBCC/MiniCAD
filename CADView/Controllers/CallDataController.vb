@@ -138,10 +138,10 @@ Public Class CallDataController
     End Try
   End Function
 
-  Public Function GetCallDetail(IncidentID As String) As JsonResult
+  Public Function GetCallDetail(IncidentID As String, Optional Timestamp As Date = Nothing) As JsonResult
     Try
       Dim C As New CADData
-      Dim CD As List(Of CADData.CADCallDetail) = C.GetCallDetail(IncidentID)
+      Dim CD As List(Of CADData.CADCallDetail) = C.GetCallDetail(IncidentID, Timestamp)
       Return Json(New With {.Result = "OK", .Records = CD}, JsonRequestBehavior.AllowGet)
     Catch ex As Exception
       Tools.Log(ex, AppID, MachineName, Tools.Logging.LogType.Database)
@@ -152,24 +152,25 @@ Public Class CallDataController
   Public Function GetHistoricalCallHistory(IncidentID As String) As JsonResult
     Try
       Dim C As New CADData
-      Dim CD As List(Of CADData.CaDCall) = C.GetHistoricalCallsByAddressForHistoricalCall(IncidentID)
-      Return Json(New With {.Result = "OK", .Records = CD}, JsonRequestBehavior.AllowGet)
+      'Dim CD As List(Of CADData.CaDCall) = C.GetHistoricalCallsByAddressForHistoricalCall(IncidentID)
+      Dim HistoricalCalls = HistoricalCall.GetHistoricalCallsByIncidentID(IncidentID)
+      Return Json(New With {.Result = "OK", .Records = HistoricalCalls}, JsonRequestBehavior.AllowGet)
     Catch ex As Exception
       Tools.Log(ex, AppID, MachineName, Tools.Logging.LogType.Database)
       Return Json(New With {.Result = "Error", .Records = Nothing})
     End Try
   End Function
 
-  Public Function GetCallHistory(IncidentID As String) As JsonResult
-    Try
-      Dim C As New CADData
-      Dim CD As List(Of CADData.CADCallDetail) = C.GetCallDetail(IncidentID)
-      Return Json(New With {.Result = "OK", .Records = CD}, JsonRequestBehavior.AllowGet)
-    Catch ex As Exception
-      Tools.Log(ex, AppID, MachineName, Tools.Logging.LogType.Database)
-      Return Json(New With {.Result = "Error", .Records = Nothing})
-    End Try
-  End Function
+  'Public Function GetCallHistory(IncidentID As String) As JsonResult
+  '  Try
+  '    Dim C As New CADData
+  '    Dim CD As List(Of CADData.CADCallDetail) = C.GetCallDetail(IncidentID)
+  '    Return Json(New With {.Result = "OK", .Records = CD}, JsonRequestBehavior.AllowGet)
+  '  Catch ex As Exception
+  '    Tools.Log(ex, AppID, MachineName, Tools.Logging.LogType.Database)
+  '    Return Json(New With {.Result = "Error", .Records = Nothing})
+  '  End Try
+  'End Function
 
   <HttpPost()>
   Public Function SavePosition(td As CADData.Tracking_Data) As JsonResult

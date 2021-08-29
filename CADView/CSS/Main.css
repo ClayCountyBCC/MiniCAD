@@ -61,6 +61,7 @@ abbr, acronym {
 
 /* END NORMALIZE CSS HERE */
 
+
 html, body {    
     width: 100%;
     background-color: white;
@@ -170,7 +171,15 @@ li img.imghide {
 }
 
 
+#historyfilters.show
+{
+  display: flex;
+}
 
+#historyfilters.hide
+{
+  display: none;
+}
 
 
 #UnitStatusHover .Available {
@@ -274,12 +283,17 @@ li img.imghide {
             /*list-style-image: url(data:0);*/
         }
 
+#historyfilters
+{
+  width: 100%;  
+
+}
 
 
 
-
-#unit {
-    overflow: auto;
+#unit
+{
+  overflow: auto;
 }
 
     #unit ol, #trackingGroups ol {
@@ -386,7 +400,7 @@ li span {
     margin-bottom: .5em;
 }
 
-.notes, li.historynotes {
+/*.notes, li.historynotes {
     clear: left;
     width: 100%;
     text-align: left;
@@ -397,6 +411,132 @@ li span {
         text-decoration: none;
         color: black;
     }
+*/
+ol.notes, ol.historynotes
+{
+  padding-left: 1em;
+  padding-top: .5em;
+  padding-bottom: .5em;
+  padding-right: 1em;
+  display: block;
+  cursor: pointer;
+}
+
+  ol.notes.short
+  {
+    display: block;
+    /*flex-direction: row;
+    flex-wrap: wrap;    
+    justify-content: flex-start;
+    align-items: flex-start;
+    align-content: flex-start;
+    list-style-type: none;
+    overflow-wrap: break-word;
+    word-wrap: break-word;*/
+/*    list-style-type: disc;
+    list-style-image: url('../Content/images/LineSep.png');
+    list-style-position: outside;*/
+  }
+
+
+
+  ol.notes.long, ol.historynotes.long
+  {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    align-items: flex-start;
+    align-content: flex-start;
+  }
+
+    ol.notes.long li span.userid, ol.historynotes.long li span.userid
+    {
+      flex-basis: 15%;
+    }
+    ol.notes.long li span.timestamp, ol.historynotes.long li span.timestamp
+    {
+      flex-basis: 20%;
+    }
+    ol.notes.long li span.text, ol.historynotes.long li span.text
+    {
+      flex-basis: 65%;
+      word-break: break-word;
+      word-wrap: break-word;
+    }
+
+
+  ol.notes.short li, ol.historynotes.short li
+  {
+    /*margin-left: 1em;
+  margin-right: 1em;*/
+    display: inline;
+  }
+
+  ol.notes.long li, ol.historynotes.long li
+  {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    width: 100%;
+  }
+
+  ol.notes.short li:first-child::before, ol.historynotes.short li:first-child::before
+  {
+    margin-left: 0;
+    content: '';
+    display: none;
+  }
+
+
+  ol.notes.short li::before, ol.historynotes.short li::before
+  {
+    content: '';
+    display: inline-block;
+    visibility: visible;
+    width: .5em;
+    height: .5em;
+    vertical-align: middle;
+    background-color: lightblue;
+    border: 1px black solid;
+    margin-left: .5em;
+    margin-right: .5em;
+    border-radius: 5px;
+  }
+
+  ol.notes li span, ol.historynotes li span
+  {
+    font-size: 1em;
+    font-weight: normal;
+  }
+
+  ol.notes.short li span.userid, ol.historynotes.short li span.userid
+  {
+    display: none;
+  }
+
+  ol.notes.short li span.timestamp, ol.historynotes.short li span.timestamp
+  {
+    display: none;
+  }
+
+/*  ol.notes.long li span.userid
+  {
+    display: inline;
+    width: 20%;
+  }
+
+  ol.notes.long li span.timestamp
+  {
+    display: inline;
+    width: 30%;
+  }
+  ol.notes.long li span.note
+  {
+    display: inline;
+    width: 50%;
+  }*/
+
 
 .dispatch {
     display: none;
@@ -494,6 +634,11 @@ li span {
 
 .calldetailbase, .historybyaddressbase {
     border: 1px solid black;
+}
+
+li.historyrow 
+{
+  min-height: 55px;
 }
 
 .Call:nth-of-type(even), .calldetailbase li.detailrow:nth-of-type(even), .historybyaddressbase li.historyrow:nth-of-type(even), div#advisory ol.advisory:nth-of-type(odd) {
@@ -689,9 +834,11 @@ li span {
         margin: 0 auto;
         padding: 0;
     }    
-    .tab-content > div {
+/*    .tab-content > div {
         height: calc(100% - 40px);
     }
+*/
+
     .maptab{
         float: right;
         display: inherit;
@@ -778,9 +925,21 @@ li span {
         .CADData li, .calldetail li {
             height: auto;
         }
-
-        .CADData .nature, .CADData .street, .CADData .usng {
-            width: 100%;
+                
+        .CADData .nature, .CADData .street, .CADData .crossstreet {
+            min-width: 50%;
+        }
+        .CADData .district 
+        {
+          min-width: 15%;
+        }
+        .CADData .usng
+        {
+          min-width: 50%;
+        }
+        .CADData .business 
+        {
+          min-width: 100%;
         }
         /*.CADData .historynature,*/
     .unitlist {
@@ -790,10 +949,11 @@ li span {
     /*#UnitStatusHover {
         width: 25%;
     }*/
-    .calldetailbase .userid, .calldetailbase .desc{
-        width: 50%;
-    }
-    .calldetailbase .comments, .calldetailbase .usertyped, .calldetailbase .timestamp {
+  .calldetailbase .userid, .calldetailbase .desc, .calldetailbase .timestamp, .calldetailbase .unit
+  {
+    width: 50%;
+  }
+    .calldetailbase .comments, .calldetailbase .usertyped  {
         width: 100%;
     }
 
@@ -890,7 +1050,7 @@ li span {
             height: auto;
         }
 
-        .CADData .nature, .CADData .historynature, .CADData .street, .CADData .usng {
+        .CADData .nature, .CADData .street, .CADData .usng {
             width: 100%;
         }
 
@@ -898,9 +1058,10 @@ li span {
         font-size: larger;
     }
 
-    #UnitStatusHover {
-        width: 50%;
-    }
+  #UnitStatusHover
+  {
+    width: 50%;
+  }
     .calldetailbase .userid, .calldetailbase .desc{
         width: 50%;
     }
