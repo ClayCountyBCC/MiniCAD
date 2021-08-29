@@ -150,8 +150,8 @@ function LoadUnitTableLayout()
       }
       $ol.append($li.join(''));// we've switched to the next group of unit types, so we need to write out the array $li to $ol
       lastunitdata = data; // we're going to be using lastunitdata for the hover functions.
-      addGroups('#OpsGroupsList', 'Ops');
-      addGroups('#EventGroupsList', 'Events');
+      //addGroups('#OpsGroupsList', 'Ops');
+      //addGroups('#EventGroupsList', 'Events');
       UpdateUnits();
     });
 }
@@ -1235,7 +1235,7 @@ function CreateHistoryCallFilters()
   textsearchbutton.textContent = "Search";
   textsearchbutton.style.display = "inline";
   textsearchbutton.style.cursor = "pointer";
-  textsearchbutton.style.marginLeft = ".5em";
+  textsearchbutton.style.marginLeft = ".25em";
   textsearchbutton.style.marginRight = ".25em";
   textsearchbutton.onclick = function ()
   {
