@@ -1055,6 +1055,7 @@ function CreateDetailRow(classtouse, labeltouse, data)
 function BuildNotes(record)
 {
   let container = document.getElementById("active_notes-" + record.IncidentID);
+  if (!container) return;
   let prepend = container.childElementCount > 0;
   for (let i = 0; i < record.Notes.length; i++) 
   {
@@ -1069,7 +1070,6 @@ function BuildNotes(record)
       {
         container.appendChild(CreateNote(note, 'normalcall'));
       }
-      
     }
   }
 }
@@ -1163,7 +1163,7 @@ function CreateHistoryCallFilters()
   filterContainer.style.width = "100%";
   filterContainer.style.flexWrap = "wrap";
   // call type filter
-  let calltypeOuterContainer = CreateFilterContainer("50%", "column");
+  let calltypeOuterContainer = CreateFilterContainer("40%", "column");
   let calltypeInnerContainer = CreateFilterContainer("100%", "row");
   calltypeOuterContainer.appendChild(calltypeInnerContainer);
   calltypeInnerContainer.appendChild(CreateHistoryRadioFilter("call_type", "all", historyfilters.callType === "all"));
@@ -1176,7 +1176,7 @@ function CreateHistoryCallFilters()
   calltypeInnerContainer.appendChild(CreateHistoryLabelFilter("call_type", "admin", "Admin"));
   filterContainer.appendChild(calltypeOuterContainer);
   // emergency filter
-  let emergencyOuterContainer = CreateFilterContainer("50%", "column");
+  let emergencyOuterContainer = CreateFilterContainer("60%", "column");
   let emergencyInnerContainer = CreateFilterContainer("100%", "row");
   emergencyOuterContainer.appendChild(emergencyInnerContainer);
   emergencyInnerContainer.appendChild(CreateHistoryRadioFilter("emergency", "all", historyfilters.emergency === "all"));
@@ -1188,7 +1188,7 @@ function CreateHistoryCallFilters()
   filterContainer.appendChild(emergencyOuterContainer);
   
   // division
-  let divisionOuterContainer = CreateFilterContainer("50%", "column");
+  let divisionOuterContainer = CreateFilterContainer("40%", "column");
   let divisionInnerContainer = CreateFilterContainer("100%", "row");
   divisionOuterContainer.appendChild(divisionInnerContainer);
   divisionInnerContainer.appendChild(CreateHistoryLabelFilter("district", "filter", "District"));
@@ -1209,7 +1209,7 @@ function CreateHistoryCallFilters()
   filterContainer.appendChild(divisionOuterContainer);
 
   // text search
-  let textOuterContainer = CreateFilterContainer("50%", "column");
+  let textOuterContainer = CreateFilterContainer("60%", "column");
   let textInnerContainer = CreateFilterContainer("100%", "row");
   textInnerContainer.paddingLeft = "1em";
   textInnerContainer.paddingRight = "1em";
@@ -1236,7 +1236,7 @@ function CreateHistoryCallFilters()
   textsearchbutton.style.display = "inline";
   textsearchbutton.style.cursor = "pointer";
   textsearchbutton.style.marginLeft = ".5em";
-  textsearchbutton.style.marginRight = ".5em";
+  textsearchbutton.style.marginRight = ".25em";
   textsearchbutton.onclick = function ()
   {
     HistoryFilterChange();
@@ -1245,7 +1245,7 @@ function CreateHistoryCallFilters()
   textsearchClearbutton.textContent = "Clear";
   textsearchClearbutton.style.display = "inline";
   textsearchClearbutton.style.cursor = "pointer";
-  textsearchClearbutton.style.marginLeft = ".5em";
+  textsearchClearbutton.style.marginLeft = ".25em";
   textsearchClearbutton.onclick = function ()
   {
     document.getElementById("text_filter").value = "";
