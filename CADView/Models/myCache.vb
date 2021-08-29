@@ -59,6 +59,10 @@ Namespace Models
 
         Case "CallDetails"
 
+        Case "CallAddressHistory"
+          ' split(1) = inci_id
+          Return HistoricalCall.GetHistoricalCallsByIncidentID(split(1))
+
         Case "Advisories"
         Case "AllNotes"
           Return Note.GetAllNotes()

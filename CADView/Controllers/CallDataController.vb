@@ -153,7 +153,8 @@ Public Class CallDataController
     Try
       Dim C As New CADData
       'Dim CD As List(Of CADData.CaDCall) = C.GetHistoricalCallsByAddressForHistoricalCall(IncidentID)
-      Dim HistoricalCalls = HistoricalCall.GetHistoricalCallsByIncidentID(IncidentID)
+      'Dim HistoricalCalls = HistoricalCall.GetHistoricalCallsByIncidentID(IncidentID)
+      Dim HistoricalCalls = HistoricalCall.GetCachedHistoricalCallsByIncidentID(IncidentID)
       Return Json(New With {.Result = "OK", .Records = HistoricalCalls}, JsonRequestBehavior.AllowGet)
     Catch ex As Exception
       Tools.Log(ex, AppID, MachineName, Tools.Logging.LogType.Database)

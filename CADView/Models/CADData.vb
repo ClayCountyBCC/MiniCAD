@@ -703,7 +703,7 @@ ORDER  BY
       Try
         Dim DS As DataSet = D.Get_Dataset(query, "CAD")
         Dim L As New List(Of CaDCall)(From dbRow In DS.Tables(0).AsEnumerable()
-                                      Select GetCallByDataRow(dbRow, AU, Notes))
+                                      Select GetCallByDataRow(dbRow, AU, Notes, True))
         ' Old version that loaded historical calls and call detail
         'Dim L As New List(Of CaDCall)(From dbRow In DS.Tables(0).AsEnumerable()
         '                              Select GetCallByDataRow(dbRow, AU, H, AD, Notes))
@@ -1230,6 +1230,7 @@ ORDER  BY
     Private Function GetCallByDataRow(dr As DataRow,
                                       au As List(Of ActiveUnit),
                                       Notes As List(Of Note),
+                                      Optional cache_call_address_history As Boolean = False,
                                       Optional h As List(Of CaDCall) = Nothing,
                                       Optional ad As List(Of CADCallDetail) = Nothing) As CaDCall
 
@@ -1237,6 +1238,9 @@ ORDER  BY
       Try
         With c
           .IncidentID = CType(dr("inci_id"), String).Trim
+          If cache_call_address_history Then
+            HistoricalCall.GetCachedHistoricalCallsByIncidentID(c.IncidentID)
+          End If
           .Notes = (From n In Notes
                     Where n.inci_id = c.IncidentID
                     Select n

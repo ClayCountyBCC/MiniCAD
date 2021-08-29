@@ -7,7 +7,7 @@ var extraMapPoints = [];
 var callerLocations = [];
 var activeIntervals = [];
 let filterDistrictLabels = ['All Districts', 'No District', '11', '13', '14', '15', '17', '18', '19', '20', '22', '23', '24', '25', '26'];
-let filterDistrictValues = ['all', '', '11', '13', '14', '15', '17', '18', '19', '20', '22', '23', '24', '25', '26'];
+let filterDistrictValues = ['all', 'OOC', '11', '13', '14', '15', '17', '18', '19', '20', '22', '23', '24', '25', '26'];
 let historyfilters = {
   callType: 'all',
   emergency: 'all',
@@ -1219,8 +1219,9 @@ function CreateHistoryCallFilters()
   textsearch.type = "text";
   textsearch.maxLength = 25;
   textsearch.style.width = "70%";  
-  textsearch.placeholder = "Filter By Partial Street Name or Incident #";
+  textsearch.placeholder = "Filter By Partial Street, Incident #, or Unit";
   textsearch.value = historyfilters.searchText;  
+  textsearch.title = "Search by Partial Street Names, Incident Numbers, and Unitcodes";
   textsearch.addEventListener("keyup", function (event)
   {
     if (event.keyCode === 13)
@@ -1292,7 +1293,6 @@ function HistoryFilterChange()
 
 function ApplyHistoryFilter()
 {
-  console.log('lasthistoricaldata', lasthistoricaldata);
   let ct = historyfilters.callType.toUpperCase();  
   let emergency = historyfilters.emergency === "emergency";
   let searchtext = historyfilters.searchText.toUpperCase();
@@ -1317,10 +1317,13 @@ function ApplyHistoryFilter()
     if (searchtext.trim().length > 0)
     {
       textcheck = ((j.Street.indexOf(searchtext) > -1) || j.CCFR.indexOf(searchtext) > -1);
+      if (!textcheck)
+      {
+        textcheck = j.Units.filter(u => u.UnitName === searchtext).length > 0;
+      }
     }
     return calltypecheck && emergencycheck && districtcheck && textcheck;
   });
-  console.log('filtered historydata', filteredlasthistoricaldata);
 
 }
 
@@ -1511,10 +1514,11 @@ function LoadRadioData()
 
 function LoadCallerLocations()
 {
-  
+  console.log('load caller locations');
   $.getJSON('./CallData/GetCallerLocations')
     .done(function (data)
     {
+      console.log('caller locations data', data);
       if (data === null || data.Records === null || data.Records.length === 0) return;
       callerLocations = data.Records;
       console.log('caller locations', callerLocations);
@@ -1651,7 +1655,7 @@ function ShowMessage(Message, targetdiv) {
     var $div = $(targetdiv);
     var $target = $(targetdiv + '_messages');
     if (!$target.length) {
-        $div.prepend("<div id='" + targetdiv.replace("#", "") + "_messages'></div>");
+        $div.prepend("<div style='padding: 1em; 1em; 1em 1em; font-size: 1.2em; font-weight: bolder;' id='" + targetdiv.replace("#", "") + "_messages'></div>");
         $target = $(targetdiv + '_messages');
     }
     $target.text(Message).toggle(t);    

@@ -1,5 +1,6 @@
 ﻿Imports Dapper
 Imports System.Collections.Generic
+Imports System.Runtime.Caching
 
 Namespace Models
 
@@ -22,6 +23,11 @@ Namespace Models
       End Get
     End Property
 
+    Public Shared Function GetCachedHistoricalCallsByIncidentID(IncidentID As String) As List(Of HistoricalCall)
+      Dim CIP As New CacheItemPolicy
+      CIP.AbsoluteExpiration = Now.AddSeconds(60)
+      Return myCache.GetItem("CallAddressHistory-" & IncidentID, CIP)
+    End Function
 
 
     Public Shared Function GetHistoricalCallsByIncidentID(IncidentID As String) As List(Of HistoricalCall)
