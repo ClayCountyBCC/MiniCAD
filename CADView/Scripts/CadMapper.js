@@ -93,7 +93,8 @@ function mapInit() {
       {
         LoadRadioData();
         //LoadExtraMapPoints();
-        LoadCallerLocations();
+        // Re-enable after this fixed.
+        //LoadCallerLocations();
       }
       if (IsFairTime()) {
         var fairMap = new ArcGISImageServiceLayer('https://maps.claycountygov.com:6443/arcgis/rest/services/FairImage/ImageServer');
@@ -369,8 +370,7 @@ function getRandomInt(max)
 
 function UpdateUnits()
 {
-
-  updateLocations();
+  //updateLocations();
 
   require(["esri/symbols/PictureMarkerSymbol",
     "esri/InfoTemplate",
@@ -453,6 +453,8 @@ function UpdateUnits()
                   break;
                 case "RESCUE":
                   symbol.url = "//static.arcgis.com/images/Symbols/SafetyHealth/Ambulance.png";
+                  //symbol.url = "./Content/images/Ambulance-R.png";
+                  //if (heading > 179) symbol.url = "./Content/images/Ambulance-L.png";
                   break;
                 case "LADDER":
                   symbol.url = "./Content/images/Fire-engine.png";

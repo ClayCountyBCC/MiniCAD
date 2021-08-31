@@ -55,6 +55,10 @@ Namespace Models
           Return c.GetShortActiveUnitStat(staffList)
         Case "caller_locations"
           Return CallerLocation.GetLatest()
+
+        Case "RecentCalls"
+          Return CADData.GetRecentStreets()
+
         Case "ActiveCalls"
 
         Case "CallDetails"

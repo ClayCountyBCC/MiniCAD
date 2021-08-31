@@ -52,7 +52,7 @@ WITH Streets AS (
 
 )
 
-SELECT TOP 20
+SELECT TOP 30
   LTRIM(RTRIM(inci_id)) IncidentID
   ,nature Nature
   ,calltime CallTime  

@@ -5,6 +5,7 @@ Imports System.Math
 Imports Tools
 Imports Dapper
 Imports System.Environment
+Imports System.Runtime.Caching
 
 Namespace Models
   Public Structure LatLong
@@ -54,6 +55,26 @@ Namespace Models
     ' For testing, we'll set the errorhandling this way, after we get the app running, change it to
     ' email/DB
     Private Const ErrorHandling As Tools.DB.DB_Error_Handling_Method = DB.DB_Error_Handling_Method.Send_Errors_To_Log_Only
+
+    Public Shared Function GetRecentStreets() As List(Of String)
+      Dim query As String = "
+SELECT DISTINCT
+  LTRIM(RTRIM(street)) street
+FROM inmain
+WHERE
+  cancelled=0
+  AND inci_id != ''
+  AND LEN(street) > 0
+  AND CAST(calltime AS DATE) > DATEADD(DAY, -30, CAST(GETDATE() AS DATE))"
+      Dim c As New CADData()
+      Return c.Get_Data(Of String)(query, c.CAD)
+    End Function
+
+    Public Shared Function GetCachedRecentStreets() As List(Of String)
+      Dim CIP As New CacheItemPolicy
+      CIP.AbsoluteExpiration = Now.AddSeconds(30)
+      Return myCache.GetItem("RecentCalls", CIP)
+    End Function
 
     Public Function Save_Tracking(ByRef FTD As Full_Tracking_Data) As Boolean
       Dim d As New Tools.DB(CAD, AppID, ErrorHandling), sbQuery As New StringBuilder
@@ -1235,6 +1256,7 @@ ORDER  BY
                                       Optional ad As List(Of CADCallDetail) = Nothing) As CaDCall
 
       Dim c As New CaDCall
+      Dim recentstreets = CADData.GetCachedRecentStreets()
       Try
         With c
           .IncidentID = CType(dr("inci_id"), String).Trim
@@ -1245,6 +1267,7 @@ ORDER  BY
                     Where n.inci_id = c.IncidentID
                     Select n
                     Order By n.timestamp Descending).ToList()
+
           '.Notes = CType(IIf(IsDBNull(dr("notes")), "", dr("notes")), String).Trim
           '.Notes = dr("notes")
           'If dr("case_id").ToString.Trim().Length > 0 Then .Notes &= vbCrLf & "CCFR  [CCFR Report Number: " & dr("case_id").ToString.Trim() & "]" & vbCrLf
@@ -1267,6 +1290,8 @@ ORDER  BY
           .NatureCode = CType(dr("nature"), String).Trim
           .Location = CType(dr("fullstreet"), String).Trim
           .Street = dr("street").ToString.Trim
+          .HasRecentVisit = recentstreets.Contains(c.Street)
+
           .District = CType(dr("district"), String).Trim
           .CrossStreet = dr("crossroad1").ToString.Trim()
           .BusinessName = dr("business").ToString.Trim()
@@ -1392,8 +1417,8 @@ ORDER  BY
                 Dim p As Point = Convert_LatLong_To_SP(.Latitude, .Longitude)
                 .GeoX = p.X
                 .GeoY = p.Y
-                .Speed = 0
-                .Heading = 0
+                .Speed = dr("speed")
+                .Heading = dr("heading")
               Else
                 .Timestamp = dr("timestamp")
                 .LocationType = "CAD"
@@ -1511,6 +1536,7 @@ ORDER  BY
       Public Property District As String ' The district the call is from.
       Public Property IsEmergency As Boolean
       Public Property CallType As String
+      Public Property HasRecentVisit As Boolean
 
       Public ReadOnly Property Age As Integer
         Get

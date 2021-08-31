@@ -701,7 +701,7 @@ function HandleHistoricalCallsButton(record)
   if (historicalcallsbutton && !historicalcallsbutton.classList.contains("live") && historicalcallsContainer)
   {
     historicalcallsbutton.classList.add("live");
-    historicalcallsbutton.onclick = function ()
+    historicalcallsbutton.parentElement.onclick = function ()
     {
       if (historicalcallsContainer.style.display === "block")
       {
@@ -898,10 +898,6 @@ function RemoveInterval(IncidentID)
   {
     clearInterval(activeIntervals[index].IntervalID);
     activeIntervals = activeIntervals.filter(j => j.IncidentID !== IncidentID);
-  }
-  else
-  {
-    console.log('problem removing interval');
   }
 }
 
@@ -1514,20 +1510,21 @@ function LoadRadioData()
 
 function LoadCallerLocations()
 {
-  console.log('load caller locations');
-  $.getJSON('./CallData/GetCallerLocations')
-    .done(function (data)
-    {
-      console.log('caller locations data', data);
-      if (data === null || data.Records === null || data.Records.length === 0) return;
-      callerLocations = data.Records;
-      console.log('caller locations', callerLocations);
-      UpdateCallerLocationsLayer(data.Records);
-    })
-    .fail(function ()
-    {
-      console.log('get caller lcations data failed');
-    });
+  return; // disabling this temporarily because the locations are not being loaded currently.
+  //console.log('load caller locations');
+  //$.getJSON('./CallData/GetCallerLocations')
+  //  .done(function (data)
+  //  {
+  //    console.log('caller locations data', data);
+  //    if (data === null || data.Records === null || data.Records.length === 0) return;
+  //    callerLocations = data.Records;
+  //    console.log('caller locations', callerLocations);
+  //    UpdateCallerLocationsLayer(data.Records);
+  //  })
+  //  .fail(function ()
+  //  {
+  //    console.log('get caller lcations data failed');
+  //  });
 }
 
 
@@ -1747,7 +1744,12 @@ function CreateCallLayout(data, i, target) {
   x.push("</ol>");
   x.push("<ol class='CADDatabuttons'>");
   x.push("   <li class='detailbutton'><a id='calldetail-" + data.IncidentID + "'>Detail</a></li>");
-  x.push("   <li class='historybutton'><a id='calladdresshistory-" + data.IncidentID + "'>History</a></li>");
+  x.push("   <li class='historybutton' title='This will show up to the last 30 calls to this address. If a lightbulb is showing, it means we have been to this address in the last 30 days.'><div class='historyhelper'><a id='calladdresshistory-" + data.IncidentID + "'>History</a>");
+  if (data.HasRecentVisit && target !== '#historical')
+  {
+    x.push("<img src='//static.arcgis.com/images/Symbols/PeoplePlaces/Light.png' class='recentvisit' />");
+  }
+  x.push("</div></li>");
   //x.push("   <li class='detailbutton'><a href='javascript:ToggleDetail(&quot;" + data.IncidentID + "&quot;, &quot;" + i + "&quot;, &quot;" + target + "&quot;);'>Detail</a></li>");
   //x.push("   <li class='historybutton'><a href='javascript:ToggleHistoryByAddress(&quot;" + data.IncidentID + "&quot;, &quot;" + i + "&quot;, &quot;" + target + "&quot;);'>History</a></li>");
   //x.push("   <li class='mapbutton' id='map-" + data.IncidentID + "'><a title='Clicking this will try to bring up Google Maps for this address.' href='https://maps.google.com/maps?saddr=&z=19&maptype=satellite&daddr=" + data.MapURL + "' target='_Blank'>Map</a></li>");

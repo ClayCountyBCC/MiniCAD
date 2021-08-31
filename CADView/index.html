@@ -5,12 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta http-equiv="refresh" content="43199">
   <link rel="icon" type="image/png" href="//static.arcgis.com/images/Symbols/SafetyHealth/FireTruck.png" />
-  
+
   <title>MiniCAD</title>
   <link href="CSS/BackToTop.css" rel="stylesheet" />
-  <link href="CSS/CadMapper.css?v=202108291035" rel="stylesheet" type="text/css" />
-  <link href="CSS/Main.css?v=202108291035" rel="stylesheet" type="text/css" />
-  <link rel="stylesheet" href="//js.arcgis.com/3.21/esri/css/esri.css">
+  <link href="CSS/CadMapper.css?v=202108311949" rel="stylesheet" type="text/css" />
+  <link href="CSS/Main.css?v=202108311949" rel="stylesheet" type="text/css" />
+  <!--<link rel="stylesheet" href="//js.arcgis.com/3.21/esri/css/esri.css">-->
+  <link rel="stylesheet" href="//js.arcgis.com/3.37/esri/css/esri.css">
   <link href="CSS/main-test.css" rel="stylesheet" />
 </head>
 <body>
@@ -324,12 +325,13 @@
   <a href="#0" class="cd-top">Top</a>
   <script src="Scripts/jquery-1.11.1.js"></script>
   <!--<script src="//code.jquery.com/jquery-1.10.2.js"></script>-->
-  <script src="//js.arcgis.com/3.21/"></script>
-  <script src="Scripts/CadMapper.js?v=202105111047"></script>
+  <!--<script src="//js.arcgis.com/3.21/"></script>-->
+  <script src="//js.arcgis.com/3.37/"></script>
+  <script src="Scripts/CadMapper.js?v=202108311949"></script>
   <script src="Scripts/modernizr-2.8.3.js"></script>
-  <script src="Scripts/Main.js?v=202105111047"></script>
-  <script src="Scripts/tracking.js?v=202105111047"></script>
-  <script src="Scripts/locate.js?v=202105111047"></script>
+  <script src="Scripts/Main.js?v=202108311949"></script>
+  <!--<script src="Scripts/tracking.js?v=202105111047"></script>-->
+  <script src="Scripts/locate.js?v=202108311949"></script>
 
   <script type="text/javascript">
     Array.prototype.extend = function (other_array) {
@@ -356,7 +358,9 @@
         setInterval(updateHistoricalCallsTable, 65500 * 5); // 5 mins
         setInterval(LoadAdvisoryTable, 63500 * 15); // 15 mins*/
         //setInterval(LoadExtraMapPoints, 60000 * 5);
-        setInterval(LoadCallerLocations, 10050);
+
+        // Re-enable after this is fixed.
+        //setInterval(LoadCallerLocations, 10050);
 
         if ($(window).width() > 999) {
           mapInit();
