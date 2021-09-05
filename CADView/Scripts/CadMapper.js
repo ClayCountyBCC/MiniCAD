@@ -1,10 +1,11 @@
 ﻿/*global lastactivedata, currentactivedata, lasthistoricaldata, lastunitdata, currentunit*/
+"use strict";
 var map = null;
 var basemapToggle = null;
 var defaultExtent = null;
 var geocoder;
 var locatorUrl = "https://maps.claycountygov.com:6080/arcgis/rest/services/Address_Site_Locator/GeocodeServer";
-var InciLayer, HistoryLayer, USNGOverlay, RadarLayer, fireResponse, CallerLocationsLayer,
+var InciLayer, HistoryLayer, USNGOverlay, RadarLayer, fireResponse, CallerLocationsLayer, VehicleLayer,
   WeatherWarningLayer, LocationLayer, TestGrid, RadioLayer, ExtraMapPointsLayer, ExtraMapPointsByCallLayer;
 var locateButton;
 var WorldTranspo = null;
@@ -706,6 +707,7 @@ function UpdateActiveCallsMap(data) {
     {
       if (InciLayer !== undefined)
       {
+        console.log('incilayer code start');
         InciLayer.clear();
         //if (ExtraMapPointsByCallLayer !== undefined)
         //{
@@ -723,8 +725,8 @@ function UpdateActiveCallsMap(data) {
             var ycoord = data.Records[i].Latitude;
             if (xcoord !== 0)
             {
-              let notes = data.Records[i].Notes.map(n => n.note).join("<br>");
-              symbol = new PictureMarkerSymbol({
+              let notes = data.Records[i].Notes.map(n => n.note).join("<br>");              
+              let symbol = new PictureMarkerSymbol({
                 "angle": 0,
                 "xoffset": 0,
                 "yoffset": 0,
@@ -773,6 +775,7 @@ function UpdateActiveCallsMap(data) {
           }
         }
       }
+      //console.log('incilayer graphics', InciLayer.graphics)
     });
 }
 

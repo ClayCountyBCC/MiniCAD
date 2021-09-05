@@ -8,8 +8,8 @@
 
   <title>MiniCAD</title>
   <link href="CSS/BackToTop.css" rel="stylesheet" />
-  <link href="CSS/CadMapper.css?v=202108311949" rel="stylesheet" type="text/css" />
-  <link href="CSS/Main.css?v=202108311949" rel="stylesheet" type="text/css" />
+  <link href="CSS/CadMapper.css?v=202109041907" rel="stylesheet" type="text/css" />
+  <link href="CSS/Main.css?v=202109041907" rel="stylesheet" type="text/css" />
   <!--<link rel="stylesheet" href="//js.arcgis.com/3.21/esri/css/esri.css">-->
   <link rel="stylesheet" href="//js.arcgis.com/3.37/esri/css/esri.css">
   <link href="CSS/main-test.css" rel="stylesheet" />
@@ -24,56 +24,62 @@
       <li id="li-tab-5" class="tab-link" data-tab="tab-5" onclick="tabClick('tab-5')">Tracking</li>
       <li id="li-tab-6" class="tab-link" data-tab="tab-6" onclick="tabClick('tab-6')">Map</li>
       <li style="display: none;"
-          id="li-tab-7" class="tab-link" data-tab="tab-7" onclick="tabClick('tab-7')">Radio</li>
+          id="li-tab-7" class="tab-link" data-tab="tab-7" onclick="tabClick('tab-7')">
+        Radio
+      </li>
+      <li style="display: none;"
+          id="li-tab-8" class="tab-link" data-tab="tab-8" onclick="tabClick('tab-8')">
+        Test
+      </li>
     </ul>
     <div id="tab-1" class="tab-content current">
       <div id="active">
       </div>
     </div>
-    <div id="tab-2" class="tab-content">      
+    <div id="tab-2" class="tab-content">
       <div id="historical">
         <!--<fieldset style="padding: .5em 1em .5em 1em; margin-left: 0; display: flex; flex-wrap: wrap; flex-direction: row; width: 100%;"
-                  id="historyfilterscontainer">
-          <div class="historyheader"
-               style="display: flex; flex-direction: row; width: 100%;">
-            <span style="width: 50%; font-weight: bolder; font-size: 1.2em;"
-                  class="historyfiltertitle">Historical Call Filters</span>
-            <a onclick="ToggleHistoryFilters()"
-               style="width: 50%; padding-right: 1em; text-align: end; cursor: pointer;"
-               class="filterbutton">Hide Filters</a>
-          </div>
-          <div id="historyfilters"
-               class="show"
-               width="100%;">
-            <div style="display: flex; flex-direction: column; width: 50%; flex-wrap: wrap;">
-              <div style="display: flex; flex-direction: row; flex-wrap: wrap; width: 100%;">
-                <input type="radio" id="call_type_all" name="call_type" value="all" checked />
-                <label for="call_type_all">All Call Types</label>
-                <input style="margin-left: 1em;"
-                       type="radio" id="call_type_fire" name="call_type" value="fire" />
-                <label for="call_type_fire">Fire</label>
-                <input style="margin-left: 1em;"
-                       type="radio" id="call_type_ems" name="call_type" value="ems" />
-                <label for="call_type_ems">EMS</label>
-                <input style="margin-left: 1em;"
-                       type="radio" id="call_type_admin" name="call_type" value="admin" />
-                <label for="call_type_admin">Admin</label>
-              </div>
-            </div>
-            <div style="display: flex; flex-direction: column; width: 50%; flex-wrap: wrap;">
-              <div style="display: flex; flex-direction: row; flex-wrap: wrap; width: 100%;">
-                <input type="radio" id="emergency_all" name="emergency" value="all" checked />
-                <label for="emergency_all">All Calls</label>
-                <input style="margin-left: 1em;"
-                       type="radio" id="emergency_emergency" name="emergency" value="emergency" />
-                <label for="emergency_emergency">Emergency</label>
-                <input style="margin-left: 1em;"
-                       type="radio" id="emergency_non_emergency" name="emergency" value="non_emergency" />
-                <label for="emergency_non_emergency">Non Emergency</label>
-              </div>
+                id="historyfilterscontainer">
+        <div class="historyheader"
+             style="display: flex; flex-direction: row; width: 100%;">
+          <span style="width: 50%; font-weight: bolder; font-size: 1.2em;"
+                class="historyfiltertitle">Historical Call Filters</span>
+          <a onclick="ToggleHistoryFilters()"
+             style="width: 50%; padding-right: 1em; text-align: end; cursor: pointer;"
+             class="filterbutton">Hide Filters</a>
+        </div>
+        <div id="historyfilters"
+             class="show"
+             width="100%;">
+          <div style="display: flex; flex-direction: column; width: 50%; flex-wrap: wrap;">
+            <div style="display: flex; flex-direction: row; flex-wrap: wrap; width: 100%;">
+              <input type="radio" id="call_type_all" name="call_type" value="all" checked />
+              <label for="call_type_all">All Call Types</label>
+              <input style="margin-left: 1em;"
+                     type="radio" id="call_type_fire" name="call_type" value="fire" />
+              <label for="call_type_fire">Fire</label>
+              <input style="margin-left: 1em;"
+                     type="radio" id="call_type_ems" name="call_type" value="ems" />
+              <label for="call_type_ems">EMS</label>
+              <input style="margin-left: 1em;"
+                     type="radio" id="call_type_admin" name="call_type" value="admin" />
+              <label for="call_type_admin">Admin</label>
             </div>
           </div>
-        </fieldset>-->
+          <div style="display: flex; flex-direction: column; width: 50%; flex-wrap: wrap;">
+            <div style="display: flex; flex-direction: row; flex-wrap: wrap; width: 100%;">
+              <input type="radio" id="emergency_all" name="emergency" value="all" checked />
+              <label for="emergency_all">All Calls</label>
+              <input style="margin-left: 1em;"
+                     type="radio" id="emergency_emergency" name="emergency" value="emergency" />
+              <label for="emergency_emergency">Emergency</label>
+              <input style="margin-left: 1em;"
+                     type="radio" id="emergency_non_emergency" name="emergency" value="non_emergency" />
+              <label for="emergency_non_emergency">Non Emergency</label>
+            </div>
+          </div>
+        </div>
+      </fieldset>-->
       </div>
     </div>
     <div id="tab-3" class="tab-content">
@@ -99,13 +105,13 @@
           <ol id="TENDER"></ol>
         </fieldset>
         <!--<fieldset>
-          <legend>Logistics</legend>
-          <ol id="LOGISTICS"></ol>
-        </fieldset>-->
+        <legend>Logistics</legend>
+        <ol id="LOGISTICS"></ol>
+      </fieldset>-->
         <!--<fieldset>
-          <legend>Air</legend>
-          <ol id="AIR"></ol>
-        </fieldset>-->
+        <legend>Air</legend>
+        <ol id="AIR"></ol>
+      </fieldset>-->
         <fieldset>
           <legend>Special Unit</legend>
           <ol id="SPECIALUNIT"></ol>
@@ -119,9 +125,9 @@
           <ol id="LOGISTICS"></ol>
         </fieldset>
         <!--<fieldset>
-          <legend>Other</legend>
-          <ol id="OTHER"></ol>
-        </fieldset>-->
+        <legend>Other</legend>
+        <ol id="OTHER"></ol>
+      </fieldset>-->
         <fieldset>
           <legend>Spare</legend>
           <ol id="SPARE"></ol>
@@ -177,10 +183,10 @@
           <span class="clickable" id="trackingStart" onclick="showGroups()">To Select a Group and User Identifier, click here</span>
         </div>
         <!--<div id="trackingInfo">
-            <div id="trackingInfoContainer">
+          <div id="trackingInfoContainer">
 
-            </div>
-        </div>-->
+          </div>
+      </div>-->
         <div id="chooseGroups">
           <h2 class="unclickable">Please choose from the following groups:</h2>
           <div id="trackingOpsGroups">
@@ -227,46 +233,45 @@
           <div id="USNG" onclick="ShowUSNG()" style="cursor:pointer;">USNG</div>
           <div id="ShowAvailable">
             Show Available
-            <img onclick="ShowAvailable(event, 'rescue')"                 
+            <img onclick="ShowAvailable(event, 'rescue')"
                  src="//static.arcgis.com/images/Symbols/SafetyHealth/Ambulance.png" />
-            <img onclick="ShowAvailable(event, 'engine')"                 
+            <img onclick="ShowAvailable(event, 'engine')"
                  src="//static.arcgis.com/images/Symbols/SafetyHealth/FireTruck.png" />
-            
-            <img onclick="ShowAvailable(event, 'animal')"                 
+
+            <img onclick="ShowAvailable(event, 'animal')"
                  src="//static.arcgis.com/images/Symbols/OutdoorRecreation/Deer.png" />
           </div>
           <div id="Radar" onclick="ShowRadar()" style="cursor:pointer;">Show Radar</div>
           <div id="WeatherWarnings" onclick="ShowWeatherWarnings()" style="cursor:pointer;">Show Weather Warnings</div>
           <!--<div id="ExtraMapPoints"
-               onclick="ShowExtraMapPointsLayer()"
-               style="cursor: pointer;"
-               title="Icons are shown based on proximity to active calls, otherwise you can toggle them all on or off here.">
+             onclick="ShowExtraMapPointsLayer()"
+             style="cursor: pointer;"
+             title="Icons are shown based on proximity to active calls, otherwise you can toggle them all on or off here.">
 
-            <img src="//static.arcgis.com/images/Symbols/Basic/OrangeBeacon.png" style="height: 30px; width: 30px;" /> 
-            <span>Toggle</span>
-          </div>-->
+          <img src="//static.arcgis.com/images/Symbols/Basic/OrangeBeacon.png" style="height: 30px; width: 30px;" />
+          <span>Toggle</span>
+        </div>-->
           <div id="CallerLocations"
                onclick="ShowCallerLocationsLayer()"
                style="cursor: pointer;"
                title="This layer shows the calls that come in to the 911 circuit.  This includes all calls, not just Fire Rescue calls.">
             <svg width="24" height="24" style="touch-action: none;">
-            <defs></defs>
-            <circle 
-                    fill="rgb(0, 255, 255)" 
-                    fill-opacity="0.5019607843137255" 
-                    stroke="rgb(0, 0, 0)" 
-                    stroke-opacity="1" 
-                    stroke-width=".66" 
-                    stroke-linecap="butt" 
-                    stroke-linejoin="miter" 
-                    stroke-miterlimit="1" 
-                    cx="0" 
-                    cy="0" 
-                    r="8" 
-                    fill-rule="evenodd" 
-                    stroke-dasharray="none" 
-                    dojoGfxStrokeStyle="solid" 
-                    transform="matrix(1.00000000,0.00000000,0.00000000,1.00000000,15.00000000,15.00000000)"></circle>
+              <defs></defs>
+              <circle fill="rgb(0, 255, 255)"
+                      fill-opacity="0.5019607843137255"
+                      stroke="rgb(0, 0, 0)"
+                      stroke-opacity="1"
+                      stroke-width=".66"
+                      stroke-linecap="butt"
+                      stroke-linejoin="miter"
+                      stroke-miterlimit="1"
+                      cx="0"
+                      cy="0"
+                      r="8"
+                      fill-rule="evenodd"
+                      stroke-dasharray="none"
+                      dojoGfxStrokeStyle="solid"
+                      transform="matrix(1.00000000,0.00000000,0.00000000,1.00000000,15.00000000,15.00000000)"></circle>
             </svg>
             Caller Locations
           </div>
@@ -311,12 +316,33 @@
             <th>
               <button onclick="ToggleRadioLayer()">Toggle Radio Layer</button>
             </th>
-          </tr>          
+          </tr>
         </thead>
         <tbody id="radioList">
-
         </tbody>
       </table>
+    </div>
+    <div id="tab-8" class="tab-content">
+      <div id="replay">
+        <div id="replay_options">
+          blah
+        </div>
+        <div id="replay_call_information">
+          blah
+          <div class="slidecontainer">
+            <input type="range" min="1" max="100" value="1" class="slider" id="myRange">
+          </div>
+          <div>
+            <input id="slider_value" value="" />
+          </div>
+        </div>
+        <div id="replay_notes">
+
+        </div>
+        <div id="replay_call_details">
+
+        </div>
+      </div>
     </div>
   </div>
   <div id="UnitStatusHover">
@@ -327,11 +353,12 @@
   <!--<script src="//code.jquery.com/jquery-1.10.2.js"></script>-->
   <!--<script src="//js.arcgis.com/3.21/"></script>-->
   <script src="//js.arcgis.com/3.37/"></script>
-  <script src="Scripts/CadMapper.js?v=202108311949"></script>
+  <script src="Scripts/CadMapper.js?v=202109041907"></script>
   <script src="Scripts/modernizr-2.8.3.js"></script>
-  <script src="Scripts/Main.js?v=202108311949"></script>
+  <script src="Scripts/Main.js?v=202109041907"></script>
+  <script src="Scripts/Replay.js?v=202109041907"></script>
   <!--<script src="Scripts/tracking.js?v=202105111047"></script>-->
-  <script src="Scripts/locate.js?v=202108311949"></script>
+  <script src="Scripts/locate.js?v=202109041907"></script>
 
   <script type="text/javascript">
     Array.prototype.extend = function (other_array) {

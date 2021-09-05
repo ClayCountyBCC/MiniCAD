@@ -1,6 +1,6 @@
 ﻿/*global lastactivedata, currentactivedata, lasthistoricaldata, lastunitdata, currentunit, map*/
 /* exported **/
-
+"use strict";
 var vehicleSwaps = [];
 var currentRadioList = [];
 var extraMapPoints = [];
@@ -1267,13 +1267,18 @@ function CreateOption(label, value, selected)
 function CreateFilterContainer(width, direction)
 {
   let c = document.createElement("div");
-  c.style.marginTop = ".5em";
-  c.style.display = "flex";
-  c.style.flexDirection = direction;
-  c.style.flexWrap = "wrap";
-  c.style.justifyContent = "start";
-  c.style.alignItems = "center";
-  c.style.width = width;
+  //c.style.marginTop = ".5em";
+  //c.style.display = "flex";
+  //c.style.flexDirection = direction;
+  //c.style.flexWrap = "wrap";
+  //c.style.justifyContent = "start";
+  //c.style.alignItems = "center";
+  //c.style.width = width;
+  c.classList.add("HistoryFilterContainer");
+  if (width === "40%") c.classList.add("Short");
+  if (width === "60%") c.classList.add("Long");
+  if (width === "100%") c.classList.add("Full");
+  c.classList.add(direction === "column" ? "Outer" : "Inner");
   return c;
 }
 

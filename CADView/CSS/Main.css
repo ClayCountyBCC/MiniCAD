@@ -285,9 +285,73 @@ li img.imghide {
 #historyfilters
 {
   width: 100%;  
-
 }
 
+.HistoryFilterContainer
+{
+  margin-top: .5em;
+  display: flex;
+  flex-wrap: wrap;  
+  justify-content: start;
+  align-content: center;
+}
+
+  .HistoryFilterContainer.Outer
+  {
+    flex-direction: column;
+  }
+
+  .HistoryFilterContainer.Inner
+  {
+    flex-direction: row;
+  }
+
+.HistoryFilterContainer.Short
+{
+
+  width: 40%;
+}
+  .HistoryFilterContainer.Long
+  {
+    width: 60%;
+  }
+  .HistoryFilterContainer.Full
+  {
+    width: 100%;
+  }
+
+.slider
+{
+  -webkit-appearance: none;
+  width: 100%;
+  height: 15px;
+  border-radius: 5px;
+  background: #d3d3d3;
+  outline: none;
+  opacity: 0.7;
+  -webkit-transition: .2s;
+  transition: opacity .2s;
+}
+
+  .slider::-webkit-slider-thumb
+  {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    background: #04AA6D;
+    cursor: pointer;
+  }
+
+  .slider::-moz-range-thumb
+  {
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    background: #04AA6D;
+    cursor: pointer;
+  }
 
 
 #unit
@@ -401,14 +465,14 @@ li span {
     margin-bottom: .5em;
 }
 
-/*.notes, li.historynotes {
+.notes, li.historynotes {
     clear: left;
     width: 100%;
     text-align: left;
     padding: .5em;
     font-size: medium;
 }
-    .notes a, li.historynotes a {
+    /*.notes a, li.historynotes a {
         text-decoration: none;
         color: black;
     }
@@ -982,6 +1046,11 @@ li.historyrow
     .calldetailbase .comments, .calldetailbase .usertyped  {
         width: 100%;
     }
+/*  .HistoryFilterContainer.Short.Outer, .HistoryFilterContainer.Short.Inner, .HistoryFilterContainer.Long.Inner, .HistoryFilterContainer.Long.Outer
+  {
+    flex-direction: row;
+    width: 100%;
+  }*/
 
 }
 @media all and (min-width: 361px) and (max-width: 640px) {    
@@ -1094,6 +1163,11 @@ li.historyrow
     .calldetailbase .comments, .calldetailbase .usertyped, .calldetailbase .timestamp {
         width: 100%;
     }
+  .HistoryFilterContainer.Short.Outer, .HistoryFilterContainer.Short.Inner, .HistoryFilterContainer.Long.Inner, .HistoryFilterContainer.Long.Outer
+  {
+    flex-direction: row;
+    width: 100%;
+  }
 }
 @media all and (max-width: 360px) {
     html, body, .tab-content, .tab-content > div {
@@ -1206,4 +1280,10 @@ li.historyrow
     .calldetailbase .comments, .calldetailbase .usertyped, .calldetailbase .timestamp {
         width: 100%;
     }
+
+  .HistoryFilterContainer.Short.Outer, .HistoryFilterContainer.Short.Inner, .HistoryFilterContainer.Long.Inner, .HistoryFilterContainer.Long.Outer
+  {
+    flex-direction: row;
+    width: 100%;
+  }
 }

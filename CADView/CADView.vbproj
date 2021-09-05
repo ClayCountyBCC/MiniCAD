@@ -185,6 +185,7 @@
     <Content Include="Scripts\lodash.core.min.js" />
     <Content Include="Scripts\lodash.js" />
     <Content Include="Scripts\lodash.min.js" />
+    <Content Include="Scripts\Replay.js" />
     <Content Include="test.html" />
     <Content Include="Scripts\CadMapper.js" />
     <Content Include="Scripts\jquery-1.11.1.js" />
@@ -208,6 +209,7 @@
     <Compile Include="Models\MotorolaLocation.vb" />
     <Compile Include="Models\myCache.vb" />
     <Compile Include="Models\Note.vb" />
+    <Compile Include="Models\Replay.vb" />
     <Compile Include="My Project\AssemblyInfo.vb" />
     <Compile Include="My Project\Application.Designer.vb">
       <AutoGen>True</AutoGen>
