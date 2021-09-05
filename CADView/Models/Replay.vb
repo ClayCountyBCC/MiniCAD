@@ -11,6 +11,7 @@ Namespace Models
     Public Property CallDetail As List(Of CADData.CADCallDetail) ' Need to process this for Moves
     Public Property CallInfo As CADData.CaDCall
     'Public Property TelestaffData As ManpowerData
+    ' Get Units Last Move from incilog/log
 
   End Class
 

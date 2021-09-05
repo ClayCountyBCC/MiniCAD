@@ -707,7 +707,6 @@ function UpdateActiveCallsMap(data) {
     {
       if (InciLayer !== undefined)
       {
-        console.log('incilayer code start');
         InciLayer.clear();
         //if (ExtraMapPointsByCallLayer !== undefined)
         //{
