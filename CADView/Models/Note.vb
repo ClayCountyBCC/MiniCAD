@@ -12,6 +12,8 @@ Namespace Models
 
   Public Class Note
     Private Const regex_match As String = "\s+\[\d\d/\d\d/\d+\s\d\d:\d\d:\d\d\s\w+]|\[\w+\-\w+\] {(?<unit>\w+)}\s+"
+    Private Const extra_period_match As String = "[\.\,]{2,}"
+    Private Const extra_comma_match As String = "\,{2,}"
     Public Property note_id As Integer = 0
     Public Property log_id As Integer = 0
     Public Property timestamp As Date
@@ -20,7 +22,10 @@ Namespace Models
     Public Property raw_note As String = ""
     Public ReadOnly Property note
       Get
-        Return Regex.Replace(raw_note, regex_match, "")
+        Dim matched_note As String = Regex.Replace(raw_note, regex_match, "")
+        matched_note = Regex.Replace(matched_note, extra_period_match, ". ")
+        matched_note = Regex.Replace(matched_note, extra_comma_match, ", ")
+        Return matched_note
       End Get
     End Property
     Public Property raw_unitcode As String = ""
@@ -372,7 +377,7 @@ WITH Streets
           inci_id = @IncidentID
 )
     ,Incidents
-     AS (SELECT TOP 20
+     AS (SELECT TOP 30
            inci_id
          FROM
            inmain I
