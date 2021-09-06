@@ -710,11 +710,14 @@ SELECT
    + LTRIM(RTRIM(zip)) AS mapurl
   ,ISNULL(NMD.call_type, 'EMS') CallType
   ,ISNULL(NMD.is_emergency, 1) IsEmergency
+  ,ISNULL(MNI.bottom_icon_url, '') NaturecodeIconURLBottom
+  ,ISNULL(MNI.top_icon_url, '') NaturecodeIconURLTop
 FROM
   incident I
   LEFT OUTER JOIN MobileCallers MC ON I.callerph = MC.phonenumfixed
   LEFT OUTER JOIN cad.dbo.nature N ON I.naturecode = N.naturecode
   LEFT OUTER JOIN Tracking.dbo.naturecode_meta_data NMD ON N.natureid = NMD.natureid
+  LEFT OUTER JOIN Tracking.dbo.minicad_naturecode_icons MNI ON NMD.minicad_icon = MNI.id
 WHERE
   I.cancelled = 0
   AND I.inci_id <> ''
@@ -777,10 +780,13 @@ SELECT
    + LTRIM(RTRIM(zip)) AS mapurl
    ,ISNULL(NMD.call_type, 'EMS') CallType
    ,ISNULL(NMD.is_emergency, 1) IsEmergency
+   ,ISNULL(MNI.bottom_icon_url, '') NaturecodeIconURLBottom
+   ,ISNULL(MNI.top_icon_url, '') NaturecodeIconURLTop
 FROM
   cad.dbo.inmain I
   LEFT OUTER JOIN cad.dbo.nature N ON I.naturecode = N.naturecode
   LEFT OUTER JOIN Tracking.dbo.naturecode_meta_data NMD ON N.natureid = NMD.natureid
+  LEFT OUTER JOIN Tracking.dbo.minicad_naturecode_icons MNI ON NMD.minicad_icon = MNI.id
 WHERE
   cancelled = 0
   AND inci_id <> ''
@@ -1283,6 +1289,8 @@ ORDER  BY
           'End If
           .CCFR = dr("case_id")
           .CallType = dr("CallType")
+          .CallIconURLBottom = dr("NaturecodeIconURLBottom")
+          .CallIconURLTop = dr("NaturecodeIconURLTop")
           .IsEmergency = dr("IsEmergency")
           .MapURL = CType(dr("mapurl"), String).Trim.Replace("/", "&")
           .CallTime = dr("calltime")
@@ -1536,6 +1544,8 @@ ORDER  BY
       Public Property District As String ' The district the call is from.
       Public Property IsEmergency As Boolean
       Public Property CallType As String
+      Public Property CallIconURLBottom As String = ""
+      Public Property CallIconURLTop As String = ""
       Public Property HasRecentVisit As Boolean
 
       Public ReadOnly Property Age As Integer

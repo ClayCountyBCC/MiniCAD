@@ -395,7 +395,7 @@ SELECT
   ,N.eventid inci_id
   ,N.notes raw_note
   ,'' raw_unitcode
-  ,userid
+  ,ISNULL(userid, '') userid
 FROM
   cad.dbo.incinotes N
   INNER JOIN Incidents I ON N.eventid = I.inci_id

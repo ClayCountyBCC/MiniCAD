@@ -1290,6 +1290,7 @@ function HistoryFilterChange()
   historyfilters.searchText = document.getElementById("text_filter").value;
   ApplyHistoryFilter();
   LoadFilteredHistoricalCalls();
+  UpdateHistoricalCallsMap(filteredlasthistoricaldata);
 }
 
 function ApplyHistoryFilter()
