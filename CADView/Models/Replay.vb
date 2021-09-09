@@ -7,6 +7,13 @@ Namespace Models
 
 
   Public Class Replay
+    Public Property CaseID As String = ""
+    Public Property UnitCode As String = ""
+    Public Property IncludeAllUnits As Boolean = False
+    Public Property StartDate As Date
+    Public Property EndDate As Date
+    Public Property IsError As Boolean = False
+    Public Property ErrorMessage As String = ""
     ' Get Units Last Move from incilog/log
     ' FIgure out how to process the Last Move into Available Out of District or not.
     Public Property UnitLocations As List(Of CADData.ActiveUnit) ' Need to pull in AVL and CAD locations
@@ -35,5 +42,7 @@ Namespace Models
     ' that were on the call.
 
   End Class
+
+
 
 End Namespace

@@ -8,8 +8,8 @@
 
   <title>MiniCAD</title>
   <link href="CSS/BackToTop.css" rel="stylesheet" />
-  <link href="CSS/CadMapper.css?v=202109061538" rel="stylesheet" type="text/css" />
-  <link href="CSS/Main.css?v=202109061538" rel="stylesheet" type="text/css" />
+  <link href="CSS/CadMapper.css?v=202109091629" rel="stylesheet" type="text/css" />
+  <link href="CSS/Main.css?v=202109091629" rel="stylesheet" type="text/css" />
   <link rel="stylesheet" href="//js.arcgis.com/3.37/esri/css/esri.css">
   <link href="CSS/main-test.css" rel="stylesheet" />
 </head>
@@ -242,6 +242,12 @@
           </div>
           <div id="Radar" onclick="ShowRadar()" style="cursor:pointer;">Show Radar</div>
           <div id="WeatherWarnings" onclick="ShowWeatherWarnings()" style="cursor:pointer;">Show Weather Warnings</div>
+          <div id="ShowInactiveUnits"
+               onclick="ToggleInactiveUnitVisibility()"
+               style="cursor: pointer;"
+               title="This button enables you to choose between seeing all units on the map or just Primary response units and those that are currently on a call or are moving.">
+            Show Inactive Units
+          </div>
           <!--<div id="ExtraMapPoints"
              onclick="ShowExtraMapPointsLayer()"
              style="cursor: pointer;"
@@ -352,12 +358,12 @@
   <!--<script src="//code.jquery.com/jquery-1.10.2.js"></script>-->
   <!--<script src="//js.arcgis.com/3.21/"></script>-->
   <script src="//js.arcgis.com/3.37/"></script>
-  <script src="Scripts/CadMapper.js?v=202109061538"></script>
+  <script src="Scripts/CadMapper.js?v=202109091629"></script>
   <script src="Scripts/modernizr-2.8.3.js"></script>
-  <script src="Scripts/Main.js?v=202109061538"></script>
-  <script src="Scripts/Replay.js?v=202109061538"></script>
+  <script src="Scripts/Main.js?v=202109091629"></script>
+  <script src="Scripts/Replay.js?v=202109091629"></script>
   <!--<script src="Scripts/tracking.js?v=202105111047"></script>-->
-  <script src="Scripts/locate.js?v=202109061538"></script>
+  <script src="Scripts/locate.js?v=202109091629"></script>
 
   <script type="text/javascript">
     Array.prototype.extend = function (other_array) {

@@ -140,6 +140,7 @@
     <Content Include="Content\images\circle-purple128.png" />
     <Content Include="Content\images\circle-red128.png" />
     <Content Include="Content\images\circle-yellow128.png" />
+    <Content Include="Content\images\FancyFiretruck.png" />
     <Content Include="Content\images\Fire-engine.png" />
     <Content Include="Content\images\LineSep.png" />
     <Content Include="Content\images\list_metro.png" />
@@ -210,6 +211,7 @@
     <Compile Include="Models\myCache.vb" />
     <Compile Include="Models\Note.vb" />
     <Compile Include="Models\Replay.vb" />
+    <Compile Include="Models\UnitMove.vb" />
     <Compile Include="My Project\AssemblyInfo.vb" />
     <Compile Include="My Project\Application.Designer.vb">
       <AutoGen>True</AutoGen>

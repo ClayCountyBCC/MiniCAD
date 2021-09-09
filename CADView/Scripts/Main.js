@@ -317,13 +317,16 @@ function UpdateUnitTable()
 //  }
 //}
 
-function ClickUnitStatus(e, currentunit) {
-    //currentunit = e.currentTarget.innerHTML.split('<')[0]; // Because we're inserting an img tag into the html, we can negate it by doing this.
-    var i = getUnitIndex(currentunit);
-    var item = lastunitdata.Records[i];
-    if (item.Latitude !== 0) {
-        ShowOnMap(item.Latitude, item.Longitude);
-    }
+function ClickUnitStatus(e, currentunit)
+{
+  //currentunit = e.currentTarget.innerHTML.split('<')[0]; // Because we're inserting an img tag into the html, we can negate it by doing this.
+  var i = getUnitIndex(currentunit);
+  var item = lastunitdata.Records[i];
+  if (item.Latitude !== 0)
+  {
+    CheckInactiveUnit(currentunit);
+    ShowOnMap(item.Latitude, item.Longitude);
+  }
 }
 
 function HoverUnitStatus(e, currentunit) {
@@ -1400,7 +1403,8 @@ function LoadCADCalls(listaction, targetdiv)
             {
               filteredlasthistoricaldata[i].HistoricalCallsByAddress = null;
             }            
-          }          
+          }
+          UpdateHistoricalCallsMap(filteredlasthistoricaldata);
         }
         else
         {
@@ -1440,10 +1444,6 @@ function LoadCADCalls(listaction, targetdiv)
       {
         lastactivedata = data;
         setTimeout(function () { UpdateActiveCallsMap(data); }, 3000);
-      } else if (targetdiv === '#historical')
-      {
-        
-        UpdateHistoricalCallsMap(data);
       }
       ShowMessage('', targetdiv);
       if (targetdiv === '#active')

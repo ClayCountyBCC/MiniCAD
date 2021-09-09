@@ -168,7 +168,8 @@ html, body {
   z-index: 50;
 }
 
-#History, #USNG, #Radar, #WeatherWarnings, #ShowAvailable, #TestGrid, #ExtraMapPoints, #CallerLocations{
+#History, #USNG, #Radar, #WeatherWarnings, #ShowAvailable, #TestGrid, #ExtraMapPoints, #CallerLocations, #ShowInactiveUnits
+{
   z-index: 50;
   right: 20px;
   background-color: white;
@@ -208,10 +209,9 @@ html, body {
   top: 340px;
 }
 
-#ExtraMapPoints
+#ExtraMapPoints, #ShowInactiveUnits
 {
-  top: 410px;
-  padding-bottom: 7.5px;
+  top: 410px;  
 }
 
 #ExtraMapPoints img
@@ -223,7 +223,7 @@ html, body {
 
 #CallerLocations
 {
-  top: 450px;
+  top: 480px;
   padding-bottom: 5px;
 }
 

@@ -11,6 +11,13 @@ var locateButton;
 var WorldTranspo = null;
 var showAvailable = 0;
 var unitFilter = '';
+var show_inactive_units = false;
+var never_hide_units = ['E11', 'E13', 'E14', 'E15', 'E17', 'E18',
+  'E19', 'E20', 'E22', 'E23', 'E24', 'E25', 'E26', 'R11', 'R13',
+  'R15', 'R17', 'R18', 'R19', 'R22', 'R22A', 'R23', 'R24', 'R25',
+  'R26', 'BAT1', 'BAT2', 'CHIEF1', 'CHIEF2', 'CHIEF3', 'TR603',
+  'T149', 'T209', 'T238'];
+var temporarily_show_unit = [];
 var availStatus = ["Available", "Available-Out-of-District"];
 
 //http://static.arcgis.com/images/Symbols/Shapes/PurplePin1LargeB.png
@@ -231,43 +238,6 @@ function mapInit() {
   mapresizing = false;
 }
 
-function urlParam(name) {//URL Params
-  var results = new RegExp('[\?&amp;]' + name + '=([^&amp;#]*)').exec(window.location.href);
-  return results[1] || 0;
-}
-
-//function geolocate() {
-//    require(["esri/dijit/LocateButton"], function (LocateButton) {
-//        geoLocate = new LocateButton({
-//            map: map,
-//            useTracking: true,
-//            clearOnTrackingStop: true
-//        }, "LocateButton");
-//        geoLocate.startup();
-//    });
-//}
-
-//function geocodeAddress() {
-//    require(["esri/dijit/Geocoder"], function (Geocoder) {
-//        var myGeocoders = [{
-//            url: locatorUrl,
-//            name: "Clay County",
-//            placeholder: "Search for an Address"
-//        }];
-//        geocoder = new Geocoder({
-//            map: map,
-//            autoComplete: false,
-//            arcgisGeocoder: false,
-//            geocoders: myGeocoders
-//        }, "search");
-
-//        geocoder.startup();
-//        geocoder.on('find-results', showLocation);
-//        geoLocate.on('locate', useLocation);
-//    });
-//    //geocoder.on('select', showLocation);
-//}
-
 function mapUnitClick(graphic) {
   //console.log(graphic.attributes);
   var i = getUnitIndex(graphic.attributes.UnitName);
@@ -366,11 +336,6 @@ function updateLocations() {
   );
 }
 
-function getRandomInt(max)
-{
-  return Math.floor(Math.random() * Math.floor(max));
-}
-
 function UpdateUnits()
 {
   //updateLocations();
@@ -390,116 +355,129 @@ function UpdateUnits()
           //infoTemplate.setContent("<b>Unit Status: </b>${UnitStatus}");
           infoTemplate.setContent(mapUnitClick);
 
-          for (var i = 0; i < data.Records.length; i++) {
+          for (var i = 0; i < data.Records.length; i++) 
+          {
+
             var xcoord = data.Records[i].Longitude;
             var ycoord = data.Records[i].Latitude;
-            if (xcoord !== 0 || ycoord !== 0) {
+            if (xcoord !== 0 || ycoord !== 0)
+            {
 
-              var symbol = new PictureMarkerSymbol({
-                "angle": 0,
-                "xoffset": 0,
-                "yoffset": 0,
-                "type": "esriPMS",
-                "contentType": "image/png",
-                "width": 20,
-                "height": 20
-              });
-              var bgSymbol = new PictureMarkerSymbol({
-                "angle": 0,
-                "xoffset": 0,
-                "yoffset": 0,
-                "type": "esriPMS",
-                "contentType": "image/png",
-                "width": 28,
-                "height": 28
-              });
-              switch (data.Records[i].UnitStatus) {
-                case "Transport":
-                  bgSymbol.url = "./Content/images/circle-yellow128.png";
-                  break;
-                case "Dispatched":
-                  bgSymbol.url = "./Content/images/circle-purple128.png";
-                  break;
-                case "Hospital":
-                  bgSymbol.url = "./Content/images/circle-orange128.png";
-                  break;
-                case "En-Route":
-                  bgSymbol.url = "./Content/images/circle-lightgreen128.png";
-                  break;
-                case "Arrived":
-                  bgSymbol.url = "./Content/images/circle-cyan128.png";
-                  break;
-                case "Out-of-Service":
-                  if (data.Records[i].UnitType === "SPARE") {
+              if (filterAvailable(data.Records[i]) && ShowInactiveUnits(data.Records[i])) 
+              {
+
+
+                var symbol = new PictureMarkerSymbol({
+                  "angle": 0,
+                  "xoffset": 0,
+                  "yoffset": 0,
+                  "type": "esriPMS",
+                  "contentType": "image/png",
+                  "width": 30,
+                  "height": 30
+                });
+                var bgSymbol = new PictureMarkerSymbol({
+                  "angle": 0,
+                  "xoffset": 0,
+                  "yoffset": 0,
+                  "type": "esriPMS",
+                  "contentType": "image/png",
+                  "width": 45,
+                  "height": 45
+                });
+                switch (data.Records[i].UnitStatus)
+                {
+                  case "Transport":
+                    bgSymbol.url = "./Content/images/circle-yellow128.png";
+                    break;
+                  case "Dispatched":
+                    bgSymbol.url = "./Content/images/circle-purple128.png";
+                    break;
+                  case "Hospital":
+                    bgSymbol.url = "./Content/images/circle-orange128.png";
+                    break;
+                  case "En-Route":
+                    bgSymbol.url = "./Content/images/circle-lightgreen128.png";
+                    break;
+                  case "Arrived":
+                    bgSymbol.url = "./Content/images/circle-cyan128.png";
+                    break;
+                  case "Out-of-Service":
+                    if (data.Records[i].UnitType === "SPARE")
+                    {
+                      bgSymbol.url = "";
+                    } else
+                    {
+                      bgSymbol.url = "./Content/images/circle-red128.png";
+                    }
+                    break;
+                  case "Available-Out-of-District":
+                    bgSymbol.url = "./Content/images/circle-fuchsia128.png";
+                    break;
+                  default:
                     bgSymbol.url = "";
-                  } else {
-                    bgSymbol.url = "./Content/images/circle-red128.png";
-                  }
-                  break;
-                case "Available-Out-of-District":
-                  bgSymbol.url = "./Content/images/circle-fuchsia128.png";
-                  break;
-                default:
-                  bgSymbol.url = "";
-                  break;
-              }
+                    break;
+                }
 
-              var textSymbol = new TextSymbol(data.Records[i].UnitName); //esri.symbol.TextSymbol(data.Records[i].UnitName);
-              textSymbol.setColor(new dojo.Color([0, 100, 0]));
-              textSymbol.setOffset(0, -25);
-              textSymbol.setAlign(TextSymbol.ALIGN_MIDDLE);
-              
+                var textSymbol = new TextSymbol(data.Records[i].UnitName); //esri.symbol.TextSymbol(data.Records[i].UnitName);
+                textSymbol.setColor(new dojo.Color([0, 100, 0]));
+                textSymbol.setOffset(0, -25);
+                textSymbol.setAlign(TextSymbol.ALIGN_MIDDLE);
 
-              switch (data.Records[i].UnitType) {
-                case "OTHER":
-                  symbol.url = "//static.arcgis.com/images/Symbols/OutdoorRecreation/RVPark.png";
-                  break;
-                case "RESCUE":
-                  symbol.url = "//static.arcgis.com/images/Symbols/SafetyHealth/Ambulance.png";
-                  //symbol.url = "./Content/images/Ambulance-R.png";
-                  //if (heading > 179) symbol.url = "./Content/images/Ambulance-L.png";
-                  break;
-                case "LADDER":
-                  symbol.url = "./Content/images/Fire-engine.png";
-                  break;
 
-                case "ENGINE":
-                  symbol.url = "//static.arcgis.com/images/Symbols/SafetyHealth/FireTruck.png";
-                  break;
-                  
-                case "BC":
-                  //symbol.url = "//static.arcgis.com/images/Symbols/SafetyHealth/FireFighter.png";
-                  symbol.url = "./Content/images/Pick-up.png";
-                  break;
+                switch (data.Records[i].UnitType) 
+                {
+                  case "OTHER":
+                    symbol.url = "//static.arcgis.com/images/Symbols/OutdoorRecreation/RVPark.png";
+                    break;
+                  case "RESCUE":
+                    symbol.url = "//static.arcgis.com/images/Symbols/SafetyHealth/Ambulance.png";
+                    //symbol.url = "./Content/images/Ambulance-R.png";
+                    //if (heading > 179) symbol.url = "./Content/images/Ambulance-L.png";
+                    break;
+                  case "LADDER":
+                    symbol.url = "./Content/images/Fire-engine.png";
+                    break;
 
-                case "TANKER":
-                case "TENDER":
-                  //symbol.url = "//static.arcgis.com/images/Symbols/OutdoorRecreation/RVPark.png";
-                  symbol.url = "./Content/images/Tank%20truck.png";
-                  break;
+                  case "ENGINE":
+                    //symbol.url = "./Content/images/FancyFiretruck.png";
+                    symbol.url = "//static.arcgis.com/images/Symbols/SafetyHealth/FireTruck.png";
+                    break;
+
+                  case "BC":
+                    //symbol.url = "//static.arcgis.com/images/Symbols/SafetyHealth/FireFighter.png";
+                    symbol.url = "./Content/images/Pick-up.png";
+                    break;
+
+                  case "TANKER":
+                  case "TENDER":
+                    //symbol.url = "//static.arcgis.com/images/Symbols/OutdoorRecreation/RVPark.png";
+                    symbol.url = "./Content/images/Tank%20truck.png";
+                    break;
                   //if (data.Records[i].UnitName.indexOf("W") > 0) {
                   //  symbol.url = "//static.arcgis.com/images/Symbols/OutdoorRecreation/RVPark.png";
                   //} else {
                   //  //symbol.url = "//static.arcgis.com/images/Symbols/Transportation/Tank.png";
                   //}
 
-                case "SPARE":
-                  symbol.url = "//static.arcgis.com/images/Symbols/Transportation/CarGreenFront.png";
-                  break;
-                case "HAZ":
-                  symbol.url = "//static.arcgis.com/images/Symbols/Transportation/CarYellowFront.png";
-                  break;
-                default:
-                  symbol.url = "//static.arcgis.com/images/Symbols/Transportation/CarRedFront.png";
-                  break;
-              }
-              switch (data.Records[i].UnitStatus) {
-                case "Broke":
-                  symbol.url = "//static.arcgis.com/images/Symbols/Transportation/CarRepair.png";
-                  break;
-              }
+                  case "SPARE":
+                    symbol.url = "//static.arcgis.com/images/Symbols/Transportation/CarGreenFront.png";
+                    break;
+                  case "HAZ":
+                    symbol.url = "//static.arcgis.com/images/Symbols/Transportation/CarYellowFront.png";
+                    break;
+                  default:
+                    symbol.url = "//static.arcgis.com/images/Symbols/Transportation/CarRedFront.png";
+                    break;
+                }
+                switch (data.Records[i].UnitStatus) 
+                {
+                  case "Broke":
+                    symbol.url = "//static.arcgis.com/images/Symbols/Transportation/CarRepair.png";
+                    break;
+                }
 
-              if (filterAvailable(data.Records[i])) {
+
 
                 var incident = new Point([xcoord, ycoord], new SpatialReference({ wkid: 4326 }));
                 var wmIncident = esri.geometry.geographicToWebMercator(incident);
@@ -510,7 +488,7 @@ function UpdateUnits()
                   VehicleLayer.add(bgGraphic);
                 }
                 graphic.setAttributes({ "UnitName": data.Records[i].UnitName, "UnitStatus": data.Records[i].UnitStatus });
-                
+
                 graphic.setInfoTemplate(infoTemplate);
                 VehicleLayer.add(graphic);
 
@@ -571,6 +549,62 @@ function UpdateUnits()
 //        }
 //    });
 //}
+
+function ToggleInactiveUnitVisibility()
+{
+  show_inactive_units = !show_inactive_units;
+  document.getElementById("ShowInactiveUnits").textContent = show_inactive_units ? "Hide Inactive Units" : "Show Inactive Units";
+  // do something here about updating the text of the button
+  UpdateUnits();
+}
+
+function CheckInactiveUnit(unit)
+{
+  if (show_inactive_units) return;
+  let expiration = new Date();
+  expiration.setMinutes(expiration.getMinutes() + 5);
+
+  let temporary_exemption = temporarily_show_unit.filter(u => u.unitcode === unit);
+  if (temporary_exemption && temporary_exemption.length > 0)
+  {
+    temporary_exemption[0].expiration_date = expiration;
+  }
+  else
+  {
+    temporarily_show_unit.push({
+      unitcode: unit,
+      expiration_date: expiration
+    });
+  }
+  // if we did something, call UpdateUnits() so that this unit will be shown.
+}
+
+function HandleTemporarilyShowUnitExpirations()
+{
+  if (temporarily_show_unit.length === 0) return;
+  let now = new Date();
+  temporarily_show_unit = temporarily_show_unit.filter(u => u.expiration_date > now);
+}
+
+function ShowInactiveUnits(unit)
+{
+  if (show_inactive_units || never_hide_units.indexOf(unit.UnitName) > -1) return true;
+
+  // Need to handle the Temporarily Shown units here
+  HandleTemporarilyShowUnitExpirations();
+  if (temporarily_show_unit.some(u => u.unitcode === unit.UnitName)) return true;
+
+  // Now that we're here, we're going to look at each unit
+  // if the unit is on a call, we'll show it
+  if (unit.IncidentID.length > 0) return true;
+
+  // if the unit is moving and has been updated recently (last 10 minutes, we'll show it)
+  if (unit.speed > 0 && unit.LocationStatus.indexOf("Green") > -1) return true;
+
+  return false;
+  // otherwise we won't.
+
+}
 
 function ShowAvailable(event, show_type)
 {
