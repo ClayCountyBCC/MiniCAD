@@ -59,6 +59,12 @@ Namespace Models
         Case "RecentCalls"
           Return CADData.GetRecentStreets()
 
+        Case "ReplayAllUnits"
+          Return Replay.ReplayAllUnits(split(1))
+
+        Case "ReplayCallUnitsOnly"
+          Return Replay.ReplayCallUnitsOnly(split(1))
+
         Case "ActiveCalls"
 
         Case "CallDetails"

@@ -140,6 +140,7 @@ Namespace Models
         INNER JOIN OpenIncidents I ON L.inci_id = I.inci_id
         WHERE 
           transtype='M'  
+          OR (transtype='... ' AND LEFT(descript, 1) = 'M')
 
         UNION ALL
 
@@ -155,6 +156,7 @@ Namespace Models
         INNER JOIN ClosedIncidents I ON L.inci_id = I.inci_id
         WHERE 
           transtype='M'
+          OR (transtype='... ' AND LEFT(descript, 1) = 'M')
 
         UNION ALL
 
@@ -185,7 +187,7 @@ Namespace Models
         INNER JOIN ClosedIncidents I ON L.inci_id = I.inci_id
         WHERE           
           LEFT(descript, 1) = '{'
-        ORDER BY timestamp DESC
+        ORDER BY timestamp DESC, log_id ASC
 "
       Dim C As New CADData()
       Return C.Get_Data(Of Note)(query, C.CAD)
@@ -430,8 +432,9 @@ FROM
   INNER JOIN Incidents I ON L.inci_id = I.inci_id
 WHERE
   transtype = 'M'
+  OR (transtype='... ' AND LEFT(descript, 1) = 'M')
 ORDER  BY
-  timestamp DESC "
+  timestamp DESC, log_id ASC "
       Dim C As New CADData()
       Return C.Get_Data(Of Note)(query, dp, C.CAD)
     End Function

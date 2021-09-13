@@ -8,8 +8,8 @@
 
   <title>MiniCAD</title>
   <link href="CSS/BackToTop.css" rel="stylesheet" />
-  <link href="CSS/CadMapper.css?v=202109091629" rel="stylesheet" type="text/css" />
-  <link href="CSS/Main.css?v=202109091629" rel="stylesheet" type="text/css" />
+  <link href="CSS/CadMapper.css?v=202109091710" rel="stylesheet" type="text/css" />
+  <link href="CSS/Main.css?v=202109091710" rel="stylesheet" type="text/css" />
   <link rel="stylesheet" href="//js.arcgis.com/3.37/esri/css/esri.css">
   <link href="CSS/main-test.css" rel="stylesheet" />
 </head>
@@ -37,48 +37,6 @@
     </div>
     <div id="tab-2" class="tab-content">
       <div id="historical">
-        <!--<fieldset style="padding: .5em 1em .5em 1em; margin-left: 0; display: flex; flex-wrap: wrap; flex-direction: row; width: 100%;"
-                id="historyfilterscontainer">
-        <div class="historyheader"
-             style="display: flex; flex-direction: row; width: 100%;">
-          <span style="width: 50%; font-weight: bolder; font-size: 1.2em;"
-                class="historyfiltertitle">Historical Call Filters</span>
-          <a onclick="ToggleHistoryFilters()"
-             style="width: 50%; padding-right: 1em; text-align: end; cursor: pointer;"
-             class="filterbutton">Hide Filters</a>
-        </div>
-        <div id="historyfilters"
-             class="show"
-             width="100%;">
-          <div style="display: flex; flex-direction: column; width: 50%; flex-wrap: wrap;">
-            <div style="display: flex; flex-direction: row; flex-wrap: wrap; width: 100%;">
-              <input type="radio" id="call_type_all" name="call_type" value="all" checked />
-              <label for="call_type_all">All Call Types</label>
-              <input style="margin-left: 1em;"
-                     type="radio" id="call_type_fire" name="call_type" value="fire" />
-              <label for="call_type_fire">Fire</label>
-              <input style="margin-left: 1em;"
-                     type="radio" id="call_type_ems" name="call_type" value="ems" />
-              <label for="call_type_ems">EMS</label>
-              <input style="margin-left: 1em;"
-                     type="radio" id="call_type_admin" name="call_type" value="admin" />
-              <label for="call_type_admin">Admin</label>
-            </div>
-          </div>
-          <div style="display: flex; flex-direction: column; width: 50%; flex-wrap: wrap;">
-            <div style="display: flex; flex-direction: row; flex-wrap: wrap; width: 100%;">
-              <input type="radio" id="emergency_all" name="emergency" value="all" checked />
-              <label for="emergency_all">All Calls</label>
-              <input style="margin-left: 1em;"
-                     type="radio" id="emergency_emergency" name="emergency" value="emergency" />
-              <label for="emergency_emergency">Emergency</label>
-              <input style="margin-left: 1em;"
-                     type="radio" id="emergency_non_emergency" name="emergency" value="non_emergency" />
-              <label for="emergency_non_emergency">Non Emergency</label>
-            </div>
-          </div>
-        </div>
-      </fieldset>-->
       </div>
     </div>
     <div id="tab-3" class="tab-content">
@@ -103,14 +61,6 @@
           <legend>Tender</legend>
           <ol id="TENDER"></ol>
         </fieldset>
-        <!--<fieldset>
-        <legend>Logistics</legend>
-        <ol id="LOGISTICS"></ol>
-      </fieldset>-->
-        <!--<fieldset>
-        <legend>Air</legend>
-        <ol id="AIR"></ol>
-      </fieldset>-->
         <fieldset>
           <legend>Special Unit</legend>
           <ol id="SPECIALUNIT"></ol>
@@ -123,10 +73,6 @@
           <legend>Logistics</legend>
           <ol id="LOGISTICS"></ol>
         </fieldset>
-        <!--<fieldset>
-        <legend>Other</legend>
-        <ol id="OTHER"></ol>
-      </fieldset>-->
         <fieldset>
           <legend>Spare</legend>
           <ol id="SPARE"></ol>
@@ -181,11 +127,6 @@
         <div id="startTracking">
           <span class="clickable" id="trackingStart" onclick="showGroups()">To Select a Group and User Identifier, click here</span>
         </div>
-        <!--<div id="trackingInfo">
-          <div id="trackingInfoContainer">
-
-          </div>
-      </div>-->
         <div id="chooseGroups">
           <h2 class="unclickable">Please choose from the following groups:</h2>
           <div id="trackingOpsGroups">
@@ -248,14 +189,6 @@
                title="This button enables you to choose between seeing all units on the map or just Primary response units and those that are currently on a call or are moving.">
             Show Inactive Units
           </div>
-          <!--<div id="ExtraMapPoints"
-             onclick="ShowExtraMapPointsLayer()"
-             style="cursor: pointer;"
-             title="Icons are shown based on proximity to active calls, otherwise you can toggle them all on or off here.">
-
-          <img src="//static.arcgis.com/images/Symbols/Basic/OrangeBeacon.png" style="height: 30px; width: 30px;" />
-          <span>Toggle</span>
-        </div>-->
           <div id="CallerLocations"
                onclick="ShowCallerLocationsLayer()"
                style="cursor: pointer;"
@@ -280,8 +213,6 @@
             </svg>
             Caller Locations
           </div>
-
-          <!--<input id="History" type="button" value="7 Days">-->
         </div>
       </div>
     </div>
@@ -358,12 +289,12 @@
   <!--<script src="//code.jquery.com/jquery-1.10.2.js"></script>-->
   <!--<script src="//js.arcgis.com/3.21/"></script>-->
   <script src="//js.arcgis.com/3.37/"></script>
-  <script src="Scripts/CadMapper.js?v=202109091629"></script>
+  <script src="Scripts/CadMapper.js?v=202109091710"></script>
   <script src="Scripts/modernizr-2.8.3.js"></script>
-  <script src="Scripts/Main.js?v=202109091629"></script>
-  <script src="Scripts/Replay.js?v=202109091629"></script>
+  <script src="Scripts/Main.js?v=202109091710"></script>
+  <script src="Scripts/Replay.js?v=202109091710"></script>
   <!--<script src="Scripts/tracking.js?v=202105111047"></script>-->
-  <script src="Scripts/locate.js?v=202109091629"></script>
+  <script src="Scripts/locate.js?v=202109091710"></script>
 
   <script type="text/javascript">
     Array.prototype.extend = function (other_array) {
@@ -389,7 +320,6 @@
         setInterval(UpdateUnitTable, 9000); // 1min, 1 sec to update Units
         setInterval(updateHistoricalCallsTable, 65500 * 5); // 5 mins
         setInterval(LoadAdvisoryTable, 63500 * 15); // 15 mins*/
-        //setInterval(LoadExtraMapPoints, 60000 * 5);
 
         // Re-enable after this is fixed.
         //setInterval(LoadCallerLocations, 10050);
@@ -405,33 +335,9 @@
             map.setExtent(defaultExtent);
           }
         });
-        //var offset = 300 // browser window scroll (in pixels) after which the "back to top" link is shown
-        //var offset_opacity = 1200 //browser window scroll (in pixels) after which the "back to top" link opacity is reduced
-        //var scroll_top_duration = 300 //duration of the top scrolling animation (in ms)
-        //$back_to_top = $('.cd-top');    //grab the "back to top" link
-        //$(window).scroll(function () { //hide or show the "back to top" link
-        //  ($(this).scrollTop() > offset) ? $back_to_top.addClass('cd-is-visible') : $back_to_top.removeClass('cd-is-visible cd-fade-out');
-        //  if ($(this).scrollTop() > offset_opacity) {
-        //    $back_to_top.addClass('cd-fade-out');
-        //  }
-        //});
-        //$back_to_top.on('click', function (event) { //smooth scroll to top
-        //  event.preventDefault();
-        //  $('body,html').animate({
-        //    scrollTop: 0,
-        //  }, scroll_top_duration
-        //  );
-        //});
-        //var m = document.getElementById('map');
-        //m.addEventListener('mousewheel', wheelEvent, true);
-        //m.addEventListener('DOMMouseScroll', wheelEvent, true);
-        //var b = document.body;
-        //b.addEventListener('mousewheel', wheelEvent, true);
-        //b.addEventListener('DOMMouseScroll', wheelEvent, true);
+
       });
-      //require(["dojo/on"], function (on) {
-      //    document.getElementByTagName('Body').on('mouse-wheel', myMouseWheelHandler);
-      //});
+
     });
   </script>
 

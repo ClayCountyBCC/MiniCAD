@@ -168,32 +168,18 @@
     <Content Include="ConnectionStrings.config" />
     <None Include="My Project\PublishProfiles\CADView Production.pubxml" />
     <None Include="My Project\PublishProfiles\CADView DV10.pubxml" />
-    <Content Include="Scripts\angular-esri-core.js" />
-    <Content Include="Scripts\angular-esri-core.min.js" />
-    <Content Include="Scripts\angular-esri-map.js" />
-    <Content Include="Scripts\angular-esri-map.min.js" />
-    <Content Include="Scripts\app\activecalls\activecalls.controller.js" />
-    <Content Include="Scripts\app\activecalls\activecalls.controller.tmpl.html" />
-    <Content Include="Scripts\app\app.js" />
-    <Content Include="Scripts\app\call\call.directive.js" />
-    <Content Include="Scripts\app\call\call.directive.tmpl.html" />
-    <Content Include="Scripts\app\data\minicadData.service.js" />
-    <Content Include="Scripts\app\main\main.controller.js" />
-    <Content Include="Scripts\app\main\tab.controller.js" />
-    <Content Include="Scripts\app\main\viewOptions.factory.js" />
     <Content Include="Scripts\locate.js" />
     <Content Include="Scripts\lodash.core.js" />
     <Content Include="Scripts\lodash.core.min.js" />
     <Content Include="Scripts\lodash.js" />
     <Content Include="Scripts\lodash.min.js" />
     <Content Include="Scripts\Replay.js" />
-    <Content Include="test.html" />
     <Content Include="Scripts\CadMapper.js" />
     <Content Include="Scripts\jquery-1.11.1.js" />
     <Content Include="Scripts\Main.js" />
     <Content Include="index.html" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
-    <Content Include="Scripts\tracking.js" />
+    <Content Include="Scripts\finder.js" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
@@ -204,6 +190,7 @@
     <Compile Include="Global.asax.vb">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\CadCallerLocation.vb" />
     <Compile Include="Models\CADData.vb" />
     <Compile Include="Models\CallerLocation.vb" />
     <Compile Include="Models\HistoricalCall.vb" />
@@ -264,7 +251,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Scripts\app\advisory\" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

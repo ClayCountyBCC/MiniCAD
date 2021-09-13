@@ -20,12 +20,17 @@ Namespace Models
   End Structure
 
   Public Class CADData
-    Private Const AppID As Integer = 10002 ' Maintenance table application ID
+    Public Const AppID As Integer = 10002 ' Maintenance table application ID
     Private Const GRIDSQUARE_SET_COL_SIZE As Integer = 8, GRIDSQUARE_SET_ROW_SIZE As Integer = 20
     Private Const BLOCK_SIZE As Integer = 100000
+    ' For testing, we'll set the errorhandling this way, after we get the app running, change it to
+    ' email/DB
+    Public Const ErrorHandling As Tools.DB.DB_Error_Handling_Method = DB.DB_Error_Handling_Method.Send_Errors_To_Log_Only
     Public CAD As String = ConfigurationManager.ConnectionStrings("CAD").ConnectionString
     Public CST As String = ConfigurationManager.ConnectionStrings("Telestaff").ConnectionString
     Public GIS As String = ConfigurationManager.ConnectionStrings("GIS").ConnectionString
+
+
 
     Public Function Get_Data(Of T)(query As String, cs As String) As List(Of T)
       Try
@@ -52,9 +57,7 @@ Namespace Models
     End Function
 
 
-    ' For testing, we'll set the errorhandling this way, after we get the app running, change it to
-    ' email/DB
-    Private Const ErrorHandling As Tools.DB.DB_Error_Handling_Method = DB.DB_Error_Handling_Method.Send_Errors_To_Log_Only
+
 
     Public Shared Function GetRecentStreets() As List(Of String)
       Dim query As String = "
@@ -407,8 +410,9 @@ WHERE
     End Function
 
     Public Function GetStaffingFromTelestaff() As List(Of Telestaff_Staff)
-      Dim d As New Tools.DB(CST, AppID, ErrorHandling)
-      Dim sbQuery As New StringBuilder
+      Dim c As New CADData()
+      'Dim d As New Tools.DB(CST, AppID, ErrorHandling)
+      'Dim sbQuery As New StringBuilder
       'With sbQuery
       '  .AppendLine("SELECT CASE WHEN LEFT(U.unit_abrv_ch, 2)='BC' THEN 'BAT' + RIGHT(U.unit_abrv_ch, 1) ELSE U.unit_abrv_ch END as unit_abrv_ch, ")
       '  .AppendLine(" U.unit_abrv_ch, RM.rscmaster_name_ch, S.staffing_start_dt, S.staffing_end_dt, W.wstat_abrv_ch, P.pos_desc_ch, ")
@@ -439,23 +443,14 @@ SELECT
         THEN 'R22A'
         ELSE U.unit_abrv_ch
       END
-  END AS unit_abrv_ch
-  ,ISNULL(RM.rscmaster_name_ch
-          ,'') rscmaster_name_ch
+  END AS Unit
+  ,P.pos_desc_ch + ' ' + ISNULL(RM.rscmaster_name_ch
+          ,'') Staff
   ,ST_EST.staffing_start_dt_est staffing_start_dt
   ,ST_EST.staffing_end_dt_est staffing_end_dt
   ,W.wstat_abrv_ch
-  ,P.pos_desc_ch
-  ,CASE UPPER(LEFT(P.pos_desc_ch
-                   ,1))
-     WHEN 'O'
-     THEN 0
-     WHEN 'E'
-     THEN 1
-     WHEN 'B'
-     THEN -1
-     ELSE 2
-   END AS nameorder
+  ,CAST(P.pos_desc_ch AS CHAR(20)) Position
+  ,P.pos_no_in ListOrder
 FROM
   Staffing_tbl S
   INNER JOIN vw_staffing_tbl_est ST_EST ON S.staffing_no_in = ST_EST.staffing_no_in
@@ -489,64 +484,99 @@ WHERE
   AND UPPER(WT.wstat_type_desc_ch) NOT IN ( 'NON WORKING' )
 ORDER  BY
   U.unit_abrv_ch ASC
-  ,nameorder ASC 
+  ,P.pos_no_in ASC 
 
 "
       ' We also need to get the active units
       Try
-        Dim ds As DataSet = d.Get_Dataset(query, "Telestaff")
-        Dim tmp As New List(Of Telestaff_Staff)(From dbRow In ds.Tables(0).AsEnumerable() Select New Telestaff_Staff With {
-                                                 .ListOrder = dbRow("nameorder"), .Staff = dbRow("rscmaster_name_ch"),
-                                                 .Unit = dbRow("unit_abrv_ch")})
+        Dim tmp = c.Get_Data(Of Telestaff_Staff)(query, c.CST)
+        'Dim ds As DataSet = d.Get_Dataset(query, "Telestaff")
+        'Dim tmp As New List(Of Telestaff_Staff)(From dbRow In ds.Tables(0).AsEnumerable()
+        '                                        Select New Telestaff_Staff With {
+        '                                         .ListOrder = dbRow("nameorder"),
+        '                                         .Staff = dbRow("rscmaster_name_ch"),
+        '                                         .Position = dbRow("pos_desc_ch"),
+        '                                         .Unit = dbRow("unit_abrv_ch")})
         ' Now we need to handle an outlier type of unit. E/L20, what we're going to do is just break out the users
         ' assigned to E/L20 (or generically anything with a "/") and then assign them to both
+        Dim unitnumberRegex = "(?<unitnumber>\d+)"
         Dim staff = (From t In tmp Where t.Unit.Contains("/") Select t)
         Dim tmp2 As New List(Of Telestaff_Staff)
         For Each s In staff
-          Dim newunit1 As String = s.Unit.Substring(0, 1) & s.Unit.Substring(s.Unit.Length - 2) ' Take the first character and then the last 2 characters
-          Dim newunit2 As String = s.Unit.Substring(s.Unit.Length - 3) ' Take the last 3 characters
-          s.Unit = newunit2
-          Dim x As New Telestaff_Staff
-          x.Unit = newunit1
-          x.Staff = s.Staff
-          x.ListOrder = s.ListOrder
-          tmp2.Add(x)
+          Dim matches = Regex.Matches(s.Unit, unitnumberRegex)
+          If matches.Count() > 0 Then
+            Dim unitnumber = matches.Item(0).Groups("unitnumber").Value
+            Dim test = s.Unit.Replace(unitnumber, "").Split("/")
+            s.Unit = test(0) & unitnumber
+            For i As Integer = 1 To test.GetUpperBound(0)
+              Dim x As New Telestaff_Staff
+              x.Unit = test(i) & unitnumber
+              x.Staff = s.Staff
+              x.Position = s.Position
+              x.ListOrder = s.ListOrder
+              tmp2.Add(x)
+            Next
+
+          End If
+
         Next
         tmp.AddRange(tmp2)
         ' Now let's find the other units from the unitper table in CAD
         ' first we're going to get a list of the units already returned from Telestaff so we'll know we can exclude those
-        sbQuery.Clear()
-        With sbQuery
-          .AppendLine("SELECT primekey, unitcode, name FROM unitper ")
-          .AppendLine("WHERE outtime IS NULL AND DATEDIFF(hh, intime, GETDATE()) < 25 AND ")
-          .Append("LEFT(unitcode, 5) <> 'CHIEF' ")
-          If tmp.Count > 0 Then
-            .Append("AND unitcode NOT IN (")
-            ' here we get the list of units to exclude from what we already got from telestaff
-            Dim unitlist As List(Of String) = (From t In tmp Select t.Unit).Distinct.ToList
-            For a As Integer = 0 To unitlist.Count - 1
-              .Append("'").Append(unitlist(a)).Append("'")
-              If a + 1 < unitlist.Count Then .Append(",")
-            Next
-            .Append(") ORDER BY unitcode ASC, primekey ASC")
-          End If
-        End With
-        Dim e As New Tools.DB(CAD, AppID, ErrorHandling)
-        ds = e.Get_Dataset(sbQuery.ToString)
-        Dim lastunit As String = "", lastcount As Integer = 0
-        For Each dr As DataRow In ds.Tables(0).Rows
-          If lastunit = dr("unitcode") Then
-            lastcount += 1
-          Else
-            lastcount = 0
-            lastunit = dr("unitcode").ToString.Trim
-          End If
-          Dim x As New Telestaff_Staff
-          x.Unit = lastunit
-          x.ListOrder = lastcount
-          x.Staff = dr("name").ToString.Trim
-          tmp.Add(x)
-        Next
+        Dim unitperQuery As String = "
+SELECT 
+  primekey ListOrder
+  ,unitcode Unit
+  ,name Staff
+  ,'' Position
+FROM unitper
+WHERE
+  outtime IS NULL
+  AND DATEDIFF(hh
+               ,intime
+               ,GETDATE()) < 25
+  AND LEFT(unitcode
+           ,5) <> 'CHIEF' 
+ORDER BY unitcode ASC, primekey ASC
+"
+
+        Dim cadstaff = c.Get_Data(Of Telestaff_Staff)(unitperQuery, c.CAD)
+        Dim currentunits = (From t In tmp Select t.Unit).Distinct().ToList
+        tmp.AddRange((From cs In cadstaff
+                      Where Not currentunits.Contains(cs.Unit)
+                      Select cs).ToList)
+        'sbQuery.Clear()
+        'With sbQuery
+        '  .AppendLine("SELECT primekey, unitcode, name FROM unitper ")
+        '  .AppendLine("WHERE outtime IS NULL AND DATEDIFF(hh, intime, GETDATE()) < 25 AND ")
+        '  .Append("LEFT(unitcode, 5) <> 'CHIEF' ")
+        '  If tmp.Count > 0 Then
+        '    .Append("AND unitcode NOT IN (")
+        '    ' here we get the list of units to exclude from what we already got from telestaff
+        '    Dim unitlist As List(Of String) = (From t In tmp Select t.Unit).Distinct.ToList
+        '    For a As Integer = 0 To unitlist.Count - 1
+        '      .Append("'").Append(unitlist(a)).Append("'")
+        '      If a + 1 < unitlist.Count Then .Append(",")
+        '    Next
+        '    .Append(") ORDER BY unitcode ASC, primekey ASC")
+        '  End If
+        'End With
+        'Dim e As New Tools.DB(CAD, AppID, ErrorHandling)
+        'ds = e.Get_Dataset(sbQuery.ToString)
+        'Dim lastunit As String = "", lastcount As Integer = 0
+        'For Each dr As DataRow In ds.Tables(0).Rows
+        '  If lastunit = dr("unitcode") Then
+        '    lastcount += 1
+        '  Else
+        '    lastcount = 0
+        '    lastunit = dr("unitcode").ToString.Trim
+        '  End If
+        '  Dim x As New Telestaff_Staff
+        '  x.Unit = lastunit
+        '  x.ListOrder = lastcount
+        '  x.Staff = dr("name").ToString.Trim
+        '  tmp.Add(x)
+        'Next
         Return tmp
       Catch ex As Exception
         Tools.Log(ex, AppID, MachineName, Tools.Logging.LogType.Database)
@@ -1254,7 +1284,7 @@ ORDER  BY
     '  End Try
     'End Function
 
-    Private Function GetCallByDataRow(dr As DataRow,
+    Public Function GetCallByDataRow(dr As DataRow,
                                       au As List(Of ActiveUnit),
                                       Notes As List(Of Note),
                                       Optional cache_call_address_history As Boolean = False,
@@ -1274,19 +1304,6 @@ ORDER  BY
                     Select n
                     Order By n.timestamp Descending).ToList()
 
-          '.Notes = CType(IIf(IsDBNull(dr("notes")), "", dr("notes")), String).Trim
-          '.Notes = dr("notes")
-          'If dr("case_id").ToString.Trim().Length > 0 Then .Notes &= vbCrLf & "CCFR  [CCFR Report Number: " & dr("case_id").ToString.Trim() & "]" & vbCrLf
-          'If Not ad Is Nothing AndAlso dr("case_id").ToString.Trim().Length > 0 Then
-          '    Dim x As New CADCallDetail
-          '    x.IncidentID = .IncidentID
-          '    x.Timestamp = .CallTime
-          '    x.Description = "NOTE"
-          '    x.UserID = "MINICAD"
-          '    x.UserTyped = "CCFR Report Number: " & dr("case_id").ToString.Trim()
-          '    x.Comments = x.UserTyped
-          '    ad.Add(x)
-          'End If
           .CCFR = dr("case_id")
           .CallType = dr("CallType")
           .CallIconURLBottom = dr("NaturecodeIconURLBottom")
@@ -1625,6 +1642,7 @@ ORDER  BY
 
     Public Class Telestaff_Staff
       Property Unit As String ' The unit assigned, will need to specially handle "E/L 20"
+      Property Position As String = ""
       Property Staff As String ' a list of staff
       Property ListOrder As Integer ' The order to display the units in
     End Class
