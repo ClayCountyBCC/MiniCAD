@@ -46,7 +46,7 @@ Namespace Models
         Case "ExtraMapPoints"
           Return Extra_Map_Points.Get_Points()
         Case "TelestaffStaff"
-          Return c.GetStaffingFromTelestaff
+          Return Telestaff_Staff.GetCurrentStaffing
         Case "ShortUnitStatus"
           Dim staffingCIP = New CacheItemPolicy()
           staffingCIP.AbsoluteExpiration = Now.AddMinutes(10)

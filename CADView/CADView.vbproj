@@ -198,6 +198,7 @@
     <Compile Include="Models\myCache.vb" />
     <Compile Include="Models\Note.vb" />
     <Compile Include="Models\Replay.vb" />
+    <Compile Include="Models\Telestaff_Staff.vb" />
     <Compile Include="Models\UnitMove.vb" />
     <Compile Include="My Project\AssemblyInfo.vb" />
     <Compile Include="My Project\Application.Designer.vb">
