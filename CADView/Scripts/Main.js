@@ -17,7 +17,7 @@ let historyfilters = {
 let showHistoryFilters = true;
 
 function ShowOnMap(lat, long) {
-    if (lat == '0') {
+    if (lat === 0) {
         currentlong = -81.80;
         currentlat = 29.950; // lon, lat
     } else {
@@ -36,7 +36,7 @@ function ShowMap(event)
   require(["esri/geometry/Point"], function (Point)
   {
     var p = new Point([currentlong, currentlat]);
-    if (currentlong == -81.80 && currentlat == 29.950)
+    if (currentlong === -81.80 && currentlat === 29.950)
     {
       map.centerAndZoom(p, 11);
     } else
@@ -1516,21 +1516,20 @@ function LoadRadioData()
 
 function LoadCallerLocations()
 {
-  return; // disabling this temporarily because the locations are not being loaded currently.
   //console.log('load caller locations');
-  //$.getJSON('./CallData/GetCallerLocations')
-  //  .done(function (data)
-  //  {
-  //    console.log('caller locations data', data);
-  //    if (data === null || data.Records === null || data.Records.length === 0) return;
-  //    callerLocations = data.Records;
-  //    console.log('caller locations', callerLocations);
-  //    UpdateCallerLocationsLayer(data.Records);
-  //  })
-  //  .fail(function ()
-  //  {
-  //    console.log('get caller lcations data failed');
-  //  });
+  $.getJSON('./CallData/GetCallerLocations')
+    .done(function (data)
+    {
+      if (data === null || data.Records === null || data.Records.length === 0) return;
+      callerLocations = data.Records;
+      let button = document.getElementById("CallerLocations");
+      if (button.style.display === "none") button.style.display = "block";
+      UpdateCallerLocationsLayer(data.Records);
+    })
+    .fail(function ()
+    {
+      console.log('get caller lcations data failed');
+    });
 }
 
 

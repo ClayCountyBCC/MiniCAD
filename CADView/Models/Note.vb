@@ -199,8 +199,8 @@ Namespace Models
       Return myCache.GetItem("AllNotes", CIP)
     End Function
 
-    Public Function ToCADCallDetail() As CADData.CADCallDetail
-      Dim ccd As New CADData.CADCallDetail With {
+    Public Function ToCADCallDetail() As CallDetail
+      Dim ccd As New CallDetail With {
         .Comments = Me.note.Trim,
         .UserTyped = Me.note.Trim,
         .Timestamp = Me.timestamp,
@@ -213,7 +213,7 @@ Namespace Models
       Return ccd
     End Function
 
-    Public Shared Function GetAllNotesToCallDetail() As List(Of CADData.CADCallDetail)
+    Public Shared Function GetAllNotesToCallDetail() As List(Of CallDetail)
       Dim notes = GetCachedNotes()
       Dim details = (From n In notes
                      Where n.note_id > 0
@@ -221,7 +221,7 @@ Namespace Models
       Return details
     End Function
 
-    Public Shared Function GetCachedNotesToCallDetail() As List(Of CADData.CADCallDetail)
+    Public Shared Function GetCachedNotesToCallDetail() As List(Of CallDetail)
       Dim CIP As New CacheItemPolicy
       CIP.AbsoluteExpiration = Now.AddSeconds(30)
       Return myCache.GetItem("AllNotesCADCallDetail", CIP)

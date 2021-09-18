@@ -56,13 +56,18 @@ function ShowCallerLocationsLayer()
 {
   if (CallerLocationsLayer !== undefined)
   {
+    let button = document.getElementById("CallerLocationsText");
     if (CallerLocationsLayer.visible)
     {
       CallerLocationsLayer.hide();
+      button.textContent = "Show Caller Locations";
+      console.log('hiding caller locations');
     }
     else
     {
       CallerLocationsLayer.show();
+      button.textContent = "Hide Caller Locations";
+      console.log('showing caller locations');
     }
   }
 }
@@ -102,7 +107,7 @@ function mapInit() {
         LoadRadioData();
         //LoadExtraMapPoints();
         // Re-enable after this fixed.
-        //LoadCallerLocations();
+        LoadCallerLocations();
       }
       if (IsFairTime()) {
         var fairMap = new ArcGISImageServiceLayer('https://maps.claycountygov.com:6443/arcgis/rest/services/FairImage/ImageServer');
@@ -1166,7 +1171,6 @@ function UpdateCallerLocationsLayer(locations)
     "esri/symbols/TextSymbol"],
     function (SimpleMarkerSymbol, PictureMarkerSymbol, Graphic, InfoTemplate, Point, SpatialReference, TextSymbol)
     {
-
       CallerLocationsLayer.clear();
       for (var i = 0; i < locations.length; i++)
       {
@@ -1193,7 +1197,6 @@ function UpdateCallerLocationsLayer(locations)
             });
             var towerGraphic = new Graphic(wmIncident, cellTower);
             var lat_long = location.latitude.toString() + '-' + location.longitude.toString();
-            console.log('lat_long', lat_long);
             if (CallerLocationsLayer.graphics.filter(function (j) { return j.attributes.lat_long === lat_long; }).length === 0)
             {
               towerGraphic.setAttributes({ "lat_long": lat_long });

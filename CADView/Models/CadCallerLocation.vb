@@ -5,19 +5,29 @@ Namespace Models
 
   Public Class CadCallerLocation
     Public Property IncidentID As String
-    Public Property CaseID As String
     Public Property LocationTime As Date
     Public Property Latitude As Decimal
     Public Property Longitude As Decimal
     Public Property Confidence As String
     Public Property CallStartTime As Date
-    Public ReadOnly Property SecondsSinceStart As Integer
-    Get
-        Return LocationTime.Subtract(CallStartTime).TotalSeconds
-    End Get
+    Public ReadOnly Property ToUSNG As String
+      Get
+        If Latitude <> 0 Then
+          Dim x As New CADData
+          Return x.Convert_LatLong_To_USNG(Latitude, Longitude)
+        Else
+          Return ""
+        End If
+      End Get
     End Property
+    Public ReadOnly Property SecondsSinceStart As Integer
+      Get
+        Return LocationTime.Subtract(CallStartTime).TotalSeconds
+      End Get
+    End Property
+    ' Need to get Caller USNG
 
-    Public Shared Function GetCadCallerLocationByCaseID(CaseID As String, StartTime As Date, EndTime As Date) As List(Of CadCallerLocation)
+    Public Shared Function GetCadCallerLocationsByPeriod(StartTime As Date, EndTime As Date) As List(Of CadCallerLocation)
       Dim query As String = "
 WITH PhoneLocation
      AS (SELECT
@@ -39,7 +49,6 @@ WITH PhoneLocation
 SELECT  
   @OriginalStart CallStartTime
   ,I.inci_id IncidentID
-  ,I.case_id CaseID
   ,P.proctime location_time
   ,P.latitude Latitude
   ,P.longitude Longitude
@@ -48,13 +57,9 @@ FROM
   inmain I
   INNER JOIN PhoneLocation P ON I.callerph = P.phonenumfixed
                                 AND P.proctime BETWEEN @Start AND @End
-WHERE
-  case_id = @CaseID
 ORDER  BY
-  proctime ASC 
-"
+  proctime ASC "
       Dim dp As New DynamicParameters
-      dp.Add("@CaseID", CaseID)
       dp.Add("@Start", StartTime.AddMinutes(-5))
       dp.Add("@OriginalStart", StartTime)
       dp.Add("@End", EndTime)

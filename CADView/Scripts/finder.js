@@ -154,7 +154,7 @@ function ToggleTracking() {
     if (!istracking) {
         // tracking is currently turned off
         // Let's check to make sure they filled out the group / user id
-        if (group.toUpperCase() == "NONE" || user.toUpperCase() == "NONE") {
+        if (group.toUpperCase() === "NONE" || user.toUpperCase() === "NONE") {
             showGroups();
         } else {
             // Tracking is off and we apparently have right info filled out

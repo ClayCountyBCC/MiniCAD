@@ -14,7 +14,6 @@ Public Class CallDataController
   Private Const advisoriesKey As String = "Advisories"
   Private Const historyKey As String = "HistoricalCalls"
   Private Const AppID As Integer = 10002
-  Private updateCounter As Integer = 0
   'Private cache As ObjectCache = MemoryCache.Default
 
   Public Function GetShortUnitStatus() As JsonResult
@@ -26,17 +25,17 @@ Public Class CallDataController
     End Try
   End Function
 
-  Private Function GetUpdatedUnitStatus() As List(Of CADData.ActiveUnit)
+  Private Function GetUpdatedUnitStatus() As List(Of ActiveUnit)
     Dim CIP As New CacheItemPolicy
     CIP.AbsoluteExpiration = Now.AddSeconds(6)
-    Dim au As List(Of CADData.ActiveUnit) = myCache.GetItem(unitStatusKey, CIP)
+    Dim au As List(Of ActiveUnit) = myCache.GetItem(unitStatusKey, CIP)
     Return au
   End Function
 
   <HttpGet()>
   Public Function GetRadioLocations() As JsonResult
     Try
-      If MotorolaLocation.CheckAccess(Request.LogonUserIdentity.Name) Then
+      If CADData.IsInternal() AndAlso MotorolaLocation.CheckAccess(Request.LogonUserIdentity.Name) Then
         Dim CIP As New CacheItemPolicy
         CIP.AbsoluteExpiration = Now.AddMinutes(1)
         Dim Locations As List(Of MotorolaLocation) = myCache.GetItem("MotorolaLocations", CIP)
@@ -51,13 +50,20 @@ Public Class CallDataController
   End Function
 
   <HttpGet()>
-  Public Function GetReplayData(IncidentID As String, IncludeAllUnits As Boolean) As Replay
+  Public Function GetReplayDataByCaseID(CaseID As String) As Replay
     Try
-      If IncludeAllUnits Then
-        Return Replay.GetCachedReplayAllUnits(IncidentID)
-      Else
-        Return Replay.GetCachedReplayCallUnitsOnly(IncidentID)
-      End If
+      Return Replay.GetCachedReplayByCaseID(CaseID)
+    Catch ex As Exception
+      Tools.Log(ex, AppID, MachineName, Tools.Logging.LogType.Database)
+      Return Nothing
+    End Try
+  End Function
+
+  <HttpGet()>
+  Public Function GetReplayDataByPeriod(StartDate As Date, Duration As Integer) As Replay
+    Try
+      If Duration > 12 Then Duration = 12
+      Return New Replay(StartDate, StartDate.AddHours(Duration))
     Catch ex As Exception
       Tools.Log(ex, AppID, MachineName, Tools.Logging.LogType.Database)
       Return Nothing
@@ -67,8 +73,13 @@ Public Class CallDataController
   <HttpGet()>
   Public Function GetCallerLocations() As JsonResult
     Try
-      Dim Locations As List(Of CallerLocation) = CallerLocation.GetCachedLatest()
-      Return Json(New With {.Result = "OK", .Records = Locations}, JsonRequestBehavior.AllowGet)
+      If CADData.IsInternal() Then
+        Dim Locations As List(Of CallerLocation) = CallerLocation.GetCachedLatest()
+        Return Json(New With {.Result = "OK", .Records = Locations}, JsonRequestBehavior.AllowGet)
+      Else
+        Return Json(New With {.Result = "OK", .Records = Nothing}, JsonRequestBehavior.AllowGet)
+      End If
+
     Catch ex As Exception
       Tools.Log(ex, AppID, MachineName, Tools.Logging.LogType.Database)
       Return Json(New With {.Result = "Error", .Records = Nothing})
@@ -78,10 +89,10 @@ Public Class CallDataController
   Public Function GetActiveCalls() As JsonResult
     Try
       Dim MyCache As Cache = HttpContext.Cache
-      Dim C As New CADData, AC As List(Of CADData.CaDCall) = MyCache(activeKey)
-      Dim AU As List(Of CADData.ActiveUnit) = GetUpdatedUnitStatus()
+      Dim AC As List(Of CADCall) = MyCache(activeKey)
+      Dim AU As List(Of ActiveUnit) = GetUpdatedUnitStatus()
       If AC Is Nothing Then ' Not found, let's query for it
-        AC = C.GetActiveCalls(AU)
+        AC = CADCall.GetActiveCalls(AU)
         MyCache.Insert(activeKey, AC, Nothing, Now.AddSeconds(30), TimeSpan.Zero)
       End If
       Return Json(New With {.Result = "OK", .Records = AC, .TotalRecordCount = AC.Count}, JsonRequestBehavior.AllowGet)
@@ -94,10 +105,9 @@ Public Class CallDataController
   Public Function GetAdvisories() As JsonResult
     Try
       Dim MyCache As Cache = HttpContext.Cache
-      Dim ac As List(Of CADData.Advisory) = MyCache(advisoriesKey)
+      Dim ac As List(Of Advisory) = MyCache(advisoriesKey)
       If ac Is Nothing Then ' Not found, let's query for it
-        Dim c As New CADData
-        ac = c.GetActiveAdvisories()
+        ac = Advisory.GetActiveAdvisories()
         MyCache.Insert(advisoriesKey, ac, Nothing, Now.AddMinutes(5), TimeSpan.Zero)
       End If
       Return Json(New With {.Result = "OK", .Records = ac, .TotalRecordCount = ac.Count}, JsonRequestBehavior.AllowGet)
@@ -110,10 +120,9 @@ Public Class CallDataController
   Public Function GetHistoricalCalls() As JsonResult
     Try
       Dim myCache As Cache = HttpContext.Cache
-      Dim ac As List(Of CADData.CaDCall) = myCache(historyKey)
+      Dim ac As List(Of CADCall) = myCache(historyKey)
       If ac Is Nothing Then ' Not found, let's query for it
-        Dim c As New CADData
-        ac = c.GetHistoricalCalls
+        ac = CADCall.GetHistoricalCalls
         myCache.Insert(historyKey, ac, Nothing, Now.AddMinutes(5), TimeSpan.Zero)
       End If
       Return Json(New With {.Result = "OK", .Records = ac}, JsonRequestBehavior.AllowGet)
@@ -126,7 +135,7 @@ Public Class CallDataController
   Public Function GetCallDetail(IncidentID As String, Optional Timestamp As Date = Nothing) As JsonResult
     Try
       Dim C As New CADData
-      Dim CD As List(Of CADData.CADCallDetail) = C.GetCallDetail(IncidentID, Timestamp)
+      Dim CD As List(Of CallDetail) = C.GetCallDetail(IncidentID, Timestamp)
       Return Json(New With {.Result = "OK", .Records = CD}, JsonRequestBehavior.AllowGet)
     Catch ex As Exception
       Tools.Log(ex, AppID, MachineName, Tools.Logging.LogType.Database)
@@ -137,7 +146,7 @@ Public Class CallDataController
   Public Function GetHistoricalCallHistory(IncidentID As String) As JsonResult
     Try
       Dim C As New CADData
-      'Dim CD As List(Of CADData.CaDCall) = C.GetHistoricalCallsByAddressForHistoricalCall(IncidentID)
+      'Dim CD As List(Of CADCall) = C.GetHistoricalCallsByAddressForHistoricalCall(IncidentID)
       'Dim HistoricalCalls = HistoricalCall.GetHistoricalCallsByIncidentID(IncidentID)
       Dim HistoricalCalls = HistoricalCall.GetCachedHistoricalCallsByIncidentID(IncidentID)
       Return Json(New With {.Result = "OK", .Records = HistoricalCalls}, JsonRequestBehavior.AllowGet)

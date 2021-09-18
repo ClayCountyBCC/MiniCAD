@@ -169,10 +169,6 @@
     <None Include="My Project\PublishProfiles\CADView Production.pubxml" />
     <None Include="My Project\PublishProfiles\CADView DV10.pubxml" />
     <Content Include="Scripts\locate.js" />
-    <Content Include="Scripts\lodash.core.js" />
-    <Content Include="Scripts\lodash.core.min.js" />
-    <Content Include="Scripts\lodash.js" />
-    <Content Include="Scripts\lodash.min.js" />
     <Content Include="Scripts\Replay.js" />
     <Content Include="Scripts\CadMapper.js" />
     <Content Include="Scripts\jquery-1.11.1.js" />
@@ -190,8 +186,12 @@
     <Compile Include="Global.asax.vb">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\ActiveUnit.vb" />
+    <Compile Include="Models\Advisory.vb" />
+    <Compile Include="Models\CADCall.vb" />
     <Compile Include="Models\CadCallerLocation.vb" />
     <Compile Include="Models\CADData.vb" />
+    <Compile Include="Models\CallDetail.vb" />
     <Compile Include="Models\CallerLocation.vb" />
     <Compile Include="Models\HistoricalCall.vb" />
     <Compile Include="Models\MotorolaLocation.vb" />

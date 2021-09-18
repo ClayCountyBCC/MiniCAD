@@ -333,7 +333,7 @@ li img.imghide {
   transition: opacity .2s;
 }
 
-  .slider::-webkit-slider-thumb
+/*  .slider::-webkit-slider-thumb
   {
     -webkit-appearance: none;
     appearance: none;
@@ -351,7 +351,7 @@ li img.imghide {
     border-radius: 50%;
     background: #04AA6D;
     cursor: pointer;
-  }
+  }*/
 
 
 #unit

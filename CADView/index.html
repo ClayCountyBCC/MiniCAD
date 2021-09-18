@@ -8,8 +8,8 @@
 
   <title>MiniCAD</title>
   <link href="CSS/BackToTop.css" rel="stylesheet" />
-  <link href="CSS/CadMapper.css?v=202109091710" rel="stylesheet" type="text/css" />
-  <link href="CSS/Main.css?v=202109091710" rel="stylesheet" type="text/css" />
+  <link href="CSS/CadMapper.css?v=20210914180300" rel="stylesheet" type="text/css" />
+  <link href="CSS/Main.css?v=20210914180300" rel="stylesheet" type="text/css" />
   <link rel="stylesheet" href="//js.arcgis.com/3.37/esri/css/esri.css">
   <link href="CSS/main-test.css" rel="stylesheet" />
 </head>
@@ -191,7 +191,7 @@
           </div>
           <div id="CallerLocations"
                onclick="ShowCallerLocationsLayer()"
-               style="cursor: pointer;"
+               style="cursor: pointer; display: none;"
                title="This layer shows the calls that come in to the 911 circuit.  This includes all calls, not just Fire Rescue calls.">
             <svg width="24" height="24" style="touch-action: none;">
               <defs></defs>
@@ -211,7 +211,10 @@
                       dojoGfxStrokeStyle="solid"
                       transform="matrix(1.00000000,0.00000000,0.00000000,1.00000000,15.00000000,15.00000000)"></circle>
             </svg>
-            Caller Locations
+            <span id="CallerLocationsText">
+              Show Caller Locations
+            </span>
+            
           </div>
         </div>
       </div>
@@ -289,19 +292,22 @@
   <!--<script src="//code.jquery.com/jquery-1.10.2.js"></script>-->
   <!--<script src="//js.arcgis.com/3.21/"></script>-->
   <script src="//js.arcgis.com/3.37/"></script>
-  <script src="Scripts/CadMapper.js?v=202109091710"></script>
+  <script src="Scripts/CadMapper.js?v=20210914180300"></script>
   <script src="Scripts/modernizr-2.8.3.js"></script>
-  <script src="Scripts/Main.js?v=202109091710"></script>
-  <script src="Scripts/Replay.js?v=202109091710"></script>
+  <script src="Scripts/Main.js?v=20210914180300"></script>
+  <script src="Scripts/Replay.js?v=20210914180300"></script>
   <!--<script src="Scripts/tracking.js?v=202105111047"></script>-->
-  <script src="Scripts/locate.js?v=202109091710"></script>
+  <script src="Scripts/locate.js?v=20210914180300"></script>
 
   <script type="text/javascript">
-    Array.prototype.extend = function (other_array) {
+    "use strict";
+    Array.prototype.extend = function (other_array)
+    {
       /* you should include a test to check whether other_array really is an array */
       other_array.forEach(function (v) { this.push(v) }, this);
-    }
-    String.prototype.toProperCase = function () {
+    };
+    String.prototype.toProperCase = function ()
+    {
       return this.replace(/\w\S*/g, function (txt) { return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase(); });
     };
     var lastactivedata, currentactivedata, lasthistoricaldata = null, filteredlasthistoricaldata = null, lastunitdata, currentunit = ''; // These two variables will store the last bit of json data returned for the server by each respective process.
@@ -321,16 +327,18 @@
         setInterval(updateHistoricalCallsTable, 65500 * 5); // 5 mins
         setInterval(LoadAdvisoryTable, 63500 * 15); // 15 mins*/
 
-        // Re-enable after this is fixed.
-        //setInterval(LoadCallerLocations, 10050);
+        setInterval(LoadCallerLocations, 10050);
 
         if ($(window).width() > 999) {
           mapInit();
         }
-        $(window).resize(function () {
-          if (map === null && $(window).width() > 999) {
+        $(window).resize(function ()
+        {
+          if (map === null && $(window).width() > 999)
+          {
             mapInit();
-          } else {
+          } else
+          {
             tabClick(currenttab);
             map.setExtent(defaultExtent);
           }

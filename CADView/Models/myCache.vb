@@ -7,7 +7,7 @@ Namespace Models
 
     Public Shared Function GetItem(key As String, Optional CIP As CacheItemPolicy = Nothing) As Object
       Dim tmpCIP As New CacheItemPolicy
-      If Not CIP Is Nothing Then
+      If CIP IsNot Nothing Then
         tmpCIP = CIP
       Else
         tmpCIP.AbsoluteExpiration = Now.AddHours(1)
@@ -43,8 +43,7 @@ Namespace Models
       Dim split = key.Split("-")
 
       Select Case split(0)
-        Case "ExtraMapPoints"
-          Return Extra_Map_Points.Get_Points()
+
         Case "TelestaffStaff"
           Return Telestaff_Staff.GetCurrentStaffing
         Case "ShortUnitStatus"
@@ -59,11 +58,8 @@ Namespace Models
         Case "RecentCalls"
           Return CADData.GetRecentStreets()
 
-        Case "ReplayAllUnits"
-          Return Replay.ReplayAllUnits(split(1))
-
-        Case "ReplayCallUnitsOnly"
-          Return Replay.ReplayCallUnitsOnly(split(1))
+        Case "ReplayByCaseID"
+          Return Replay.ReplayByCaseID(split(1))
 
         Case "ActiveCalls"
 
