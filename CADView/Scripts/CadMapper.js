@@ -27,30 +27,11 @@ function IsFairTime() {
   var d = new Date();
   var month = d.getMonth();
   var day = d.getDate();
-  //return true;
   return ((month === 1 && day > 25) || month === 2  || (month === 3 && day < 14));
-  //if (d.getMonth() == 2 && d.getDate() > 25) {
-  //  return true;
-  //} else if (d.getMonth() == 3 && d.getDate() < 14) {
-  //  return true;
-  //}
-  //return false;
+
 }
 
-//function ShowExtraMapPointsLayer()
-//{
-//  if (ExtraMapPointsLayer !== undefined)
-//  {
-//    if (ExtraMapPointsLayer.visible)
-//    {
-//      ExtraMapPointsLayer.hide();
-//    }
-//    else
-//    {
-//      ExtraMapPointsLayer.show();
-//    }
-//  }
-//}
+
 
 function ShowCallerLocationsLayer()
 {
@@ -119,24 +100,18 @@ function mapInit() {
       map.addLayer(fireResponse); // was port 6080 for regular http
       var siteAddresses = new ArcGISDynamicMapServiceLayer('https://maps.claycountygov.com:6443/arcgis/rest/services/SiteAddresses/MapServer');
       map.addLayer(siteAddresses);
-      // Test grid overlay for motorola rollout
-      //TestGrid = new ArcGISDynamicMapServiceLayer('://maps.claycountygov.com:6443/arcgis/rest/services/Motorola_Test/MapServer');
-      //map.addLayer(TestGrid);
-      //TestGrid.hide();
 
       WeatherWarningLayer = new ArcGISDynamicMapServiceLayer('//idpgis.ncep.noaa.gov/arcgis/rest/services/NWS_Forecasts_Guidance_Warnings/watch_warn_adv/MapServer');
       //WeatherWarningLayer.opacity = .5;
-      WeatherWarningLayer.refreshInterval = 5;
+      WeatherWarningLayer.refreshInterval = 5; // refreshInterval is in Minutes per the docs
 
 
       WeatherWarningLayer.hide();
       map.addLayer(WeatherWarningLayer);
 
       RadarLayer = new ArcGISDynamicMapServiceLayer('//idpgis.ncep.noaa.gov/arcgis/rest/services/NWS_Observations/radar_base_reflectivity/MapServer');
-      RadarLayer.setRefreshInterval(30000);
+      RadarLayer.setRefreshInterval(1); // this was previously set to 30000, but this value is in Minutes so that was wrong.
       RadarLayer.setDisableClientCaching(true);
-      //RadarLayer.refreshInterval = 1;
-      //RadarLayer.disableClientCaching(true);
       
       RadarLayer.opacity = .5;
       RadarLayer.hide();
@@ -168,19 +143,8 @@ function mapInit() {
         extent: defaultExtent
       }, "HomeButton");
       home.startup();
-      //geoLocate = new LocateButton({
-      //  map: map,
-      //  useTracking: true,
-      //  clearOnTrackingStop: true
-      //}, "LocateButton");
-      //geoLocate.startup();
-      //geoLocate.on("locate", function (locate) {
-      //  event.stop(event);
-          
-      //});
 
       // Setup USNG Layer
-      //USNGOverlay = new esri.layers.ArcGISDynamicMapServiceLayer();
       USNGOverlay = new ArcGISDynamicMapServiceLayer('https://maps1.arcgisonline.com/ArcGIS/rest/services/NGA_US_National_Grid/MapServer');
       //USNGOverlay = new ArcGISDynamicMapServiceLayer('https://maps.claycountygov.com:6443/arcgis/rest/services/US_National_Grid/MapServer');
       map.addLayer(USNGOverlay);
@@ -198,13 +162,6 @@ function mapInit() {
 
       RadioLayer = new esri.layers.GraphicsLayer();
       map.addLayer(RadioLayer);
-
-      //ExtraMapPointsLayer = new esri.layers.GraphicsLayer();
-      //map.addLayer(ExtraMapPointsLayer);
-      //ExtraMapPointsLayer.hide();
-
-      //ExtraMapPointsByCallLayer = new esri.layers.GraphicsLayer();
-      //map.addLayer(ExtraMapPointsByCallLayer);
 
       CallerLocationsLayer = new esri.layers.GraphicsLayer();
       map.addLayer(CallerLocationsLayer);
@@ -660,7 +617,7 @@ function filterAvailable(u) {
       return u.UnitType === "RESCUE";
 
     default:
-      return u.UnitType !== "ANIMALSERVICES";
+      return true;//u.UnitType !== "ANIMALSERVICES";
 
   }
 

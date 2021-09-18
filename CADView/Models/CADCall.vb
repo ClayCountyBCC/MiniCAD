@@ -102,36 +102,9 @@ Namespace Models
       ' Here we get the data from the database.
       Dim c As New CADData
       Dim D As New Tools.DB(c.CAD, CADData.AppID, CADData.ErrorHandling)
-      'Dim AU As List(Of ActiveUnit) = GetShortActiveUnitStat(Stafflist)
-      ' 8/25/2021 removed preloading active calls history and call details
-      ' =================================================================
-      'Dim H As List(Of CaDCall) = GetAllHistoricalCallsByAddressForActiveCalls()
-      'Dim AD As List(Of CADCallDetail) = GetAllActiveCallsDetail()
-      ' =================================================================
+
       Dim Notes As List(Of Note) = Note.GetCachedNotes()
-      'Dim sbQuery As New StringBuilder
-      'With sbQuery
-      '  ' Old version, testing new one that is rebid aware.
-      '  '.AppendLine("SELECT A.latitude, A.longitude, geox, geoy, business, crossroad1, I.inci_id, nature, calltime, ")
-      '  '.AppendLine("(CASE WHEN PATINDEX('%IST:%',addtst) > 0 THEN LTRIM(RTRIM(street)) ")
-      '  '.AppendLine("WHEN LEN(LTRIM(RTRIM(addtst))) = 0 THEN LTRIM(RTRIM(street)) ")
-      '  '.AppendLine("ELSE LTRIM(RTRIM(street)) + ' - ' + addtst END) AS fullstreet, LTRIM(RTRIM(street)) AS street, notes, district, case_id, ")
-      '  '.AppendLine("LTRIM(RTRIM(street)) + ', ' + LTRIM(RTRIM(citydesc)) + ' FL, ' + LTRIM(RTRIM(zip)) AS mapurl")
-      '  '.AppendLine("FROM incident I LEFT OUTER JOIN anialiin A on I.inci_id=A.inci_id AND A.classser='WPH2' ")
-      '  '.AppendLine("WHERE cancelled=0 AND I.inci_id <> '' ORDER BY calltime DESC, I.inci_id DESC ")
 
-      '  ' Older version.  Replaced with current aniali table functionality
-      '  '.AppendLine("SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;")
-      '  '.AppendLine("SELECT A.latitude, A.longitude, A.confidence, A.proctime, geox, geoy, business, crossroad1, I.inci_id, nature, calltime,  ")
-      '  '.AppendLine("(CASE WHEN PATINDEX('%IST:%',addtst) > 0 THEN LTRIM(RTRIM(street)) WHEN LEN(LTRIM(RTRIM(addtst))) = 0 THEN LTRIM(RTRIM(street))  ")
-      '  '.AppendLine("ELSE LTRIM(RTRIM(street)) + ' - ' + addtst END) AS fullstreet, LTRIM(RTRIM(street)) AS street, notes, district, case_id,  ")
-      '  '.AppendLine("LTRIM(RTRIM(street)) + ', ' + LTRIM(RTRIM(citydesc)) + ' FL, ' + LTRIM(RTRIM(zip)) AS mapurl FROM incident I LEFT OUTER JOIN ( ")
-      '  '.AppendLine("SELECT proctime, LTRIM(RTRIM(REPLACE(REPLACE(REPLACE(REPLACE(phonenum, '(', ''), ')', ''), ' ', ''), '-', ''))) AS phonenumfixed,  ")
-      '  '.AppendLine("SUBSTRING(rawdata, 253,11) AS longitude, SUBSTRING(rawdata, 265,10) AS latitude, SUBSTRING(rawdata, 281,3) AS confidence FROM anialihs ")
-      '  '.AppendLine("WHERE anialihsid IN (SELECT MAX(anialihsid) AS anialihsid FROM anialihs WHERE ISNUMERIC(SUBSTRING(rawdata, 253,11)) = 1 AND ISNUMERIC(SUBSTRING(rawdata, 265,10)) = 1 AND ISNUMERIC(SUBSTRING(rawdata, 281,3)) = 1 AND classser='WPH2' AND proctime > DATEADD(hh, -12, GETDATE())  ")
-      '  '.AppendLine("GROUP BY phonenum)) A ON I.callerph = phonenumfixed WHERE I.cancelled=0 AND I.inci_id <> '' ORDER BY calltime DESC, I.inci_id DESC ")
-
-      'End With
       Dim query As String = "
 SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
 
@@ -217,9 +190,7 @@ ORDER  BY
 
         Dim L As New List(Of CADCall)(From dbRow In DS.Tables(0).AsEnumerable()
                                       Select GetCallByDataRow(dbRow, AU, Notes, True))
-        ' Old version that loaded historical calls and call detail
-        'Dim L As New List(Of CaDCall)(From dbRow In DS.Tables(0).AsEnumerable()
-        '                              Select GetCallByDataRow(dbRow, AU, H, AD, Notes))
+
         Return L
       Catch ex As Exception
         Tools.Log(ex, CADData.AppID, MachineName, Tools.Logging.LogType.Database)
@@ -235,7 +206,7 @@ ORDER  BY
       ' Here we get the data from the database.
       Dim c As New CADData
       Dim D As New Tools.DB(c.CAD, CADData.AppID, CADData.ErrorHandling)
-      Dim au As List(Of ActiveUnit) = c.GetUnitStatus()
+      Dim au As List(Of ActiveUnit) = ActiveUnit.GetUnitStatus()
       Dim Notes As List(Of Note) = Note.GetCachedNotes()
       Dim query As String = "
 SELECT
@@ -281,19 +252,8 @@ WHERE
   AND calltime > DATEADD(dd, -7, CAST(GETDATE() AS DATE))
 ORDER  BY
   calltime DESC
-  ,inci_id DESC 
+  ,inci_id DESC "
 
-"
-      'Dim sbQuery As New StringBuilder
-      'With sbQuery
-      '  .AppendLine("SELECT NULL AS latitude, NULL as longitude, business, crossroad1, geox, geoy, inci_id, nature, calltime, ")
-      '  .AppendLine("(CASE WHEN PATINDEX('%IST:%',addtst) > 0 THEN LTRIM(RTRIM(street)) ")
-      '  .AppendLine("WHEN LEN(LTRIM(RTRIM(addtst))) = 0 THEN LTRIM(RTRIM(street)) ")
-      '  .AppendLine("ELSE LTRIM(RTRIM(street)) + ' - ' + addtst END) AS fullstreet, LTRIM(RTRIM(street)) as street, notes, district, case_id, ")
-      '  .AppendLine("LTRIM(RTRIM(street)) + ', ' + LTRIM(RTRIM(citydesc)) + ' FL, ' + LTRIM(RTRIM(zip)) AS mapurl")
-      '  .AppendLine("FROM inmain WHERE cancelled=0 AND inci_id <> '' ")
-      '  .Append("AND calltime >  DATEADD(dd, -7, CAST(GETDATE() AS DATE))  ORDER BY calltime DESC, inci_id DESC ")
-      'End With
       ' We also need to get the active units
       Try
         Dim DS As DataSet = D.Get_Dataset(query, "CAD")

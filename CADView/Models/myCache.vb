@@ -51,7 +51,7 @@ Namespace Models
           staffingCIP.AbsoluteExpiration = Now.AddMinutes(10)
           Dim staffList = myCache.GetItem("TelestaffStaff", staffingCIP)
           'Debug.WriteLine("shortunitstatus queried " & Now.ToLongTimeString)
-          Return c.GetShortActiveUnitStat(staffList)
+          Return ActiveUnit.GetShortActiveUnitStat(staffList)
         Case "caller_locations"
           Return CallerLocation.GetLatest()
 

@@ -87,13 +87,15 @@ Namespace Models
 
       ' determine if any of the units were AvailableOutOfDistrict at the time
       ' of the call before they were on the call and then update those rows accordingly.
+
       Me.LastUnitMoves = UnitMove.GetUnitMovesByStartDate(Me.StartDate)
 
       ' Get a list of all of the Telestaff Data for this call's period, Load this data into the units.
       Me.Staffing = Telestaff_Staff.GetStaffingBasedOnTime(Me.StartDate, Me.EndDate)
 
       ' Get the Call Detail for this period
-
+      ' Figure out how to apply the Offline attribute to this period.
+      ' they can be found in the calldetail data. transtype='OS' descript='AVL' comments='OFFLINE'
 
 
 

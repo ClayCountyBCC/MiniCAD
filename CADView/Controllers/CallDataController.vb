@@ -134,8 +134,7 @@ Public Class CallDataController
 
   Public Function GetCallDetail(IncidentID As String, Optional Timestamp As Date = Nothing) As JsonResult
     Try
-      Dim C As New CADData
-      Dim CD As List(Of CallDetail) = C.GetCallDetail(IncidentID, Timestamp)
+      Dim CD As List(Of CallDetail) = CallDetail.GetCallDetail(IncidentID, Timestamp)
       Return Json(New With {.Result = "OK", .Records = CD}, JsonRequestBehavior.AllowGet)
     Catch ex As Exception
       Tools.Log(ex, AppID, MachineName, Tools.Logging.LogType.Database)
