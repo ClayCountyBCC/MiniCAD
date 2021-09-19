@@ -416,11 +416,7 @@ function UpdateUnits()
                     //symbol.url = "//static.arcgis.com/images/Symbols/OutdoorRecreation/RVPark.png";
                     symbol.url = "./Content/images/Tank%20truck.png";
                     break;
-                  //if (data.Records[i].UnitName.indexOf("W") > 0) {
-                  //  symbol.url = "//static.arcgis.com/images/Symbols/OutdoorRecreation/RVPark.png";
-                  //} else {
-                  //  //symbol.url = "//static.arcgis.com/images/Symbols/Transportation/Tank.png";
-                  //}
+
 
                   case "SPARE":
                     symbol.url = "//static.arcgis.com/images/Symbols/Transportation/CarGreenFront.png";
@@ -621,25 +617,6 @@ function filterAvailable(u) {
 
   }
 
-  //switch (showAvailable) {
-  //  case 1: // Show Available Rescues
-  //    if (availStatus.indexOf(u.UnitStatus) == -1) return false;
-  //    //if (u.UnitType == "RESCUE") console.log('filter unit', u);
-  //    return (u.UnitType == "RESCUE");
-      
-
-  //  case 2: // Show Available Engines / Ladders
-  //    if (availStatus.indexOf(u.UnitStatus) == -1) return false;
-  //    //if (u.UnitType == "ENGINE" || u.UnitType == "LADDER") console.log('filter unit', u);
-  //    return (u.UnitType == "ENGINE" || u.UnitType == "LADDER");
-
-  //  case 3:
-  //    if (availStatus.indexOf(u.UnitStatus) == -1) return false;
-  //    return (u.UnitType == "ANIMALSERVICES");
-
-  //  default:
-  //    return (u.UnitType !== "ANIMALSERVICES");
-  //}
 }
 
 function ShowLocation() {
@@ -837,61 +814,6 @@ function UpdateActiveCallsMap(data) {
     });
 }
 
-
-
-//function UpdateExtraMapPointsCallLayer(final_callpoint, PictureMarkerSymbol, Graphic)
-//{
-//  let threshold_distance = 200; // should be 200 meters
-//  var symbols = ['http://static.arcgis.com/images/Symbols/Basic/LightBlueStickpin.png', 'http://static.arcgis.com/images/Symbols/Basic/OrangeBeacon.png', 'http://static.arcgis.com/images/Symbols/Basic/RedStickpin.png', 'http://static.arcgis.com/images/Symbols/Basic/BlackStickpin.png'];
-//  if (extraMapPoints.length === 0) return;
-//  for (var i = 0; i < extraMapPoints.length; i++)
-//  {
-//    let point = extraMapPoints[i];
-//    if (point.final_point)
-//    {
-//      let distance = esri.geometry.getLength(final_callpoint, point.final_point);
-//      if (distance < threshold_distance)
-//      {
-//        if (!point.visible_on_map)
-//        {
-//          // let's add it to the map
-//          var symbol = new PictureMarkerSymbol({
-//            "angle": 0,
-//            "xoffset": 0,
-//            "yoffset": 0,
-//            "type": "esriPMS",
-//            "contentType": "image/png",
-//            "width": 25,
-//            "height": 25,
-//            "url": symbols[point.shape_index]
-//          });
-//          var graphic = new Graphic(point.final_point, symbol);
-
-//          ExtraMapPointsByCallLayer.add(graphic);
-//          point.visible_on_map = true;
-//        }
-//        //var polylineJson = { "paths": [[[call_longitude, call_latitude], [point.longitude, point.latitude]]], "spatialReference": { "wkid": 4326 } };
-//        //var polyline = new Polyline(polylineJson);
-//        //var polylineSymbol = new SimpleLineSymbol(SimpleLineSymbol.STYLE_SOLID, new dojo.Color([255, 0, 0]), 1);
-//        //var myLineGraphic = new Graphic(polyline, polylineSymbol, null, null);        
-//        //ExtraMapPointsByCallLayer.add(myLineGraphic);
-//      }
-//    }
-//  }
-//}
-
-//function ResetExtraMapPoints()
-//{
-//  for (var i = 0; i < extraMapPoints.length; i++)
-//  {
-//    extraMapPoints[i].visible_on_map = false;
-//  }
-//}
-
-
-function callerClick(evt) {
-}
-
 function getSymbolURLForNatureCode(naturecode) {
     var url = '';
     switch (naturecode) {
@@ -1010,7 +932,6 @@ function UpdateHistoricalCallsMap(data) {
 
 }
 
-
 function UpdateRadioLayer(radios)
 {
   require([
@@ -1064,57 +985,6 @@ function UpdateRadioLayer(radios)
       }
     });
 }
-
-//function UpdateExtraMapPointsLayer(extra_points, symbols)
-//{
-//  require([
-//    "esri/symbols/PictureMarkerSymbol",
-//    "esri/graphic",
-//    "esri/InfoTemplate",
-//    "esri/geometry/Point",
-//    "esri/SpatialReference"],
-//    function (PictureMarkerSymbol, Graphic, InfoTemplate, Point, SpatialReference)
-//    {
-
-//      ExtraMapPointsLayer.clear();      
-//      for (var i = 0; i < extra_points.length; i++)
-//      {
-//        var extra_point = extra_points[i];        
-//        var xcoord = extra_point.longitude;
-//        var ycoord = extra_point.latitude;
-//        if (xcoord !== 0 || ycoord !== 0)
-//        {
-
-//          var symbol = new PictureMarkerSymbol({
-//            "angle": 0,
-//            "xoffset": 0,
-//            "yoffset": 0,
-//            "type": "esriPMS",
-//            "contentType": "image/png",
-//            "width": 15,
-//            "height": 15,
-//            "url": symbols[extra_point.shape_index]
-//          });
-
-
-//          var incident = new Point([xcoord, ycoord], new SpatialReference({ wkid: 4326 }));
-//          var wmIncident = esri.geometry.geographicToWebMercator(incident);
-//          var graphic = new Graphic(wmIncident, symbol);
-
-//          if (extra_point.Address.length > 0)
-//          {
-//            var infoTemplate = new InfoTemplate();
-//            infoTemplate.setTitle("Address");
-//            infoTemplate.setContent(extraMapPointLocationClick);
-//            graphic.setAttributes({ "address": extra_point.Address });
-//            graphic.setInfoTemplate(infoTemplate);
-//          }
-
-//          ExtraMapPointsLayer.add(graphic);
-//        }
-//      }
-//    });
-//}
 
 function UpdateCallerLocationsLayer(locations)
 {

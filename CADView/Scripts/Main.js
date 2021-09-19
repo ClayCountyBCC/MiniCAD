@@ -350,25 +350,31 @@ function HoverUnitStatus(e, currentunit) {
   $div.css('top', top + 'px');
 }
 
-function buildUnitDisplay(item, classToUse) {
+function buildUnitDisplay(item, classToUse)
+{
   //if (item.UnitStatus.indexOf('Available') !== -1) console.log('unit', item);
   var x = [];
   x.push("<ol class='");
   x.push(classToUse);
-  x.push("'><li class='" + item.UnitStatus + "'>" + item.UnitStatus + "</li>");  
-  if (item.Location.length > 0) {
+  x.push("'><li class='" + item.UnitStatus + "'>" + item.UnitStatus + "</li>");
+  if (item.Location.length > 0)
+  {
     x.push("<li>" + item.Location + "</li>");
   }
   x.push("<li>Station Assigned: " + item.District + "</li>");
-  if (item.District !== item.HomeStation) {
+  if (item.District !== item.HomeStation)
+  {
     x.push("<li>Home Station: " + item.HomeStation + "</li>");
   }
 
-  if (item.Staff.length > 0) {
-    for (var j = 0; j < item.Staff.length; j++) {
+  if (item.Staff.length > 0)
+  {
+    for (var j = 0; j < item.Staff.length; j++)
+    {
       x.push("<li>" + item.Staff[j] + "</li>");
     }
-  } else {
+  } else
+  {
     x.push("<li>" + item.PrimeOfficer + "</li>");
   }
   if (item.LocationStatus.length > 0) 
@@ -380,10 +386,18 @@ function buildUnitDisplay(item, classToUse) {
     x.push(timeStamp(item.Timestamp));
     x.push("</li>");
   }
+
+  x.push("<li>Speed: ");
+  x.push(item.Speed.toString());
+  x.push("</li><li>");
+  x.push("Heading: ");
+  x.push(item.Heading.toString());
+  x.push("</li>");
+
   var tmp = unitStatusClass(item);
-  if (tmp !== item.UnitStatus) {
+  if (tmp !== item.UnitStatus)
+  {
     var explain = unitStatusClassExplain(item);
-    //console.log('explain', explain);    
     x.push("<li class='");
     x.push(explain.top_left);
     x.push("'>");
