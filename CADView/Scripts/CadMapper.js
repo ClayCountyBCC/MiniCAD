@@ -6,7 +6,7 @@ var defaultExtent = null;
 var geocoder;
 var locatorUrl = "https://maps.claycountygov.com:6080/arcgis/rest/services/Address_Site_Locator/GeocodeServer";
 var InciLayer, HistoryLayer, USNGOverlay, RadarLayer, fireResponse, CallerLocationsLayer, VehicleLayer,
-  WeatherWarningLayer, LocationLayer, TestGrid, RadioLayer, ExtraMapPointsLayer, ExtraMapPointsByCallLayer;
+  WeatherWarningLayer, LocationLayer, RadioLayer;
 var locateButton;
 var WorldTranspo = null;
 var showAvailable = 0;
@@ -998,6 +998,7 @@ function UpdateCallerLocationsLayer(locations)
     "esri/symbols/TextSymbol"],
     function (SimpleMarkerSymbol, PictureMarkerSymbol, Graphic, InfoTemplate, Point, SpatialReference, TextSymbol)
     {
+      if (!CallerLocationsLayer) return;
       CallerLocationsLayer.clear();
       for (var i = 0; i < locations.length; i++)
       {

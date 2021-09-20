@@ -7,16 +7,14 @@
   <link rel="icon" type="image/png" href="//static.arcgis.com/images/Symbols/SafetyHealth/FireTruck.png" />
 
   <title>MiniCAD</title>
-  <link href="CSS/CadMapper.css?v=20210919204600" rel="stylesheet" type="text/css" />
-  <link href="CSS/Main.css?v=20210919204600" rel="stylesheet" type="text/css" />
+  <link href="CSS/BackToTop.css" rel="stylesheet" />
+  <link href="CSS/CadMapper.css?v=20210914180300" rel="stylesheet" type="text/css" />
+  <link href="CSS/Main.css?v=20210914180300" rel="stylesheet" type="text/css" />
   <link rel="stylesheet" href="//js.arcgis.com/3.37/esri/css/esri.css">
   <link href="CSS/main-test.css" rel="stylesheet" />
-  <link href="CSS/test.css?v=20210919204600" rel="stylesheet" />
-  <script src="https://unpkg.com/split-grid/dist/split-grid.js"></script>
-
 </head>
 <body>
-  <div id="gridcontainer" class='container'>
+  <div class='container'>
     <ul class="tabs">
       <li id="li-tab-1" class="tab-link current" data-tab="tab-1" onclick="tabClick('tab-1')">Active Calls</li>
       <li id="li-tab-2" class="tab-link" data-tab="tab-2" onclick="tabClick('tab-2')">Historical Calls</li>
@@ -149,8 +147,78 @@
         </div>
       </div>
     </div>
+    <div id="tab-6" class="tab-content maptab">
+      <div id="mapWindow"
+           data-dojo-type="dijit/layout/BorderContainer"
+           data-dojo-props="design:'headline', gutters:false"
+           style="display: block; position: absolute;">
+        <div id="header" data-dojo-type="dijit/layout/ContentPane" data-dojo-props="region:'top'">
+          <div id="search"></div>
+        </div>
+        <div id="map" data-dojo-type="dijit/layout/ContentPane" data-dojo-props="region:'center'">
+          <div id="LocateButton"
+               onclick="ShowLocation(event)"
+               onmousedown="LocationZoom(event)"
+               style="cursor: pointer;"
+               class="LocateButton">
+            <div class="locateContainer">
+              <div id="innerLocateButton"
+                   class="zoomLocateButton">
+              </div>
+            </div>
+          </div>
+          <div id="HomeButton"></div>
+          <div id="BasemapToggle"></div>
+          <div id="History" onclick="ShowHistory()" style="cursor:pointer;">7 Days</div>
+          <div id="USNG" onclick="ShowUSNG()" style="cursor:pointer;">USNG</div>
+          <div id="ShowAvailable">
+            Show Available
+            <img onclick="ShowAvailable(event, 'rescue')"
+                 src="//static.arcgis.com/images/Symbols/SafetyHealth/Ambulance.png" />
+            <img onclick="ShowAvailable(event, 'engine')"
+                 src="//static.arcgis.com/images/Symbols/SafetyHealth/FireTruck.png" />
 
-
+            <img onclick="ShowAvailable(event, 'animal')"
+                 src="//static.arcgis.com/images/Symbols/OutdoorRecreation/Deer.png" />
+          </div>
+          <div id="Radar" onclick="ShowRadar()" style="cursor:pointer;">Show Radar</div>
+          <div id="WeatherWarnings" onclick="ShowWeatherWarnings()" style="cursor:pointer;">Show Weather Warnings</div>
+          <div id="ShowInactiveUnits"
+               onclick="ToggleInactiveUnitVisibility()"
+               style="cursor: pointer;"
+               title="This button enables you to choose between seeing all units on the map or just Primary response units and those that are currently on a call or are moving.">
+            Show Inactive Units
+          </div>
+          <div id="CallerLocations"
+               onclick="ShowCallerLocationsLayer()"
+               style="cursor: pointer; display: none;"
+               title="This layer shows the calls that come in to the 911 circuit.  This includes all calls, not just Fire Rescue calls.">
+            <svg width="24" height="24" style="touch-action: none;">
+              <defs></defs>
+              <circle fill="rgb(0, 255, 255)"
+                      fill-opacity="0.5019607843137255"
+                      stroke="rgb(0, 0, 0)"
+                      stroke-opacity="1"
+                      stroke-width=".66"
+                      stroke-linecap="butt"
+                      stroke-linejoin="miter"
+                      stroke-miterlimit="1"
+                      cx="0"
+                      cy="0"
+                      r="8"
+                      fill-rule="evenodd"
+                      stroke-dasharray="none"
+                      dojoGfxStrokeStyle="solid"
+                      transform="matrix(1.00000000,0.00000000,0.00000000,1.00000000,15.00000000,15.00000000)"></circle>
+            </svg>
+            <span id="CallerLocationsText">
+              Show Caller Locations
+            </span>
+            
+          </div>
+        </div>
+      </div>
+    </div>
     <div id="tab-7" class="tab-content">
       <table style="width: calc(100% - 2em); margin: 1em 1em 1em 1em;">
         <thead>
@@ -215,101 +283,24 @@
         </div>
       </div>
     </div>
-    <div id="gridgutter" class="gutter"></div>
-    <div id="tab-6" class="tab-content maptab">
-      <div id="mapWindow">
-        <div id="header" data-dojo-type="dijit/layout/ContentPane" data-dojo-props="region:'top'">
-          <div id="search"></div>
-        </div>
-        <div id="map" data-dojo-type="dijit/layout/ContentPane" data-dojo-props="region:'center'">
-          <div id="LocateButton"
-               onclick="ShowLocation(event)"
-               onmousedown="LocationZoom(event)"
-               style="cursor: pointer;"
-               class="LocateButton">
-            <div class="locateContainer">
-              <div id="innerLocateButton"
-                   class="zoomLocateButton">
-              </div>
-            </div>
-          </div>
-          <div id="HomeButton"></div>
-          <div id="BasemapToggle"></div>
-          <div id="History" onclick="ShowHistory()" style="cursor:pointer;">7 Days</div>
-          <div id="USNG" onclick="ShowUSNG()" style="cursor:pointer;">USNG</div>
-          <div id="ShowAvailable">
-            Show Available
-            <img onclick="ShowAvailable(event, 'rescue')"
-                 src="//static.arcgis.com/images/Symbols/SafetyHealth/Ambulance.png" />
-            <img onclick="ShowAvailable(event, 'engine')"
-                 src="//static.arcgis.com/images/Symbols/SafetyHealth/FireTruck.png" />
-
-            <img onclick="ShowAvailable(event, 'animal')"
-                 src="//static.arcgis.com/images/Symbols/OutdoorRecreation/Deer.png" />
-          </div>
-          <div id="Radar" onclick="ShowRadar()" style="cursor:pointer;">Show Radar</div>
-          <div id="WeatherWarnings" onclick="ShowWeatherWarnings()" style="cursor:pointer;">Show Weather Warnings</div>
-          <div id="ShowInactiveUnits"
-               onclick="ToggleInactiveUnitVisibility()"
-               style="cursor: pointer;"
-               title="This button enables you to choose between seeing all units on the map or just Primary response units and those that are currently on a call or are moving.">
-            Show Inactive Units
-          </div>
-          <div id="CallerLocations"
-               onclick="ShowCallerLocationsLayer()"
-               style="cursor: pointer; display: none;"
-               title="This layer shows the calls that come in to the 911 circuit.  This includes all calls, not just Fire Rescue calls.">
-            <svg width="24" height="24" style="touch-action: none;">
-              <defs></defs>
-              <circle fill="rgb(0, 255, 255)"
-                      fill-opacity="0.5019607843137255"
-                      stroke="rgb(0, 0, 0)"
-                      stroke-opacity="1"
-                      stroke-width=".66"
-                      stroke-linecap="butt"
-                      stroke-linejoin="miter"
-                      stroke-miterlimit="1"
-                      cx="0"
-                      cy="0"
-                      r="8"
-                      fill-rule="evenodd"
-                      stroke-dasharray="none"
-                      dojoGfxStrokeStyle="solid"
-                      transform="matrix(1.00000000,0.00000000,0.00000000,1.00000000,15.00000000,15.00000000)"></circle>
-            </svg>
-            <span id="CallerLocationsText">
-              Show Caller Locations
-            </span>
-
-          </div>
-        </div>
-      </div>
-    </div>
-    <div id="replaybar">
-
-    </div>
   </div>
-
   <div id="UnitStatusHover">
     <ol></ol>
   </div>
+  <a href="#0" class="cd-top">Top</a>
   <script src="Scripts/jquery-1.11.1.js"></script>
+  <!--<script src="//code.jquery.com/jquery-1.10.2.js"></script>-->
+  <!--<script src="//js.arcgis.com/3.21/"></script>-->
   <script src="//js.arcgis.com/3.37/"></script>
-  <script src="Scripts/CadMapper.js?v=20210919204600"></script>
-  <script src="Scripts/Main.js?v=20210919204600"></script>
-  <script src="Scripts/Replay.js?v=20210919204600"></script>
-  <script src="Scripts/locate.js?v=20210919204600"></script>
+  <script src="Scripts/CadMapper.js?v=20210914180300"></script>
+  <script src="Scripts/modernizr-2.8.3.js"></script>
+  <script src="Scripts/Main.js?v=20210914180300"></script>
+  <script src="Scripts/Replay.js?v=20210914180300"></script>
+  <!--<script src="Scripts/tracking.js?v=202105111047"></script>-->
+  <script src="Scripts/locate.js?v=20210914180300"></script>
 
   <script type="text/javascript">
     "use strict";
-
-    Split({
-      columnGutters: [{
-        track: 1,
-        element: document.querySelector(".gutter")
-      }]
-    });
-
     Array.prototype.extend = function (other_array)
     {
       /* you should include a test to check whether other_array really is an array */

@@ -1,8 +1,74 @@
-﻿body, .cols {
-  padding: .5em 1em .5em 1em;
+﻿html, body
+{
   height: 100%;
   width: 100%;
-  -moz-box-sizing: border-box;
-  -webkit-box-sizing: border-box;
+  margin: 0 0 0 0;
+  padding: 0 0 0 0;
   box-sizing: border-box;
+}
+
+.container .tabs
+{
+  grid-area: header;
+}
+.tab-content, div.current
+{
+  height: 100%;
+  width: 100%;
+}
+.maptab
+{
+  width: 100%;
+  height: 100%;
+  float: none;
+  position: relative;
+}
+#mapWindow
+{
+width: 100%;
+height: 100%;
+}
+#map
+{
+  width: 100%;
+  height: 100%;
+
+}
+.container .tab-content .current
+{
+  grid-area: main;
+  background-color: gray;
+}
+
+#tab-6
+{
+  grid-area: right;
+  background-color: green;
+}
+
+#replaybar
+{
+  grid-area: footer;
+  background-color: aqua;  
+}
+
+.container
+{
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  grid-template-areas: 'header header header' 'main gutter right' 'footer footer footer';
+  grid-template-rows: 40px 1fr;
+  grid-gap: 0;
+  padding: 0;
+  height: 100%;
+}
+.gutter
+{
+  grid-column: 2;
+  background-image: url('data:image/svg+xml,%3Csvg%20version=%221.1%22%20id=%22Layer_1%22%20xmlns=%22http://www.w3.org/2000/svg%22%20xmlns:xlink=%22http://www.w3.org/1999/xlink%22%20x=%220px%22%20y=%220px%22%20viewBox=%220%200%206%2020%22%20style=%22enable-background:new%200%200%206%2020;%22%20xml:space=%22preserve%22%3E%3Cstyle%20type=%22text/css%22%3E.st0%7Bfill:%23D4D4D4;%7D%3C/style%3E%3Cg%3E%3Crect%20x=%220.5%22%20y=%220.5%22%20class=%22st0%22%20width=%221%22%20height=%2219%22/%3E%3Cpath%20d=%22M1,1v18V1%20M2,0H0v20h2V0L2,0z%22/%3E%3C/g%3E%3Cg%3E%3Crect%20x=%224.5%22%20y=%220.5%22%20class=%22st0%22%20width=%221%22%20height=%2219%22/%3E%3Cpath%20d=%22M5,1v18V1%20M6,0H4v20h2V0L6,0z%22/%3E%3C/g%3E%3C/svg%3E');
+  background-repeat: no-repeat;
+  background-position: center;
+  width: 7px;
+  margin-right: 2px;
+  cursor: col-resize;
 }

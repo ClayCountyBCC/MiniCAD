@@ -75,7 +75,7 @@ html, body {
 }
 
 #mapWindow {
-  height: calc(100% - 41px);
+  /*height: calc(100% - 41px);*/
   width: 100%;
   overflow: hidden;
 }

@@ -1,6 +1,9 @@
 ﻿/*global lastactivedata, currentactivedata, lasthistoricaldata, lastunitdata, currentunit, map*/
 /* exported **/
 "use strict";
+
+
+
 var vehicleSwaps = [];
 var currentRadioList = [];
 var extraMapPoints = [];
@@ -41,7 +44,7 @@ function ShowMap(event)
       map.centerAndZoom(p, 11);
     } else
     {
-      map.centerAndZoom(p, 16);
+      map.centerAndZoom(p, 21);
     }
     currentlat = null;
     if (mapload !== undefined)
@@ -68,43 +71,40 @@ function ToggleHistoryFilters(element)
   }
 }
 
-function tabClick(tab) {
-    require(["dojo/dom"], function () {
-        currenttab = tab;
-        $('ul.tabs li').removeClass('current');
-        $('.tab-content').removeClass('current');
-        $('#li-' + tab).addClass('current');
-        $("#" + tab).addClass('current');
-        var tText = document.getElementById('li-' + tab).innerHTML;
-        if (tText === 'Map') {
-            if (map === null) {
-                mapInit();
-            }
-            if ($(window).width() > 999) {
-                $("#" + tab).width('99%');
-                $("#mapWindow").width('99%');
-            } else {
-                $(".maptab").attr("style", "");
-                $("#mapWindow").css("width", "");
-            }
-            dijit.byId("mapWindow").resize();
-            map.resize(true);
-            map.reposition();
+function tabClick(tab)
+{
 
-        } else {
-            if ($(window).width() > 999) {
-                $(".maptab").attr("style", "");
-                $("#mapWindow").css("width", "");
-                dijit.byId("mapWindow").resize();
-                map.resize(true);
-                map.reposition();
-            }
-        }
-    });
+  currenttab = tab;
+  $('ul.tabs li').removeClass('current');
+  $('.tab-content').removeClass('current');
+  $('#li-' + tab).addClass('current');
+  $("#" + tab).addClass('current');
+  var tText = document.getElementById('li-' + tab).textContent;
+  let container = document.getElementById("gridcontainer");
+  let gutter = document.getElementById("gridgutter");
+  if (tText === 'Map')
+  {
+    if (map === null)
+    {
+      mapInit();
+    }
+    container.style.gridTemplateColumns = "1fr";
+    container.style.gridTemplateAreas = "'header' 'right' 'footer'";
+    gutter.style.display = "none";
+
+  } else
+  {
+    if ($(window).width() > 999)
+    {
+      container.style.gridTemplateColumns = "1fr auto 1fr";
+      container.style.gridTemplateAreas = "'header header header' 'main gutter right' 'footer footer footer'";
+    }
+    gutter.style.display = "block";
+  }
+  map.resize(true);
+  map.reposition();
 }
-//function tabClick(tab) {
-//    tabClick(tab, 0, 0)
-//}
+
 function LoadUnitTableLayout()
 { // This function is responsible for creating the unit table, UpdateUnitTable will be responsible for keeping it up to date.
   var jqxhr = $.getJSON("./CallData/GetShortUnitStatus")

@@ -194,8 +194,10 @@ Namespace Models
     End Function
 
     Public Shared Function GetCachedNotes() As List(Of Note)
-      Dim CIP As New CacheItemPolicy
-      CIP.AbsoluteExpiration = Now.AddSeconds(30)
+      Dim CIP As New CacheItemPolicy With {
+        .AbsoluteExpiration = Now.AddSeconds(30)
+      }
+
       Return myCache.GetItem("AllNotes", CIP)
     End Function
 
@@ -222,8 +224,9 @@ Namespace Models
     End Function
 
     Public Shared Function GetCachedNotesToCallDetail() As List(Of CallDetail)
-      Dim CIP As New CacheItemPolicy
-      CIP.AbsoluteExpiration = Now.AddSeconds(30)
+      Dim CIP As New CacheItemPolicy With {
+        .AbsoluteExpiration = Now.AddSeconds(30)
+        }
       Return myCache.GetItem("AllNotesCADCallDetail", CIP)
     End Function
 

@@ -65,8 +65,10 @@ Namespace Models
     End Function
 
     Public Shared Function GetCachedLatest() As List(Of CallerLocation)
-      Dim CIP As New CacheItemPolicy
-      CIP.AbsoluteExpiration = Now.AddSeconds(30)
+      Dim CIP As New CacheItemPolicy With {
+        .AbsoluteExpiration = Now.AddSeconds(30)
+      }
+
       Return myCache.GetItem("caller_locations", CIP)
     End Function
 

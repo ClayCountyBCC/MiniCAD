@@ -26,8 +26,9 @@ Public Class CallDataController
   End Function
 
   Private Function GetUpdatedUnitStatus() As List(Of ActiveUnit)
-    Dim CIP As New CacheItemPolicy
-    CIP.AbsoluteExpiration = Now.AddSeconds(6)
+    Dim CIP As New CacheItemPolicy With {
+      .AbsoluteExpiration = Now.AddSeconds(6)
+    }
     Dim au As List(Of ActiveUnit) = myCache.GetItem(unitStatusKey, CIP)
     Return au
   End Function
@@ -36,8 +37,9 @@ Public Class CallDataController
   Public Function GetRadioLocations() As JsonResult
     Try
       If CADData.IsInternal() AndAlso MotorolaLocation.CheckAccess(Request.LogonUserIdentity.Name) Then
-        Dim CIP As New CacheItemPolicy
-        CIP.AbsoluteExpiration = Now.AddMinutes(1)
+        Dim CIP As New CacheItemPolicy With {
+          .AbsoluteExpiration = Now.AddMinutes(1)
+        }
         Dim Locations As List(Of MotorolaLocation) = myCache.GetItem("MotorolaLocations", CIP)
         Return Json(New With {.Result = "OK", .Records = Locations}, JsonRequestBehavior.AllowGet)
       Else

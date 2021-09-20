@@ -11,6 +11,7 @@ Namespace Models
     Public Property NatureCode As String ' The reason for the call
     Public Property Location As String ' The street number and street name and any apartment information
     Public Property Street As String ' a trimmed street field.
+    Public Property Addtst As String ' the addendum to the street field, if any.
     Public Property MapURL As String ' This is a calculated field based on the Street address, City, State, and zip code
     Public Property CallTime As DateTime ' The calltime field in CAD
     Public Property CloseTime As DateTime? ' The date the call was closed.  NULL if 
@@ -152,16 +153,21 @@ SELECT
   ,nature
   ,calltime
   ,NULL timeclose
-  ,( CASE
+--  ,( CASE
+--       WHEN PATINDEX('%IST:%'
+--                     ,addtst) > 0
+--       THEN LTRIM(RTRIM(street))
+--       WHEN LEN(LTRIM(RTRIM(addtst))) = 0
+--       THEN LTRIM(RTRIM(street))
+--       ELSE LTRIM(RTRIM(street)) + ' - ' + addtst
+--     END ) AS fullstreet
+  ,LTRIM(RTRIM(street)) AS street
+  ,CASE
        WHEN PATINDEX('%IST:%'
                      ,addtst) > 0
-       THEN LTRIM(RTRIM(street))
-       WHEN LEN(LTRIM(RTRIM(addtst))) = 0
-       THEN LTRIM(RTRIM(street))
-       ELSE LTRIM(RTRIM(street)) + ' - ' + addtst
-     END ) AS fullstreet
-  ,LTRIM(RTRIM(street)) AS street
-  ,notes
+       THEN ''
+       ELSE LTRIM(RTRIM(addtst))
+       END addtst  
   ,district
   ,case_id
   ,LTRIM(RTRIM(street)) + ', '
@@ -222,16 +228,21 @@ SELECT
   ,nature
   ,calltime
   ,timeclose
-  ,( CASE
+--  ,( CASE
+--       WHEN PATINDEX('%IST:%'
+--                     ,addtst) > 0
+--       THEN LTRIM(RTRIM(street))
+--       WHEN LEN(LTRIM(RTRIM(addtst))) = 0
+--       THEN LTRIM(RTRIM(street))
+--       ELSE LTRIM(RTRIM(street)) + ' - ' + addtst
+--     END ) AS fullstreet
+  ,LTRIM(RTRIM(street)) AS street
+  ,CASE
        WHEN PATINDEX('%IST:%'
                      ,addtst) > 0
-       THEN LTRIM(RTRIM(street))
-       WHEN LEN(LTRIM(RTRIM(addtst))) = 0
-       THEN LTRIM(RTRIM(street))
-       ELSE LTRIM(RTRIM(street)) + ' - ' + addtst
-     END ) AS fullstreet
-  ,LTRIM(RTRIM(street)) AS street
-  --,ISNULL(LTRIM(RTRIM(notes)), '') notes
+       THEN ''
+       ELSE LTRIM(RTRIM(addtst))
+       END addtst  
   ,district
   ,case_id
   ,LTRIM(RTRIM(street)) + ', '
@@ -295,7 +306,7 @@ ORDER  BY
                       Order By n.timestamp Descending).ToList()
           End If
 
-
+          .Addtst = dr("addtst").ToString.Trim
           .CCFR = dr("case_id")
           .CallType = dr("CallType")
           .CallIconURLBottom = dr("NaturecodeIconURLBottom")
@@ -305,10 +316,9 @@ ORDER  BY
           .CallTime = dr("calltime")
           .CloseTime = IIf(IsDBNull(dr("timeclose")), Nothing, dr("timeclose"))
           .NatureCode = CType(dr("nature"), String).Trim
-          .Location = CType(dr("fullstreet"), String).Trim
           .Street = dr("street").ToString.Trim
+          .Location = IIf(.Addtst.Length > 0, .Street & " - " & .Addtst, .Street) ' CType(dr("fullstreet"), String).Trim
           .HasRecentVisit = recentstreets.Contains(c.Street)
-
           .District = CType(dr("district"), String).Trim
           .CrossStreet = dr("crossroad1").ToString.Trim()
           .BusinessName = dr("business").ToString.Trim()
@@ -376,16 +386,21 @@ SELECT
   ,nature
   ,calltime
   ,timeclose
-  ,( CASE
+--  ,CASE
+--       WHEN PATINDEX('%IST:%'
+--                     ,addtst) > 0
+--       THEN LTRIM(RTRIM(street))
+--       WHEN LEN(LTRIM(RTRIM(addtst))) = 0
+--       THEN LTRIM(RTRIM(street))
+--       ELSE LTRIM(RTRIM(street)) + ' - ' + addtst
+--     END  fullstreet
+  ,LTRIM(RTRIM(street)) AS street
+  ,CASE
        WHEN PATINDEX('%IST:%'
                      ,addtst) > 0
-       THEN LTRIM(RTRIM(street))
-       WHEN LEN(LTRIM(RTRIM(addtst))) = 0
-       THEN LTRIM(RTRIM(street))
-       ELSE LTRIM(RTRIM(street)) + ' - ' + addtst
-     END ) AS fullstreet
-  ,LTRIM(RTRIM(street)) AS street
-  --,ISNULL(LTRIM(RTRIM(notes)), '') notes
+       THEN ''
+       ELSE LTRIM(RTRIM(addtst))
+       END addtst    
   ,district
   ,case_id
   ,LTRIM(RTRIM(street)) + ', '

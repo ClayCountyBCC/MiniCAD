@@ -24,8 +24,9 @@ Namespace Models
     End Property
 
     Public Shared Function GetCachedHistoricalCallsByIncidentID(IncidentID As String) As List(Of HistoricalCall)
-      Dim CIP As New CacheItemPolicy
-      CIP.AbsoluteExpiration = Now.AddSeconds(60)
+      Dim CIP As New CacheItemPolicy With {
+        .AbsoluteExpiration = Now.AddSeconds(60)
+      }
       Return myCache.GetItem("CallAddressHistory-" & IncidentID, CIP)
     End Function
 
@@ -34,38 +35,38 @@ Namespace Models
       Dim dp As New DynamicParameters
       dp.Add("@IncidentID", IncidentID)
       Dim query As String = "
-WITH Streets AS (
+      WITH Streets AS (
 
-  SELECT
-    street
-  FROM inmain
-  WHERE
-    inci_id = @IncidentID
+        SELECT
+          street
+        FROM inmain
+        WHERE
+          inci_id = @IncidentID
 
-  UNION
+        UNION
 
-  SELECT
-    street
-  FROM incident
-  WHERE
-    inci_id = @IncidentID
+        SELECT
+          street
+        FROM incident
+        WHERE
+          inci_id = @IncidentID
 
-)
+      )
 
-SELECT TOP 30
-  LTRIM(RTRIM(inci_id)) IncidentID
-  ,nature Nature
-  ,calltime CallTime  
-  ,case_id CCFR
-FROM
-  inmain I
-  INNER JOIN Streets S ON I.street = S.street
-WHERE
-  cancelled = 0
-  AND inci_id <> ''
-  AND inci_id <> @IncidentID
-ORDER  BY
-  calltime DESC"
+      SELECT TOP 30
+        LTRIM(RTRIM(inci_id)) IncidentID
+        ,nature Nature
+        ,calltime CallTime  
+        ,case_id CCFR
+      FROM
+        inmain I
+        INNER JOIN Streets S ON I.street = S.street
+      WHERE
+        cancelled = 0
+        AND inci_id <> ''
+        AND inci_id <> @IncidentID
+      ORDER  BY
+        calltime DESC"
 
 
       Dim c As New CADData()

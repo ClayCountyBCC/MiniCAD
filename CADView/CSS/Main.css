@@ -923,7 +923,13 @@ li.historyrow
         float: left;
         margin: 0 auto;
         padding: 0;
-    }    
+    }
+
+
+  #gridgutter
+  {
+    display: block;
+  }
 /*    .tab-content > div {
         height: calc(100% - 40px);
     }
@@ -1057,6 +1063,15 @@ li.historyrow
     html, body, .tab-content, .tab-content > div {
         height: auto;
     }
+  #gridcontainer
+  {
+    display: block;
+  }
+
+  #gridgutter
+  {
+    display: none;
+  }
     .Call {
         font-size: smaller;
     }
@@ -1169,117 +1184,153 @@ li.historyrow
     width: 100%;
   }
 }
-@media all and (max-width: 360px) {
-    html, body, .tab-content, .tab-content > div {
-        height: auto;
-    }
-    .Call {
-        font-size: smaller;
-    }
-    ul.tabs { /* Nav Bar Tabs */
-        overflow: auto;
-        font-size: larger;
-        -ms-flex-flow: column wrap;
-        flex-flow: column wrap;        
-        text-align: center;
-    }
-    ul.tabs li {
-        /*float: left;
+@media all and (max-width: 360px)
+{
+  html, body, .tab-content, .tab-content > div
+  {
+    height: auto;
+  }
+
+  .Call
+  {
+    font-size: smaller;
+  }
+  #gridcontainer
+  {
+    display: block;
+  }
+  #gridgutter
+  {
+    display: none;
+  }
+  /* Nav Bar Tabs */
+  ul.tabs
+  { 
+    overflow: auto;
+    font-size: larger;
+    display: flex;
+    flex-flow: column wrap;
+    text-align: center;
+  }
+
+    ul.tabs li
+    {
+      /*float: left;
         width: 50%;*/
-        /*margin: 0 auto;*/
-        text-align: center;
-        cursor: default;
-        /*min-height: 4em;*/
-        /*vertical-align: middle;*/
+      /*margin: 0 auto;*/
+      text-align: center;
+      cursor: default;
+      /*min-height: 4em;*/
+      /*vertical-align: middle;*/
     }
-    ul.tabs li:last-child {
+
+      ul.tabs li:last-child
+      {
         /*width: 100%;*/
         /*min-height: 0;*/
+      }
+  /* End Nav Bar Tabs */
+  .CADDatabuttons, #trackingbuttons
+  {
+    float: left;
+    width: 100%;
+    margin: 0 auto;
+    padding: 0;
+    height: 3em;
+    display: block;
+  }
+
+    .CADDatabuttons li a
+    {
+      display: block;
+      text-align: center;
+      width: 100%;
+      height: 100%;
+      margin: 0 auto;
+      padding-top: .5em;
+      padding-bottom: .5em;
+      vertical-align: middle;
+      font-size: larger;
     }
-    /* End Nav Bar Tabs */
-    .CADDatabuttons, #trackingbuttons {
-        float: left;
-        width: 100%;
-        margin: 0 auto;
-        padding: 0;
-        height: 3em;
-        display: block;
+
+    .CADDatabuttons li, #trackingbuttons span
+    {
+      float: left;
+      margin: 0 auto;
+      width: 33.3%;
+      min-width: 0;
+      border-radius: 0;
+      padding: 0;
+      height: 100%;
     }
 
-        .CADDatabuttons li a {
-            display: block;
-            text-align: center;
-            width: 100%;
-            height: 100%;
-            margin: 0 auto;
-            padding-top: .5em;
-            padding-bottom: .5em;
-            vertical-align: middle;
-            font-size: larger;
-        }
+    .CADDatabuttons .detailbutton
+    {
+      border-bottom-left-radius: 3px;
+      border-top-left-radius: 3px;
+      border-right: none;
+    }
 
-        .CADDatabuttons li, #trackingbuttons span {
-            float: left;
-            margin: 0 auto;
-            width: 33.3%;
-            min-width: 0;
-            border-radius: 0;
-            padding: 0;
-            height: 100%;
-        }
+    .CADDatabuttons .mapbutton
+    {
+      border-bottom-right-radius: 3px;
+      border-top-right-radius: 3px;
+      border-left: none;
+    }
 
-        .CADDatabuttons .detailbutton {
-            border-bottom-left-radius: 3px;
-            border-top-left-radius: 3px;
-            border-right: none;
-        }
-
-        .CADDatabuttons .mapbutton {
-            border-bottom-right-radius: 3px;
-            border-top-right-radius: 3px;
-            border-left: none;
-        }
-
-    /*#historical .CADDatabuttons li {
+  /*#historical .CADDatabuttons li {
         width: 50%;
     }
 
     #historical .CADDatabuttons .mapbutton {
         border-left: 1px solid black;
     }*/
-    .CADData {
-        float: left;
-        clear: none;
-    }
-    .CADData li, .CADData li label, .CADData li span{
-        min-width: 25%;
-    }
-    .CADData, .notes, li.historynotes {
-        font-size: 1.2em;
-        padding-left: 1em;
+  .CADData
+  {
+    float: left;
+    clear: none;
+  }
+
+    .CADData li, .CADData li label, .CADData li span
+    {
+      min-width: 25%;
     }
 
-        .CADData li, .calldetail li {
-            height: auto;
-        }
+  .CADData, .notes, li.historynotes
+  {
+    font-size: 1.2em;
+    padding-left: 1em;
+  }
 
-        .CADData .nature, .CADData .street, .CADData .historynature, .CADData .usng {
-            width: 100%;
-        }
-
-    .unitlist {
-        font-size: larger;
+    .CADData li, .calldetail li
+    {
+      height: auto;
     }
 
-    #UnitStatusHover {
-        width: 50%;
+    .CADData .nature, .CADData .street, .CADData .historynature, .CADData .usng
+    {
+      width: 100%;
     }
-    .calldetailbase .userid, .calldetailbase .desc{
-        width: 50%;
-    }
-    .calldetailbase .comments, .calldetailbase .usertyped, .calldetailbase .timestamp {
-        width: 100%;
-    }
+
+  .unitlist
+  {
+    font-size: larger;
+  }
+
+  #UnitStatusHover
+  {
+    width: 50%;
+  }
+
+  .calldetailbase .userid, .calldetailbase .desc
+  {
+    width: 50%;
+  }
+
+  .calldetailbase .comments, .calldetailbase .usertyped, .calldetailbase .timestamp
+  {
+    width: 100%;
+  }
 
   .HistoryFilterContainer.Short.Outer, .HistoryFilterContainer.Short.Inner, .HistoryFilterContainer.Long.Inner, .HistoryFilterContainer.Long.Outer
   {

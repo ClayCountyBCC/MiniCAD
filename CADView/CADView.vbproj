@@ -168,6 +168,7 @@
     <Content Include="ConnectionStrings.config" />
     <None Include="My Project\PublishProfiles\CADView Production.pubxml" />
     <None Include="My Project\PublishProfiles\CADView DV10.pubxml" />
+    <Content Include="index-old.html" />
     <Content Include="Scripts\locate.js" />
     <Content Include="Scripts\Replay.js" />
     <Content Include="Scripts\CadMapper.js" />

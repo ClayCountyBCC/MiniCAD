@@ -95,11 +95,12 @@ ORDER  BY
             Dim test = s.Unit.Replace(unitnumber, "").Split("/")
             s.Unit = test(0) & unitnumber
             For i As Integer = 1 To test.GetUpperBound(0)
-              Dim x As New Telestaff_Staff
-              x.Unit = test(i) & unitnumber
-              x.Staff = s.Staff
-              x.Position = s.Position
-              x.ListOrder = s.ListOrder
+              Dim x As New Telestaff_Staff With {
+                .Unit = test(i) & unitnumber,
+                .Staff = s.Staff,
+                .Position = s.Position,
+                .ListOrder = s.ListOrder
+              }
               tmp2.Add(x)
             Next
 

@@ -44,8 +44,9 @@ Namespace Models
     End Function
 
     Public Shared Function CheckAccess(name As String) As Boolean
-      Dim AccessCIP As New CacheItemPolicy
-      AccessCIP.AbsoluteExpiration = Now.AddHours(8)
+      Dim AccessCIP As New CacheItemPolicy With {
+        .AbsoluteExpiration = Now.AddHours(8)
+      }
       Dim accesslist As List(Of String) = myCache.GetItem("RadioAccess", AccessCIP)
       Return accesslist.Contains(name.ToLower().Replace("claybcc\", ""))
 

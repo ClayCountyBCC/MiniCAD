@@ -3,7 +3,7 @@
 Namespace Models
 
   Public NotInheritable Class myCache
-    Private Shared _cache As New MemoryCache("myCache")
+    Private Shared ReadOnly _cache As New MemoryCache("myCache")
 
     Public Shared Function GetItem(key As String, Optional CIP As CacheItemPolicy = Nothing) As Object
       Dim tmpCIP As New CacheItemPolicy
@@ -47,8 +47,9 @@ Namespace Models
         Case "TelestaffStaff"
           Return Telestaff_Staff.GetCurrentStaffing
         Case "ShortUnitStatus"
-          Dim staffingCIP = New CacheItemPolicy()
-          staffingCIP.AbsoluteExpiration = Now.AddMinutes(10)
+          Dim staffingCIP = New CacheItemPolicy() With {
+            .AbsoluteExpiration = Now.AddMinutes(10)
+          }
           Dim staffList = myCache.GetItem("TelestaffStaff", staffingCIP)
           'Debug.WriteLine("shortunitstatus queried " & Now.ToLongTimeString)
           Return ActiveUnit.GetShortActiveUnitStat(staffList)

@@ -57,8 +57,9 @@ Namespace Models
     End Function
 
     Public Shared Function GetCachedReplayByCaseID(CaseID As String) As Replay
-      Dim CIP As New CacheItemPolicy
-      CIP.AbsoluteExpiration = Now.AddHours(1)
+      Dim CIP As New CacheItemPolicy With {
+        .AbsoluteExpiration = Now.AddHours(1)
+        }
       Return myCache.GetItem("ReplayByCaseID-" & CaseID, CIP)
     End Function
 

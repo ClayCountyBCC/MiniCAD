@@ -65,27 +65,27 @@ Namespace Models
       End Select
     End Function
 
-
-
     Public Shared Function GetRecentStreets() As List(Of String)
       Dim query As String = "
-SELECT DISTINCT
-  LTRIM(RTRIM(street)) street
-FROM inmain
-WHERE
-  cancelled=0
-  AND inci_id != ''
-  AND LEN(street) > 0
-  AND CAST(calltime AS DATE) > DATEADD(DAY, -30, CAST(GETDATE() AS DATE))"
+      SELECT DISTINCT
+        LTRIM(RTRIM(street)) street
+      FROM inmain
+      WHERE
+        cancelled=0
+        AND inci_id != ''
+        AND LEN(street) > 0
+        AND CAST(calltime AS DATE) > DATEADD(DAY, -30, CAST(GETDATE() AS DATE))"
       Dim c As New CADData()
       Return c.Get_Data(Of String)(query, c.CAD)
     End Function
 
     Public Shared Function GetCachedRecentStreets() As List(Of String)
-      Dim CIP As New CacheItemPolicy
-      CIP.AbsoluteExpiration = Now.AddSeconds(30)
+      Dim CIP As New CacheItemPolicy With {
+        .AbsoluteExpiration = Now.AddSeconds(30)
+      }
       Return myCache.GetItem("RecentCalls", CIP)
     End Function
+
 
     Public Function Save_Tracking(ByRef FTD As Full_Tracking_Data) As Boolean
       Dim d As New Tools.DB(CAD, AppID, ErrorHandling), sbQuery As New StringBuilder
@@ -118,21 +118,6 @@ WHERE
       End Try
     End Function
 
-    'Private Sub Add_USNG_To_Notes(IncidentID As String, USNG As String)
-    '  Dim d As New Tools.DB(CAD, AppID, ErrorHandling)
-    '  Dim sbQuery As New StringBuilder
-    '  With sbQuery
-    '    .Append("UPDATE incident SET notes = CONVERT(nvarchar(MAX), notes) + '").Append(vbCrLf)
-    '    .Append("'USNG Location: ").Append(USNG).Append(" [").Append(Now.ToString).Append(" MINICAD]'")
-    '    .Append("WHERE inci_id='").Append(IncidentID).Append("' AND PATINDEX('%USNG Location:%', notes) = 0;")
-    '  End With
-    '  Try
-    '    d.ExecuteNonQuery(sbQuery.ToString)
-    '  Catch ex As Exception
-    '    Tools.Log(ex, AppID, MachineName, Tools.Logging.LogType.Database)
-    '  End Try
-    'End Sub
-
     Public Function Convert_SP_To_LatLong(baseX As Double, baseY As Double) As LatLong
       ' Web Mercator WKT
       'Dim s As String = "PROJCS[""WGS_1984_Web_Mercator"",GEOGCS[""GCS_WGS_1984_Major_Auxiliary_Sphere"",DATUM[""D_WGS_1984_Major_Auxiliary_Sphere"",SPHEROID[""WGS_1984_Major_Auxiliary_Sphere"",6378137.0,0.0]],PRIMEM[""Greenwich"",0.0],UNIT[""Degree"",0.017453292519943295]],PROJECTION[""Mercator""],PARAMETER[""False_Easting"",0.0],PARAMETER[""False_Northing"",0.0],PARAMETER[""Central_Meridian"",0.0],PARAMETER[""standard_parallel_1"",0.0],UNIT[""Meter"",1.0]]"
@@ -145,10 +130,11 @@ WHERE
       Dim trans As ProjNet.CoordinateSystems.Transformations.CoordinateTransformation = t.CreateFromCoordinateSystems(csource, ctarget)
       Dim point() As Double = {baseX, baseY}
       Dim convpoint() As Double = trans.MathTransform.Transform(point)
-      Dim ll As New LatLong
-      ll.Longitude = convpoint(0)
-      ll.Latitude = convpoint(1)
-      ll.Elevation = convpoint(2)
+      Dim ll As New LatLong With {
+        .Longitude = convpoint(0),
+        .Latitude = convpoint(1),
+        .Elevation = convpoint(2)
+      }
       Return ll
     End Function
 
@@ -168,9 +154,10 @@ WHERE
       Dim trans As ProjNet.CoordinateSystems.Transformations.CoordinateTransformation = t.CreateFromCoordinateSystems(csource, ctarget)
       Dim p() As Double = {Longitude, Latitude}
       Dim convpoint() As Double = trans.MathTransform.Transform(p)
-      Dim pp As New Point
-      pp.Y = convpoint(0)
-      pp.X = convpoint(1)
+      Dim pp As New Point With {
+        .Y = convpoint(0),
+        .X = convpoint(1)
+      }
       Return pp
     End Function
 
@@ -417,16 +404,6 @@ WHERE
       Return colStr.substring(col, 1) & rowStr.Substring(row, 1)
     End Function
 
-
-
-
-
-
-
-
-
-
-
     Public Class UnitTracking
       Private _lat As Double = 0, _long As Double = 0
       Public Property UnitName As String ' The unit designation name
@@ -496,19 +473,20 @@ WHERE
     End Class
 
     Public Function Tracking_Data_To_Full_Tracking_Data(td As Tracking_Data, IPAddress As String, UserAgent As String) As Full_Tracking_Data
-      Dim ftd As New Full_Tracking_Data
-      ftd.GroupName = td.GroupName
-      ftd.IPAddress = IPAddress
-      ftd.Latitude = td.Latitude
-      ftd.Longitude = td.Longitude
-      ftd.Accuracy = td.Accuracy
-      ftd.Altitude = td.Altitude
-      ftd.AltitudeAccuracy = td.AltitudeAccuracy
-      ftd.Heading = td.Heading
-      ftd.Speed = td.Speed
-      ftd.User_Date = td.User_Date
-      ftd.UserAgent = UserAgent
-      ftd.UserID = td.UserID
+      Dim ftd As New Full_Tracking_Data With {
+        .GroupName = td.GroupName,
+        .IPAddress = IPAddress,
+        .Latitude = td.Latitude,
+        .Longitude = td.Longitude,
+        .Accuracy = td.Accuracy,
+        .Altitude = td.Altitude,
+        .AltitudeAccuracy = td.AltitudeAccuracy,
+        .Heading = td.Heading,
+        .Speed = td.Speed,
+        .User_Date = td.User_Date,
+        .UserAgent = UserAgent,
+        .UserID = td.UserID
+      }
       Return ftd
     End Function
 
