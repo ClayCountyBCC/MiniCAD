@@ -23,6 +23,30 @@ Namespace Models
     Public Property UserTyped As String ' usertyped field from incilog
 
 
+    Public Shared Function GetCallDetailByPeriod(StartDate As Date, EndDate As Date) As List(Of CallDetail)
+      Dim dp As New DynamicParameters
+      dp.Add("@Start", StartDate)
+      dp.Add("@End", EndDate)
+      Dim query As String = "
+SELECT
+  L.incilogid LogID
+  ,LTRIM(RTRIM(L.inci_id)) IncidentID
+  ,LTRIM(RTRIM(userid)) UserID
+  ,LTRIM(RTRIM(descript)) Description
+  ,timestamp Timestamp
+  ,LTRIM(RTRIM(comments)) Comments
+  ,LTRIM(RTRIM(usertyped)) UserTyped
+  ,LTRIM(RTRIM(unitcode)) Unit
+FROM
+  incilog L
+WHERE
+  timestamp BETWEEN @Start AND @End
+ORDER  BY
+  timestamp DESC"
+      Dim C As New CADData()
+      Return C.Get_Data(Of CallDetail)(query, dp, C.CAD)
+    End Function
+
     Public Shared Function GetAllActiveCallsDetail() As List(Of CallDetail)
       ' This will be used when they click on an Inci_id on the Active call or Historical call list
       ' This will pull a list of all of the incilog data for a particular inci_id
@@ -112,7 +136,7 @@ FROM
   incilog
 WHERE
   inci_id = @IncidentID
-  AND transtype NOT IN ('ARM', 'EVT')
+  AND transtype NOT IN ('ARM')
   
 
 UNION
@@ -130,7 +154,7 @@ FROM
   log
 WHERE
   inci_id = @IncidentID
-AND transtype NOT IN ('ARM', 'EVT')
+AND transtype NOT IN ('ARM')
 ORDER  BY
   timestamp DESC "
       Dim C As New CADData()

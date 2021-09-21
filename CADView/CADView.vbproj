@@ -169,6 +169,7 @@
     <None Include="My Project\PublishProfiles\CADView Production.pubxml" />
     <None Include="My Project\PublishProfiles\CADView DV10.pubxml" />
     <Content Include="index-old.html" />
+    <Content Include="Scripts\js.cookie.min.js" />
     <Content Include="Scripts\locate.js" />
     <Content Include="Scripts\Replay.js" />
     <Content Include="Scripts\CadMapper.js" />
@@ -177,6 +178,7 @@
     <Content Include="index.html" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
     <Content Include="Scripts\finder.js" />
+    <Content Include="Scripts\Split-Grid.js" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
@@ -201,6 +203,7 @@
     <Compile Include="Models\Replay.vb" />
     <Compile Include="Models\Telestaff_Staff.vb" />
     <Compile Include="Models\UnitMove.vb" />
+    <Compile Include="Models\UnitState.vb" />
     <Compile Include="My Project\AssemblyInfo.vb" />
     <Compile Include="My Project\Application.Designer.vb">
       <AutoGen>True</AutoGen>

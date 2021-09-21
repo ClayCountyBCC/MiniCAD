@@ -182,16 +182,41 @@ html, body {
   user-select: none;
 }
 
+#basemapcontrol, #layercontrol
+{
+  top: 0;
+  z-index: 55;
+  right: 1px;
+  min-width: 30%;
+  max-width: 40%;
+  max-height: 40%;
+  display: none;
+  position: absolute;
+  background-color: white;
+  border: 1px solid black;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+#layercontrol .esriLabel
+{
+  padding-right: 0;
+}
+
 #History {
   top: 150px;
+  display: none;
 }
 
 #USNG {
   top: 180px;
+  display: none;
 }
 
-#ShowAvailable {
-  top: 210px;
+#ShowAvailable
+{
+  /*top: 210px;*/
+  top: 10px;
 }
 #ShowAvailable img
 {
@@ -203,34 +228,35 @@ html, body {
 
 #Radar {
   top: 290px;
+  display: none;
 }
 
 #WeatherWarnings {
   top: 340px;
+  display: none;
 }
 
-#ExtraMapPoints, #ShowInactiveUnits
+#ShowInactiveUnits
 {
-  top: 410px;  
+  /*top: 410px;  */
+  top: 100px;
 }
 
-#ExtraMapPoints img
-{
-  margin-bottom: -7.5px;
 
-}
 
 
 #CallerLocations
 {
   top: 480px;
   padding-bottom: 5px;
+  display: none;
 }
 
-#CallerLocations svg
-{
-  margin-bottom: -5px;
-}
+  #CallerLocations svg
+  {
+    margin-bottom: -5px;
+    display: none;
+  }
 
   #TestGrid
 {

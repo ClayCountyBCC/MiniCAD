@@ -1,4 +1,4 @@
-﻿/*global lastactivedata, currentactivedata, lasthistoricaldata, lastunitdata, currentunit*/
+﻿/*global lastactivedata, currentactivedata, lasthistoricaldata, lastunitdata, currentunit, GoodCookies*/
 "use strict";
 var map = null;
 var basemapToggle = null;
@@ -12,6 +12,9 @@ var WorldTranspo = null;
 var showAvailable = 0;
 var unitFilter = '';
 var show_inactive_units = false;
+var map_layer_list = null;
+
+
 var never_hide_units = ['E11', 'E13', 'E14', 'E15', 'E17', 'E18',
   'E19', 'E20', 'E22', 'E23', 'E24', 'E25', 'E26', 'R11', 'R13',
   'R15', 'R17', 'R18', 'R19', 'R22', 'R22A', 'R23', 'R24', 'R25',
@@ -31,8 +34,6 @@ function IsFairTime() {
 
 }
 
-
-
 function ShowCallerLocationsLayer()
 {
   if (CallerLocationsLayer !== undefined)
@@ -42,13 +43,11 @@ function ShowCallerLocationsLayer()
     {
       CallerLocationsLayer.hide();
       button.textContent = "Show Caller Locations";
-      console.log('hiding caller locations');
     }
     else
     {
       CallerLocationsLayer.show();
       button.textContent = "Hide Caller Locations";
-      console.log('showing caller locations');
     }
   }
 }
@@ -59,122 +58,189 @@ function mapInit() {
   require([
     "esri/map",
     "esri/layers/ArcGISDynamicMapServiceLayer",
-    "esri/dijit/BasemapToggle",
+    //"esri/dijit/BasemapToggle",
+    "esri/dijit/BasemapGallery",
+    "esri/dijit/LayerList",
     "esri/dijit/HomeButton",
     "esri/layers/GraphicsLayer",
-    "esri/layers/FeatureLayer",
     "dojo/parser",
-    "esri/geometry/Point",
-    "esri/SpatialReference",
-    "esri/dijit/LocateButton",
-    "esri/layers/ArcGISTiledMapServiceLayer",
     "esri/layers/ArcGISImageServiceLayer"],
-  function (Map, ArcGISDynamicMapServiceLayer, BasemapToggle, HomeButton, GraphicsLayer, FeatureLayer, parser, Point, SpatialReference,
-              LocateButton, Tiled, ArcGISImageServiceLayer) {
+  function (Map, ArcGISDynamicMapServiceLayer, BasemapGallery, LayerList, HomeButton, GraphicsLayer,  parser, 
+              ArcGISImageServiceLayer) {
     if (map === null) {
       parser.parse();
 
-      map = new esri.Map("map", {
-        basemap: "osm",
+      map = new Map("map", {
+        basemap: 'streets-navigation-vector',//"osm",
         center: [-81.80, 29.950], // lon, lat
         zoom: 11,
         logo: false
       });
+      //map.on("load", function ()
+      //{
+      //  // let's load some data from the cookies.
+      //  console.log("map load layer visibility");
+      //  for (let i = 0; i < map.layerIds.length; i++)
+      //  {
+
+      //    let layerid = map.layerIds[i].trim();
+      //    let maplayer = map.getLayer(layerid); //Minicad_layer_Fire%20Districts
+      //    console.log('maplayer', maplayer);
+      //    if (GoodCookies.get("Minicad_layer_" + layerid) !== undefined)
+      //    {
+      //      if (GoodCookies.get("Minicad_layer_" + layerid))
+      //      {
+      //        maplayer.show();
+      //        maplayer.visible = true;
+      //      }
+      //      else
+      //      {
+      //        maplayer.hide();
+      //        maplayer.visible = false;
+      //      }
+      //    }
+      //    if (maplayer && maplayer.layerInfos && maplayer.layerInfos.length > 0)
+      //    {
+      //      for (let j = 0; j < maplayer.layerInfos.length; j++)
+      //      {
+      //        let layerinfo = maplayer.layerInfos[j];
+      //        let infoid = layerinfo.id;
+      //        if (GoodCookies.get("Minicad_layer_" + layerid + "-" + infoid) !== undefined)
+      //        {
+      //          layerinfo.defaultVisibility = GoodCookies.get("Minicad_layer_" + layerid + "-" + infoid);
+      //        }
+      //      }
+      //    }
+      //  }
+      //  //GoodCookies.set("Minicad_layer_" + layer.id, event.visible, { sameSite: 'strict' });
+      //  //GoodCookies.set("Minicad_layer_" + layer.id + '-' + sublayerid, is_visible, { sameSite: 'strict' });
+
+      //});
       if (currentlat !== null) {
-        mapload = map.on('onLoad', ShowMap());
+        let mapload = map.on('onLoad', ShowMap());
       }
       else
       {
         LoadRadioData();
-        //LoadExtraMapPoints();
-        // Re-enable after this fixed.
+
         LoadCallerLocations();
       }
       if (IsFairTime()) {
         var fairMap = new ArcGISImageServiceLayer('https://maps.claycountygov.com:6443/arcgis/rest/services/FairImage/ImageServer');
+        fairMap.id = "Fair Map";
         map.addLayer(fairMap);
         var fairAccess = new ArcGISDynamicMapServiceLayer('https://maps.claycountygov.com:6443/arcgis/rest/services/FairAccess/MapServer');
+        fairAccess.id = "Fair Access";
         map.addLayer(fairAccess);
       }
       fireResponse = new ArcGISDynamicMapServiceLayer('https://maps.claycountygov.com:6443/arcgis/rest/services/Fire_Response/MapServer');
+      fireResponse.id = "Fire Districts";
       map.addLayer(fireResponse); // was port 6080 for regular http
+
+      //fireResponse.on("load", function ()
+      //{
+      //  let showFireDistricts = GoodCookies.get("Minicad_layer_Fire Districts") === 'true';
+      //  if (showFireDistricts !== undefined)
+      //  {
+      //    console.log('show fire districts', showFireDistricts);
+      //    if (showFireDistricts)
+      //    {
+      //      console.log("show");
+      //      fireResponse.show();
+      //    }
+      //    else
+      //    {
+      //      console.log("hide");
+      //      fireResponse.hide();
+      //    }
+      //    console.log("current fireresponse", fireResponse);
+      //  }
+      //});
+
+      
       var siteAddresses = new ArcGISDynamicMapServiceLayer('https://maps.claycountygov.com:6443/arcgis/rest/services/SiteAddresses/MapServer');
+      siteAddresses.id = "Address Points";
       map.addLayer(siteAddresses);
 
       WeatherWarningLayer = new ArcGISDynamicMapServiceLayer('//idpgis.ncep.noaa.gov/arcgis/rest/services/NWS_Forecasts_Guidance_Warnings/watch_warn_adv/MapServer');
-      //WeatherWarningLayer.opacity = .5;
       WeatherWarningLayer.refreshInterval = 5; // refreshInterval is in Minutes per the docs
 
-
+      WeatherWarningLayer.id = "Weather Warnings";
       WeatherWarningLayer.hide();
       map.addLayer(WeatherWarningLayer);
 
       RadarLayer = new ArcGISDynamicMapServiceLayer('//idpgis.ncep.noaa.gov/arcgis/rest/services/NWS_Observations/radar_base_reflectivity/MapServer');
       RadarLayer.setRefreshInterval(1); // this was previously set to 30000, but this value is in Minutes so that was wrong.
       RadarLayer.setDisableClientCaching(true);
-      
+      RadarLayer.id = "NOAA Weather";
       RadarLayer.opacity = .5;
       RadarLayer.hide();
       map.addLayer(RadarLayer);
 
-      WorldTranspo = new Tiled('https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Transportation/MapServer');
-      //WorldTranspo = new ArcGISDynamicMapServiceLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Transportation/MapServer');
-      map.addLayer(WorldTranspo);
-      WorldTranspo.hide();
-      var toggle = new BasemapToggle({
+      let bmg = new BasemapGallery({
         map: map,
-        basemap: "satellite" //hybrid
-      }, "BasemapToggle");
-      toggle.startup();
-      toggle.on("toggle", function () {
-        if (WorldTranspo !== null) {
-          if (toggle.basemap === 'satellite') {
-            WorldTranspo.hide();
-          } else {
-            WorldTranspo.show();
-          }
-        }
-      });
+        portalURL: "https://arcgis.com",
+        useVectorBasemaps: true
+      }, document.getElementById("basemapcontrol"));
+      bmg.startup();
+      // this works but randomly fails. So I won't use this for the basemap.
+      //bmg.on("selection-change", function ()
+      //{
+      //  let bm = bmg.getSelected();
+      //  GoodCookies.set("Minicad_Basemap", bm.id, { sameSite: "strict" });
+      //});
+      //bmg.on("load", function () 
+      //{
+      //  console.log("bmg", bmg);
+      //  if (GoodCookies.get("Minicad_Basemap"))
+      //  {
+      //    console.log('applying new basemap', GoodCookies.get("Minicad_Basemap"));
+      //    let v = bmg.select(GoodCookies.get("Minicad_Basemap"));
+      //    console.log('v', v);
+      //  }
+      //});
+
 
       defaultExtent = new esri.geometry.Extent(-82.31395416259558, 29.752280075700344, -81.28604583740163, 30.14732756963145,
-          new esri.SpatialReference({ wkid: 4326 }));
+        new esri.SpatialReference({ wkid: 4326 }));
+
       var home = new HomeButton({
         map: map,
-        extent: defaultExtent
+        extent: defaultExtent,
+        showAttribution: false
       }, "HomeButton");
       home.startup();
-
+      
       // Setup USNG Layer
       USNGOverlay = new ArcGISDynamicMapServiceLayer('https://maps1.arcgisonline.com/ArcGIS/rest/services/NGA_US_National_Grid/MapServer');
-      //USNGOverlay = new ArcGISDynamicMapServiceLayer('https://maps.claycountygov.com:6443/arcgis/rest/services/US_National_Grid/MapServer');
+      USNGOverlay.id = "USNG Layer";
       map.addLayer(USNGOverlay);
       USNGOverlay.hide();
 
       //Set Up History Layer
-      HistoryLayer = new esri.layers.GraphicsLayer();
+      HistoryLayer = new GraphicsLayer({id: "Historical Call Locations"});
       map.addLayer(HistoryLayer);
       HistoryLayer.hide();
 
-
-
-      LocationLayer = new esri.layers.GraphicsLayer();
+      LocationLayer = new GraphicsLayer({id: "My Location"});
       map.addLayer(LocationLayer);
 
-      RadioLayer = new esri.layers.GraphicsLayer();
-      map.addLayer(RadioLayer);
+      RadioLayer = new GraphicsLayer({id: "Radio Locations"});
+      //map.addLayer(RadioLayer);
+      RadioLayer.hide();
 
-      CallerLocationsLayer = new esri.layers.GraphicsLayer();
-      map.addLayer(CallerLocationsLayer);
+      CallerLocationsLayer = new GraphicsLayer({id: "911 Caller Locations"});
+      //map.addLayer(CallerLocationsLayer);
       CallerLocationsLayer.hide();
 
       //Set Up Inci Layer
-      InciLayer = new esri.layers.GraphicsLayer();
+      InciLayer = new GraphicsLayer({ id: "Current Call Locations" });
       map.addLayer(InciLayer);
 
       //Set Up Vehicle Layer
-      VehicleLayer = new esri.layers.GraphicsLayer(
+      VehicleLayer = new GraphicsLayer(
         {
-          id: "Vehicle",
+          id: "Unit Locations",
           outFields: ["UnitName"]
         });
       map.addLayer(VehicleLayer);
@@ -183,21 +249,41 @@ function mapInit() {
       if (currentactivedata !== undefined) {
         UpdateActiveCallsMap(currentactivedata);
       }
-      //window.setInterval(function () {
-      //    UpdateUnits();
-      //}, 7000);
+
       if (lasthistoricaldata !== null) {
         UpdateHistoricalCallsMap(filteredlasthistoricaldata);
       }
+      map_layer_list = new LayerList({ map: map }, document.getElementById("layercontrol"));
+      map_layer_list.startup();
+      map_layer_list.visible = false;  
+      //ll.on("toggle", function (event)
+      //{
+      //  let layerIndex = event.layerIndex;
+      //  let subLayerIndex = event.subLayerIndex;
+      //  let layer = ll.layers[layerIndex];
+      //  let maplayer = map.getLayer(layer.id);
+      //  if (subLayerIndex)
+      //  {
+      //    let sublayerid = maplayer.layerInfos[subLayerIndex].id;
+      //    let is_visible = maplayer.layerInfos[subLayerIndex].defaultVisibility;
+      //    GoodCookies.set("Minicad_layer_" + layer.id + '-' + sublayerid, is_visible, { sameSite: 'strict' });
+      //  }
+      //  else
+      //  {
+      //    GoodCookies.set("Minicad_layer_" + layer.id, event.visible, { sameSite: 'strict' });
+      //  }       
+      //});
       // end old
     }
     //End Init			
-    //if (lat !== 0) {
-    //    var p = new Point([long, lat]);
-    //    map.centerAndZoom(p, 18);
-    //}
+
   });
   mapresizing = false;
+}
+
+function LayerToggle(event)
+{
+  console.log('layerlist toggle', event);
 }
 
 function mapUnitClick(graphic) {
@@ -511,6 +597,7 @@ function UpdateUnits()
 function ToggleInactiveUnitVisibility()
 {
   show_inactive_units = !show_inactive_units;
+  GoodCookies.set("Minicad_Show_Inactive_Units", show_inactive_units, { sameSite: 'strict' });
   document.getElementById("ShowInactiveUnits").textContent = show_inactive_units ? "Hide Inactive Units" : "Show Inactive Units";
   // do something here about updating the text of the button
   UpdateUnits();
@@ -943,8 +1030,7 @@ function UpdateRadioLayer(radios)
     function (PictureMarkerSymbol, Graphic, Point, SpatialReference, TextSymbol)
     {
 
-      RadioLayer.clear();
-      RadioLayer.hide();
+      RadioLayer.clear();      
       for (var i = 0; i < radios.length; i++)
       {
         var radio = radios[i];

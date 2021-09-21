@@ -7,12 +7,12 @@
   <link rel="icon" type="image/png" href="//static.arcgis.com/images/Symbols/SafetyHealth/FireTruck.png" />
 
   <title>MiniCAD</title>
-  <link href="CSS/CadMapper.css?v=20210919204600" rel="stylesheet" type="text/css" />
-  <link href="CSS/Main.css?v=20210919204600" rel="stylesheet" type="text/css" />
+  <link href="CSS/CadMapper.css?v=20210921012100" rel="stylesheet" type="text/css" />
+  <link href="CSS/Main.css?v=20210921012100" rel="stylesheet" type="text/css" />
   <link rel="stylesheet" href="//js.arcgis.com/3.37/esri/css/esri.css">
   <link href="CSS/main-test.css" rel="stylesheet" />
-  <link href="CSS/test.css?v=20210919204600" rel="stylesheet" />
-  <script src="https://unpkg.com/split-grid/dist/split-grid.js"></script>
+  <link href="CSS/test.css?v=20210921012100" rel="stylesheet" />
+  <script src="Scripts/Split-Grid.js"></script>
 
 </head>
 <body>
@@ -28,10 +28,14 @@
           id="li-tab-7" class="tab-link" data-tab="tab-7" onclick="tabClick('tab-7')">
         Radio
       </li>
-      <li style="display: none;"
+      <li style="display:none;"
           id="li-tab-8" class="tab-link" data-tab="tab-8" onclick="tabClick('tab-8')">
         Test
       </li>
+      <li style="margin-left: auto; background-color: #C1E1C1;"
+          id="li-tab-basemap" class="tab-link" data-tab="tab-basemap" onclick="ToggleBaseMapControl()">Select Basemap</li>
+      <li style="background-color: #C1E1C1;"
+          id="li-tab-layer" class="tab-link" data-tab="tab-layer" onclick="ToggleLayerControl()">View Layer Control</li>
     </ul>
     <div id="tab-1" class="tab-content current">
       <div id="active">
@@ -218,6 +222,8 @@
     <div id="gridgutter" class="gutter"></div>
     <div id="tab-6" class="tab-content maptab">
       <div id="mapWindow">
+        <div id="layercontrol"></div>
+        <div id="basemapcontrol"></div>
         <div id="header" data-dojo-type="dijit/layout/ContentPane" data-dojo-props="region:'top'">
           <div id="search"></div>
         </div>
@@ -293,22 +299,19 @@
   <div id="UnitStatusHover">
     <ol></ol>
   </div>
+  <script src="Scripts/js.cookie.min.js"></script>
   <script src="Scripts/jquery-1.11.1.js"></script>
   <script src="//js.arcgis.com/3.37/"></script>
-  <script src="Scripts/CadMapper.js?v=20210919204600"></script>
-  <script src="Scripts/Main.js?v=20210919204600"></script>
-  <script src="Scripts/Replay.js?v=20210919204600"></script>
-  <script src="Scripts/locate.js?v=20210919204600"></script>
+  <script src="Scripts/CadMapper.js?v=20210921012100"></script>
+  <script src="Scripts/Main.js?v=20210921012100"></script>
+  <script src="Scripts/Replay.js?v=20210921012100"></script>
+  <script src="Scripts/locate.js?v=20210921012100"></script>
+  <!--<script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.1/dist/js.cookie.min.js"></script>-->
+
+
 
   <script type="text/javascript">
     "use strict";
-
-    Split({
-      columnGutters: [{
-        track: 1,
-        element: document.querySelector(".gutter")
-      }]
-    });
 
     Array.prototype.extend = function (other_array)
     {
@@ -320,15 +323,32 @@
       return this.replace(/\w\S*/g, function (txt) { return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase(); });
     };
     var lastactivedata, currentactivedata, lasthistoricaldata = null, filteredlasthistoricaldata = null, lastunitdata, currentunit = ''; // These two variables will store the last bit of json data returned for the server by each respective process.
+    var GoodCookies;
     var currenttab = 'tab-1', mapload, currentlat = null, currentlong, mapresizing = false;
     var iTrackingCapture, iSaveTracking, trackingData = [], rawTrackingData = [];
-    $(document).ready(function () {
-      require(["dojo/domReady!"], function () {
+    $(document).ready(function ()
+    {
+      //.withAttributes({ path: '/', domain: '.claycountygov.com', sameSite: 'strict' })
+      GoodCookies = Cookies.noConflict();      
+
+      require(["dojo/domReady!"], function ()
+      {
+        Split({
+          columnGutters: [{
+            track: 1,
+            element: document.querySelector(".gutter")
+          }], onDragEnd: function ()
+          {
+            // Save their window positions to a cookie so that it'll persist through refreshes.
+            GoodCookies.set("Minicad_current_split", document.getElementById("gridcontainer").style.gridTemplateColumns, { sameSite: 'strict' });
+          }
+        });
+
         $.ajaxSetup({ cache: false });// turn off ajax caching
         // First part is for the tab UI
         LoadUnitTableLayout();
         LoadCADCalls('./CallData/GetActiveCalls', '#active');
-        
+
         setTimeout(function () { LoadCADCalls('./CallData/GetHistoricalCalls', '#historical') }, 5000);
         LoadAdvisoryTable();
         setInterval(UpdateActiveCallsTable, 16500);
@@ -338,7 +358,8 @@
 
         setInterval(LoadCallerLocations, 10050);
 
-        if ($(window).width() > 999) {
+        if ($(window).width() > 999)
+        {
           mapInit();
         }
         $(window).resize(function ()
@@ -352,6 +373,20 @@
             map.setExtent(defaultExtent);
           }
         });
+        // Load settings saved in cookies
+        let current_split = GoodCookies.get("Minicad_current_split");
+        if (current_split)
+        {
+          document.getElementById("gridcontainer").style.gridTemplateColumns = current_split;
+        }
+        if (GoodCookies.get("Minicad_Show_Inactive_Units") !== undefined)
+        {
+          show_inactive_units = GoodCookies.get("Minicad_Show_Inactive_Units") === 'true';
+          document.getElementById("ShowInactiveUnits").textContent = show_inactive_units ? "Hide Inactive Units" : "Show Inactive Units";
+          // do something here about updating the text of the button
+          UpdateUnits();
+
+        }
 
       });
 

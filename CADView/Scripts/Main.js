@@ -1,4 +1,4 @@
-﻿/*global lastactivedata, currentactivedata, lasthistoricaldata, lastunitdata, currentunit, map*/
+﻿/*global lastactivedata, currentactivedata, lasthistoricaldata, lastunitdata, currentunit, map, GoodCookies*/
 /* exported **/
 "use strict";
 
@@ -18,6 +18,7 @@ let historyfilters = {
   searchText: ''
 };
 let showHistoryFilters = true;
+let containerStyle;
 
 function ShowOnMap(lat, long) {
     if (lat === 0) {
@@ -54,6 +55,34 @@ function ShowMap(event)
   });
 }
 
+function ToggleMapControl(basemap_display, layer_display)
+{
+  let show_basemap = (basemap_display === '' || basemap_display === 'none');
+  let show_layer = (layer_display === '' || layer_display === 'none');
+  let basemapbutton = document.getElementById("li-tab-basemap");
+  let basemapcontainer = document.getElementById("basemapcontrol");
+  let layerbutton = document.getElementById("li-tab-layer");
+  let layercontainer = document.getElementById("layercontrol");  
+
+  basemapbutton.textContent = show_basemap ? "Close Basemap" : "Select Basemap";
+  basemapcontainer.style.display = show_basemap ? "block" : "none";
+
+  layerbutton.textContent = show_layer ? "Close Layer Control" : "View Layer Control";
+  layercontainer.style.display = show_layer ? "block" : "none";
+
+}
+
+function ToggleBaseMapControl()
+{
+  ToggleMapControl(document.getElementById("basemapcontrol").style.display, false);
+}
+
+function ToggleLayerControl()
+{
+  ToggleMapControl(false, document.getElementById("layercontrol").style.display);
+}
+
+
 function ToggleHistoryFilters(element)
 {
   let container = document.getElementById("historyfilters");
@@ -73,7 +102,6 @@ function ToggleHistoryFilters(element)
 
 function tabClick(tab)
 {
-
   currenttab = tab;
   $('ul.tabs li').removeClass('current');
   $('.tab-content').removeClass('current');
@@ -82,12 +110,19 @@ function tabClick(tab)
   var tText = document.getElementById('li-' + tab).textContent;
   let container = document.getElementById("gridcontainer");
   let gutter = document.getElementById("gridgutter");
+  if (container.style.gridTemplateColumns !== '1fr')
+  {
+    containerStyle = container.style.gridTemplateColumns;
+    //GoodCookies.set("Minicad_current_split", containerStyle, { sameSite: 'strict' });
+  }
+
   if (tText === 'Map')
   {
     if (map === null)
     {
       mapInit();
     }
+    containerStyle = container.style.gridTemplateColumns;
     container.style.gridTemplateColumns = "1fr";
     container.style.gridTemplateAreas = "'header' 'right' 'footer'";
     gutter.style.display = "none";
@@ -96,7 +131,7 @@ function tabClick(tab)
   {
     if ($(window).width() > 999)
     {
-      container.style.gridTemplateColumns = "1fr auto 1fr";
+      container.style.gridTemplateColumns = containerStyle;
       container.style.gridTemplateAreas = "'header header header' 'main gutter right' 'footer footer footer'";
     }
     gutter.style.display = "block";
@@ -1498,7 +1533,8 @@ function LoadRadioData()
       currentRadioList = data.Records;
       UpdateRadioLayer(data.Records);      
       document.getElementById("li-tab-7").style.display = "block";
-
+      map.addLayer(RadioLayer);
+      map_layer_list.refresh();
       CreateRadioTable(data.Records);
     })
     .fail(function ()
@@ -1534,10 +1570,13 @@ function LoadCallerLocations()
   $.getJSON('./CallData/GetCallerLocations')
     .done(function (data)
     {
+      console.log('caller locations', data);
       if (data === null || data.Records === null || data.Records.length === 0) return;
       callerLocations = data.Records;
-      let button = document.getElementById("CallerLocations");
-      if (button.style.display === "none") button.style.display = "block";
+      //let button = document.getElementById("CallerLocations");
+      //if (button.style.display === "none") button.style.display = "block";
+      map.addLayer(CallerLocationsLayer);
+      map_layer_list.refresh();
       UpdateCallerLocationsLayer(data.Records);
     })
     .fail(function ()

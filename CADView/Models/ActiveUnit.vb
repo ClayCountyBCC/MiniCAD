@@ -3,20 +3,7 @@
 Namespace Models
   Public Class ActiveUnit
     Public Property UnitName As String ' The unit designation name
-    Public ReadOnly Property UnitStatus As String ' The unit's current status.  This will be blank unless they are assigned to something.
-      Get
-        Dim status As String = ConvertStatus(Transtype)
-
-        If Transtype.Length = 0 AndAlso ' this is the same as status = "Available"
-          District.Length > 1 AndAlso
-          HomeStation.Length > 0 AndAlso
-          District <> HomeStation Then
-
-          status = "Available-Out-of-District"
-        End If
-        Return status
-      End Get
-    End Property
+    Public Property UnitStatus As String ' The unit's current status.  This will be blank unless they are assigned to something.
     Public Property UnitType As String ' The kind of unit, ie: Tanker, rescue, Engine, Ladder, etc.
     Public Property IncidentID As String ' The inci_id this unit is assigned to.  This will be empty for most active units
     Public Property Transtype As String
@@ -208,6 +195,7 @@ ORDER  BY
           End If
           .Staff = (From s In sl Where .UnitName = s.Unit Order By s.ListOrder Ascending Select s.Staff).ToList
         End With
+        a.UpdateUnitStatus()
         Return a
       Catch ex As Exception
         Tools.Log(ex, CADData.AppID, MachineName, Tools.Logging.LogType.Database)
@@ -233,6 +221,7 @@ ORDER  BY
           '.UnitStatus = ConvertStatus(dr("transtype"))
           .UnitType = CType(dr("kind"), String).Trim
         End With
+        a.UpdateUnitStatus()
         Return a
       Catch ex As Exception
         Tools.Log(ex, CADData.AppID, MachineName, Tools.Logging.LogType.Database)
@@ -268,6 +257,19 @@ ORDER  BY
           Return Status.Trim
       End Select
     End Function
+
+    Public Sub UpdateUnitStatus()
+
+      Dim status As String = ConvertStatus(Transtype)
+
+      If Transtype.Length = 0 AndAlso ' this is the same as status = "Available"
+        District.Length > 1 AndAlso
+        HomeStation.Length > 0 AndAlso
+        District <> HomeStation Then
+        status = "Available-Out-of-District"
+      End If
+      UnitStatus = status
+    End Sub
 
 
   End Class
