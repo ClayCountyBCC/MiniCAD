@@ -34,23 +34,23 @@ function IsFairTime() {
 
 }
 
-function ShowCallerLocationsLayer()
-{
-  if (CallerLocationsLayer !== undefined)
-  {
-    let button = document.getElementById("CallerLocationsText");
-    if (CallerLocationsLayer.visible)
-    {
-      CallerLocationsLayer.hide();
-      button.textContent = "Show Caller Locations";
-    }
-    else
-    {
-      CallerLocationsLayer.show();
-      button.textContent = "Hide Caller Locations";
-    }
-  }
-}
+//function ShowCallerLocationsLayer()
+//{
+//  if (CallerLocationsLayer !== undefined)
+//  {
+//    let button = document.getElementById("CallerLocationsText");
+//    if (CallerLocationsLayer.visible)
+//    {
+//      CallerLocationsLayer.hide();
+//      button.textContent = "Show Caller Locations";
+//    }
+//    else
+//    {
+//      CallerLocationsLayer.show();
+//      button.textContent = "Hide Caller Locations";
+//    }
+//  }
+//}
 
 function mapInit() {
   if (map !== null || mapresizing === true) { return false; }
@@ -1085,6 +1085,7 @@ function UpdateCallerLocationsLayer(locations)
     function (SimpleMarkerSymbol, PictureMarkerSymbol, Graphic, InfoTemplate, Point, SpatialReference, TextSymbol)
     {
       if (!CallerLocationsLayer) return;
+      map_layer_list.refresh();
       CallerLocationsLayer.clear();
       for (var i = 0; i < locations.length; i++)
       {

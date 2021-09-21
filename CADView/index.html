@@ -7,11 +7,11 @@
   <link rel="icon" type="image/png" href="//static.arcgis.com/images/Symbols/SafetyHealth/FireTruck.png" />
 
   <title>MiniCAD</title>
-  <link href="CSS/CadMapper.css?v=20210921012100" rel="stylesheet" type="text/css" />
-  <link href="CSS/Main.css?v=20210921012100" rel="stylesheet" type="text/css" />
+  <link href="CSS/CadMapper.css?v=20210921174200" rel="stylesheet" type="text/css" />
+  <link href="CSS/Main.css?v=20210921174200" rel="stylesheet" type="text/css" />
   <link rel="stylesheet" href="//js.arcgis.com/3.37/esri/css/esri.css">
   <link href="CSS/main-test.css" rel="stylesheet" />
-  <link href="CSS/test.css?v=20210921012100" rel="stylesheet" />
+  <link href="CSS/test.css?v=20210921174200" rel="stylesheet" />
   <script src="Scripts/Split-Grid.js"></script>
 
 </head>
@@ -302,10 +302,10 @@
   <script src="Scripts/js.cookie.min.js"></script>
   <script src="Scripts/jquery-1.11.1.js"></script>
   <script src="//js.arcgis.com/3.37/"></script>
-  <script src="Scripts/CadMapper.js?v=20210921012100"></script>
-  <script src="Scripts/Main.js?v=20210921012100"></script>
-  <script src="Scripts/Replay.js?v=20210921012100"></script>
-  <script src="Scripts/locate.js?v=20210921012100"></script>
+  <script src="Scripts/CadMapper.js?v=20210921174200"></script>
+  <script src="Scripts/Main.js?v=20210921174200"></script>
+  <script src="Scripts/Replay.js?v=20210921174200"></script>
+  <script src="Scripts/locate.js?v=20210921174200"></script>
   <!--<script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.1/dist/js.cookie.min.js"></script>-->
 
 
@@ -355,7 +355,7 @@
         setInterval(UpdateUnitTable, 9000); // 1min, 1 sec to update Units
         setInterval(updateHistoricalCallsTable, 65500 * 5); // 5 mins
         setInterval(LoadAdvisoryTable, 63500 * 15); // 15 mins*/
-
+        setInterval(LoadRadioData(), 35000);
         setInterval(LoadCallerLocations, 10050);
 
         if ($(window).width() > 999)

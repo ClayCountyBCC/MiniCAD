@@ -45,7 +45,7 @@ function ShowMap(event)
       map.centerAndZoom(p, 11);
     } else
     {
-      map.centerAndZoom(p, 21);
+      map.centerAndZoom(p, 16);
     }
     currentlat = null;
     if (mapload !== undefined)
@@ -1570,7 +1570,6 @@ function LoadCallerLocations()
   $.getJSON('./CallData/GetCallerLocations')
     .done(function (data)
     {
-      console.log('caller locations', data);
       if (data === null || data.Records === null || data.Records.length === 0) return;
       callerLocations = data.Records;
       //let button = document.getElementById("CallerLocations");
