@@ -34,31 +34,12 @@ function IsFairTime() {
 
 }
 
-//function ShowCallerLocationsLayer()
-//{
-//  if (CallerLocationsLayer !== undefined)
-//  {
-//    let button = document.getElementById("CallerLocationsText");
-//    if (CallerLocationsLayer.visible)
-//    {
-//      CallerLocationsLayer.hide();
-//      button.textContent = "Show Caller Locations";
-//    }
-//    else
-//    {
-//      CallerLocationsLayer.show();
-//      button.textContent = "Hide Caller Locations";
-//    }
-//  }
-//}
-
 function mapInit() {
   if (map !== null || mapresizing === true) { return false; }
   mapresizing = true;
   require([
     "esri/map",
     "esri/layers/ArcGISDynamicMapServiceLayer",
-    //"esri/dijit/BasemapToggle",
     "esri/dijit/BasemapGallery",
     "esri/dijit/LayerList",
     "esri/dijit/HomeButton",
@@ -136,27 +117,6 @@ function mapInit() {
       fireResponse = new ArcGISDynamicMapServiceLayer('https://maps.claycountygov.com:6443/arcgis/rest/services/Fire_Response/MapServer');
       fireResponse.id = "Fire Districts";
       map.addLayer(fireResponse); // was port 6080 for regular http
-
-      //fireResponse.on("load", function ()
-      //{
-      //  let showFireDistricts = GoodCookies.get("Minicad_layer_Fire Districts") === 'true';
-      //  if (showFireDistricts !== undefined)
-      //  {
-      //    console.log('show fire districts', showFireDistricts);
-      //    if (showFireDistricts)
-      //    {
-      //      console.log("show");
-      //      fireResponse.show();
-      //    }
-      //    else
-      //    {
-      //      console.log("hide");
-      //      fireResponse.hide();
-      //    }
-      //    console.log("current fireresponse", fireResponse);
-      //  }
-      //});
-
       
       var siteAddresses = new ArcGISDynamicMapServiceLayer('https://maps.claycountygov.com:6443/arcgis/rest/services/SiteAddresses/MapServer');
       siteAddresses.id = "Address Points";
@@ -253,7 +213,7 @@ function mapInit() {
       if (lasthistoricaldata !== null) {
         UpdateHistoricalCallsMap(filteredlasthistoricaldata);
       }
-      map_layer_list = new LayerList({ map: map }, document.getElementById("layercontrol"));
+      map_layer_list = new LayerList({ map: map, showLegend: true }, document.getElementById("layercontrol"));
       map_layer_list.startup();
       map_layer_list.visible = false;  
       //ll.on("toggle", function (event)
@@ -941,81 +901,86 @@ function getSymbolURLForNatureCode(naturecode) {
 }
 
 //Historical Call Data
-function UpdateHistoricalCallsMap(data) {
+function UpdateHistoricalCallsMap(data)
+{
   require(["esri/symbols/PictureMarkerSymbol", "esri/InfoTemplate", "esri/graphic", "esri/geometry/Point", "esri/SpatialReference"],
-      function (PictureMarkerSymbol, InfoTemplate, Graphic, Point, SpatialReference) {
-        if (HistoryLayer !== undefined) {
-          HistoryLayer.clear();
-          let records = data.Records ? data.Records : data;
-          if (records.length > 0) {
-            var infoTemplate = new InfoTemplate();
-            infoTemplate.setTitle("${InciID}");
-            infoTemplate.setContent("<b>Nature Code: </b>${NatureCode}<BR><div class='NotesInfoTemplate'><span class='notesInfoTemplateHeader'>Notes</span> ${Notes}</div>");
+    function (PictureMarkerSymbol, InfoTemplate, Graphic, Point, SpatialReference)
+    {
+      map_layer_list.refresh();
+      if (HistoryLayer !== undefined)
+      {
+        HistoryLayer.clear();
+        let records = data.Records ? data.Records : data;
+        if (records.length > 0)
+        {
+          var infoTemplate = new InfoTemplate();
+          infoTemplate.setTitle("${InciID}");
+          infoTemplate.setContent("<b>Nature Code: </b>${NatureCode}<BR><div class='NotesInfoTemplate'><span class='notesInfoTemplateHeader'>Notes</span> ${Notes}</div>");
 
-            for (var i = 0; i < records.length; i++)
+          for (var i = 0; i < records.length; i++)
+          {
+
+            var symbol = new PictureMarkerSymbol({
+              "angle": 0,
+              "xoffset": 0,
+              "yoffset": 0,
+              "type": "esriPMS",
+              "contentType": "image/png",
+              "width": 20,
+              "height": 20
+            });
+            let TopSymbol = null;
+            if (records[i].CallIconURLBottom.length > 0)
             {
+              symbol.url = records[i].CallIconURLBottom;
 
-              var symbol = new PictureMarkerSymbol({
-                "angle": 0,
-                "xoffset": 0,
-                "yoffset": 0,
-                "type": "esriPMS",
-                "contentType": "image/png",
-                "width": 20,
-                "height": 20
-              });
-              let TopSymbol = null;
-              if (records[i].CallIconURLBottom.length > 0)
+              if (records[i].CallIconURLTop.length > 0)
               {
-                symbol.url = records[i].CallIconURLBottom;
-
-                if (records[i].CallIconURLTop.length > 0)
-                {
-                  TopSymbol = new PictureMarkerSymbol({
-                    "angle": 0,
-                    "xoffset": 0,
-                    "yoffset": -7,
-                    "type": "esriPMS",
-                    "contentType": "image/png",
-                    "width": 15,
-                    "height": 15,
-                    "url": records[i].CallIconURLTop
-                  });
-                }
-
-
+                TopSymbol = new PictureMarkerSymbol({
+                  "angle": 0,
+                  "xoffset": 0,
+                  "yoffset": -7,
+                  "type": "esriPMS",
+                  "contentType": "image/png",
+                  "width": 15,
+                  "height": 15,
+                  "url": records[i].CallIconURLTop
+                });
               }
-              else
-              {
-                symbol.url = getSymbolURLForNatureCode(records[i].NatureCode);
-              }
-              //symbol.url = getSymbolURLForNatureCode(records[i].NatureCode);
 
-              let notes = records[i].Notes.map(n => n.note).join("<br>");
-              var xcoord = records[i].Longitude;
-              var ycoord = records[i].Latitude;
-              
-              var incident = new Point([xcoord, ycoord], new SpatialReference({ wkid: 4326 }));
-              var wmIncident = esri.geometry.geographicToWebMercator(incident);
-              var graphic = new Graphic(wmIncident);
-              graphic.setAttributes({ "InciID": records[i].IncidentID, "NatureCode": records[i].NatureCode, "Notes": notes });//records[i].Notes.replace(/\[(.*?)\]/g, "") });
-              graphic.setInfoTemplate(infoTemplate);
-              graphic.setSymbol(symbol);
-              HistoryLayer.add(graphic);
-
-              if (TopSymbol !== null)
-              {
-                var Topgraphic = new Graphic(wmIncident);
-                Topgraphic.setAttributes({ "InciID": records[i].IncidentID, "NatureCode": records[i].NatureCode, "Notes": notes });// records[i].Notes.replace(/\[(.*?)\]/g, "") });
-                Topgraphic.setInfoTemplate(infoTemplate);
-                Topgraphic.setSymbol(TopSymbol);
-                HistoryLayer.add(Topgraphic);
-              }
 
             }
+            else
+            {
+              symbol.url = getSymbolURLForNatureCode(records[i].NatureCode);
+            }
+            //symbol.url = getSymbolURLForNatureCode(records[i].NatureCode);
+
+            let notes = records[i].Notes.map(n => n.note).join("<br>");
+            var xcoord = records[i].Longitude;
+            var ycoord = records[i].Latitude;
+
+            var incident = new Point([xcoord, ycoord], new SpatialReference({ wkid: 4326 }));
+            var wmIncident = esri.geometry.geographicToWebMercator(incident);
+            var graphic = new Graphic(wmIncident);
+            graphic.setAttributes({ "InciID": records[i].IncidentID, "NatureCode": records[i].NatureCode, "Notes": notes });//records[i].Notes.replace(/\[(.*?)\]/g, "") });
+            graphic.setInfoTemplate(infoTemplate);
+            graphic.setSymbol(symbol);
+            HistoryLayer.add(graphic);
+
+            if (TopSymbol !== null)
+            {
+              var Topgraphic = new Graphic(wmIncident);
+              Topgraphic.setAttributes({ "InciID": records[i].IncidentID, "NatureCode": records[i].NatureCode, "Notes": notes });// records[i].Notes.replace(/\[(.*?)\]/g, "") });
+              Topgraphic.setInfoTemplate(infoTemplate);
+              Topgraphic.setSymbol(TopSymbol);
+              HistoryLayer.add(Topgraphic);
+            }
+
           }
         }
-      });
+      }
+    });
 
 }
 
@@ -1029,7 +994,7 @@ function UpdateRadioLayer(radios)
     "esri/symbols/TextSymbol"],
     function (PictureMarkerSymbol, Graphic, Point, SpatialReference, TextSymbol)
     {
-
+      if (!map || !RadioLayer) return;
       RadioLayer.clear();      
       for (var i = 0; i < radios.length; i++)
       {
@@ -1085,7 +1050,7 @@ function UpdateCallerLocationsLayer(locations)
     function (SimpleMarkerSymbol, PictureMarkerSymbol, Graphic, InfoTemplate, Point, SpatialReference, TextSymbol)
     {
       if (!CallerLocationsLayer) return;
-      map_layer_list.refresh();
+      
       CallerLocationsLayer.clear();
       for (var i = 0; i < locations.length; i++)
       {

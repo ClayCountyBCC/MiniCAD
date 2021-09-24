@@ -168,7 +168,7 @@ html, body {
   z-index: 50;
 }
 
-#History, #USNG, #Radar, #WeatherWarnings, #ShowAvailable, #TestGrid, #ExtraMapPoints, #CallerLocations, #ShowInactiveUnits
+#ShowAvailable,#ShowInactiveUnits, #mapcontrol
 {
   z-index: 50;
   right: 20px;
@@ -181,21 +181,31 @@ html, body {
   border-radius: 4px;
   user-select: none;
 }
+#mapcontrol
+{
+  top: 10px;
+}
 
 #basemapcontrol, #layercontrol
 {
-  top: 0;
+  top: 60px;
   z-index: 55;
   right: 1px;
-  min-width: 30%;
-  max-width: 40%;
-  max-height: 40%;
+  width: 30%;
+  /*max-width: 40%;*/
+  height: 40%;
   display: none;
   position: absolute;
   background-color: white;
   border: 1px solid black;
   overflow-x: hidden;
   overflow-y: auto;
+  padding-right: 1em;
+}
+
+#basemapcontrol
+{
+  right: 30%;
 }
 
 #layercontrol .esriLabel
@@ -203,20 +213,10 @@ html, body {
   padding-right: 0;
 }
 
-#History {
-  top: 150px;
-  display: none;
-}
-
-#USNG {
-  top: 180px;
-  display: none;
-}
-
 #ShowAvailable
 {
   /*top: 210px;*/
-  top: 10px;
+  top: 60px;
 }
 #ShowAvailable img
 {
@@ -226,20 +226,10 @@ html, body {
   border-bottom: 2px solid white;
 }
 
-#Radar {
-  top: 290px;
-  display: none;
-}
-
-#WeatherWarnings {
-  top: 340px;
-  display: none;
-}
-
 #ShowInactiveUnits
 {
   /*top: 410px;  */
-  top: 100px;
+  top: 140px;
 }
 
 

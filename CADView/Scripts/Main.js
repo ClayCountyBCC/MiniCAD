@@ -15,7 +15,9 @@ let historyfilters = {
   callType: 'all',
   emergency: 'all',
   district: 'all',
-  searchText: ''
+  searchText: '',
+  unit: '',
+  nature: ''
 };
 let showHistoryFilters = true;
 let containerStyle;
@@ -55,33 +57,24 @@ function ShowMap(event)
   });
 }
 
-function ToggleMapControl(basemap_display, layer_display)
+function ToggleMapControl()
 {
-  let show_basemap = (basemap_display === '' || basemap_display === 'none');
-  let show_layer = (layer_display === '' || layer_display === 'none');
-  let basemapbutton = document.getElementById("li-tab-basemap");
+  let button = document.getElementById("mapcontrol");
   let basemapcontainer = document.getElementById("basemapcontrol");
-  let layerbutton = document.getElementById("li-tab-layer");
   let layercontainer = document.getElementById("layercontrol");  
-
-  basemapbutton.textContent = show_basemap ? "Close Basemap" : "Select Basemap";
-  basemapcontainer.style.display = show_basemap ? "block" : "none";
-
-  layerbutton.textContent = show_layer ? "Close Layer Control" : "View Layer Control";
-  layercontainer.style.display = show_layer ? "block" : "none";
-
+  if (basemapcontainer.style.display === "block")
+  {
+    button.textContent = "View Map Controls";
+    basemapcontainer.style.display = "none";
+    layercontainer.style.display = "none";
+  }
+  else
+  {
+    button.textContent = "Hide Map Controls";
+    basemapcontainer.style.display = "block";
+    layercontainer.style.display = "block";
+  }
 }
-
-function ToggleBaseMapControl()
-{
-  ToggleMapControl(document.getElementById("basemapcontrol").style.display, false);
-}
-
-function ToggleLayerControl()
-{
-  ToggleMapControl(false, document.getElementById("layercontrol").style.display);
-}
-
 
 function ToggleHistoryFilters(element)
 {
@@ -309,8 +302,6 @@ function checkSwapExplain(u) {
   return "Vehicle is not swapped.";
 }
 
-
-
 function UpdateUnitTable()
 { // This function is responsible for keeping the unit data up to date
   var jqxhr = $.getJSON("./CallData/GetShortUnitStatus")
@@ -341,16 +332,6 @@ function UpdateUnitTable()
       UpdateUnits();
     });
 }
-
-//function HoverUnitStatus(e) {
-//  //going to change this to show unit
-//  console.log('hoverunitstatus e', e);
-//  if (currentunit === e.currentTarget.innerHTML) {
-//    HideUnitStatusHover();
-//  } else {
-//    HoverUnitStatus(e);
-//  }
-//}
 
 function ClickUnitStatus(e, currentunit)
 {
@@ -493,38 +474,9 @@ function HideUnitStatusHover() {
     currentunit = '';
 }
 
-//function UnitClick() {
-//    $('ul.tabs li').removeClass('current');
-//    $('.tab-content').removeClass('current');
-//    $('#li-tab-1').addClass('current');
-//    $('#tab-1').addClass('current');
-//}
-
 function LoadAdvisoryTable() {
     LoadCADCalls('./CallData/GetAdvisories', '#advisory');
 }
-
-//function GetHistoricalCallHistory(inciid, n) {
-//    var jqxhr = $.getJSON("./CallData/GetHistoricalCallHistory/" + inciid)
-//    .done(function (data) {
-//        lasthistoricaldata.Records[n].HistoricalCallsByAddress = data.Records;
-//        ToggleHistoryByAddress(inciid, n, '#historical');
-//    })
-//    .fail(function () {
-//        return [];
-//    });
-//}
-
-//function closeIfOpen(target, inciid) { // This function will close and hide the target if it's open. 
-//    if (target === 'd') { //detail
-//        var $detail = $('#detaillist-' + inciid);
-//        $detail.html('').toggle(false);
-
-//    } else if (target === 'h') { //history
-//        var $history = $('#historylist-' + inciid);
-//        $history.html('').toggle(false);
-//    }
-//}
 
 function lidataUrl(idtouse, classtouse, labeltouse, data, MapUrl) {
   var x = [], $id = '', $class = '', $label = '';
@@ -550,8 +502,6 @@ function viewUrl(u) {
 
 //<a title='Clicking this will try to bring up Google Maps for this address.' 
 // href='https://maps.google.com/maps?saddr=&z=19&maptype=satellite&daddr=" + data.MapURL + "' target='_Blank'>Map</a></li>");
-
-
 
 function ToggleNotes(IncidentID, prefix) {
     //$('.dispatch, .linesep').toggle();
@@ -651,86 +601,13 @@ function UpdateActiveCall(record, target, index) {
 
     }
     $call.find('ol.unitlist').html(xx.join(''));
-    //var detail = $('#detaillist-' + record.IncidentID);
-    //if (detail.html().length > 0) { // This returns true if the detail is currently shown.
-    //  // we update the details pretty simply.  We compare the last data's total record count for this 
-    //  var oldid = getCallIndex(record.IncidentID, lastactivedata);
-    //  if (oldid > -1) {
-        
 
-    //    var oldcount = lastactivedata.Records[oldid].CallDetails.length;
-    //    var newcount = record.CallDetails.length;
-    //    if (newcount > oldcount) {
-    //      var x = [];
-    //      // the difference in these two will be the records we prepend to detail
-    //      for (i = 0; i < newcount - oldcount; i++) {
-    //        x.push(BuildDetailRow(record.CallDetails[i]));
-    //      }
-    //      detail.prepend(x.join(''));
-    //    }
-    //  }
-    //}
   } else {
     target.prepend(CreateCallLayout(record, index, '#active'));
     HandleDetailAndHistoryButtons(record);
     BuildNotes(record);
   }
 }
-
-//function GetHistoricalCallDetail(inciid, n)
-//{
-//  var jqxhr = $.getJSON("./CallData/GetCallDetail/" + inciid)
-//    .done(function (data)
-//    {
-//      lasthistoricaldata.Records[n].CallDetails = data.Records;
-//      ToggleDetail(inciid, n, '#historical');
-//    })
-//    .fail(function ()
-//    {
-//      return [];
-//    });
-//}
-
-//function ToggleDetail(inciid, n, target)
-//{
-//  var $detail = $('#detaillist-' + inciid);
-//  var $detailbool = ($detail.html().length === 0);
-//  if ($detailbool)
-//  {
-//    var cd;
-//    if (target === '#active')
-//    {
-//      // we're going to try and close the history if it's open, but we only want to do this if we're looking at the active calls.
-//      closeIfOpen('h', inciid);
-//      cd = lastactivedata.Records[n].CallDetails;
-//    } else if (target === '#historical')
-//    {
-//      if (lasthistoricaldata.Records[n].CallDetails === null || lasthistoricaldata.Records[n].CallDetails.length === 0)
-//      {
-//        GetHistoricalCallDetail(inciid, n);
-//        return;
-//      }
-//      cd = lasthistoricaldata.Records[n].CallDetails;
-//    }
-//    var x = ['<li class="detailheader"><span>Detail for Incident Id: ' + inciid + '</span></li>'];
-
-//    if (cd && cd.length > 0)
-//    {
-//      for (var i = 0; i < cd.length; i++)
-//      {
-//        x.push(BuildDetailRow(cd[i]));
-//      }
-//    } else
-//    {// If there are no call details
-//      x.push("<li>No call details found!</li>");
-//    }
-//    $detail.html(x.join(''));
-//  } else
-//  {
-//    $detail.html('');
-//  }
-//  $detail.toggle($detailbool);
-//}
 
 function HandleDetailAndHistoryButtons(record)
 {
@@ -854,54 +731,6 @@ function BuildHistoricalCall(call)
   historyrow.appendChild(notesContainer);
   return historyrow;
 }
-
-//function ToggleHistoryByAddress(inciid, n, target)
-//{
-//  var $hx = $('#historylist-' + inciid);
-//  var $hxbool = ($hx.html().length === 0);
-//  if ($hxbool)
-//  {
-//    closeIfOpen('d', inciid);
-//    var data = lastactivedata;
-//    if (target === '#historical')
-//    {
-//      data = lasthistoricaldata;
-//      if (lasthistoricaldata.Records[n].HistoricalCallsByAddress === null || lasthistoricaldata.Records[n].HistoricalCallsByAddress === undefined)
-//      {
-//        GetHistoricalCallHistory(inciid, n);
-//        return;
-//      }
-//    }
-//    var h = data.Records[n].HistoricalCallsByAddress;
-//    var x = [];
-//    if (h && h.length > 0)
-//    {
-//      for (var i = 0; i < h.length; i++)
-//      {
-//        x.push('    <li class="historyrow">');
-//        x.push('        <ol class="CADData">');
-//        x.push(lidata('', 'historynature', 'Nature Code', h[i].NatureCode));
-//        x.push(lidata('', 'historyage', 'Calltime', h[i].LongCallTime));
-//        x.push('        </ol>');
-//        x.push('        <ol class="historynotes">');
-//        //x.push("            <li class='historynotes'><a href='javascript:ToggleNotes();'>");
-//        //x.push(h[i].Notes.toProperCase().replace(/\[/g, "<span class='linesep'></span><span class='dispatch'>[").replace(/(?:\r\n|\r|\n)/g, "</span>"));
-//        //x.push("            </a></li>");
-//        x.push('        </ol>');
-//        x.push('    </li>');
-//      }
-
-//    } else
-//    {// If there are no call details
-//      x.push("<li>No previous calls to this street address.</li>");
-//    }
-//    $hx.html(x.join(''));
-//  } else
-//  {
-//    $hx.html('');
-//  }
-//  $hx.toggle($hxbool);
-//}
 
 function HandleDetailsButton(record)
 {
@@ -1166,13 +995,6 @@ function HandleClosedCalls(data) {
 
 function CreateHistoryCallFilters()
 {
-  //let historyfilters = {
-  //  callType: 'all',
-  //  emergency: 'all',
-  //  division: 'all',
-  //  searchText: ''
-  //};
-
   let container = document.createElement("fieldset");
   container.style.padding = ".5em 1em .5em 1em";
   container.style.marginLeft = 0;
@@ -1267,9 +1089,9 @@ function CreateHistoryCallFilters()
   textsearch.type = "text";
   textsearch.maxLength = 25;
   textsearch.style.width = "70%";  
-  textsearch.placeholder = "Filter By Partial Street, Incident #, or Unit";
+  textsearch.placeholder = "Filter By Partial Street, or Incident #";
   textsearch.value = historyfilters.searchText;  
-  textsearch.title = "Search by Partial Street Names, Incident Numbers, and Unitcodes";
+  textsearch.title = "Search by Partial Street Names, Incident Numbers";
   textsearch.addEventListener("keyup", function (event)
   {
     if (event.keyCode === 13)
@@ -1279,16 +1101,6 @@ function CreateHistoryCallFilters()
     }
   });
   textInnerContainer.appendChild(textsearch);
-  let textsearchbutton = document.createElement("button");
-  textsearchbutton.textContent = "Search";
-  textsearchbutton.style.display = "inline";
-  textsearchbutton.style.cursor = "pointer";
-  textsearchbutton.style.marginLeft = ".25em";
-  textsearchbutton.style.marginRight = ".25em";
-  textsearchbutton.onclick = function ()
-  {
-    HistoryFilterChange();
-  }
   let textsearchClearbutton = document.createElement("button");
   textsearchClearbutton.textContent = "Clear";
   textsearchClearbutton.style.display = "inline";
@@ -1299,10 +1111,92 @@ function CreateHistoryCallFilters()
     document.getElementById("text_filter").value = "";
     HistoryFilterChange();
   }
-  textInnerContainer.appendChild(textsearchbutton);
+  
   textInnerContainer.appendChild(textsearchClearbutton);
-
   filterContainer.appendChild(textOuterContainer);
+
+  // Unit
+  let unitOuterContainer = CreateFilterContainer("40%", "column");
+  let unitInnerContainer = CreateFilterContainer("100%", "row");
+  unitOuterContainer.appendChild(unitInnerContainer);
+  unitInnerContainer.appendChild(CreateHistoryLabelFilter("unit", "filter", "Unit"));
+  let unitsearch = document.createElement("input");
+  unitsearch.id = "unit_filter";
+  unitsearch.type = "text";
+  unitsearch.maxLength = 10;
+  unitsearch.style.width = "4em";
+  unitsearch.placeholder = "R88";
+  unitsearch.value = historyfilters.unit;
+  unitsearch.title = "Search by Full Unit Name. Partial Matches will not work.";
+  unitsearch.addEventListener("keyup", function (event)
+  {
+    if (event.keyCode === 13)
+    {
+      event.preventDefault();
+      HistoryFilterChange();
+    }
+  });
+  unitInnerContainer.appendChild(unitsearch);
+  let unitsearchClearbutton = document.createElement("button");
+  unitsearchClearbutton.textContent = "Clear";
+  unitsearchClearbutton.style.display = "inline";
+  unitsearchClearbutton.style.cursor = "pointer";
+  unitsearchClearbutton.style.marginLeft = ".25em";
+  unitsearchClearbutton.onclick = function ()
+  {
+    document.getElementById("unit_filter").value = "";
+    HistoryFilterChange();
+  }  
+  unitInnerContainer.appendChild(unitsearchClearbutton);
+  filterContainer.append(unitOuterContainer);
+
+  // Nature Code
+  let natureOuterContainer = CreateFilterContainer("60%", "column");
+  let natureInnerContainer = CreateFilterContainer("100%", "row");
+  natureInnerContainer.paddingLeft = "1em";
+  natureInnerContainer.paddingRight = "1em";
+  natureOuterContainer.appendChild(natureInnerContainer);
+  let naturesearch = document.createElement("input");
+  naturesearch.id = "nature_filter";
+  naturesearch.type = "text";
+  naturesearch.maxLength = 50;
+  naturesearch.style.width = "70%";
+  naturesearch.placeholder = "Filter By Nature";
+  naturesearch.value = historyfilters.nature;
+  naturesearch.title = "Search by Nature";
+  naturesearch.addEventListener("keyup", function (event)
+  {
+    if (event.keyCode === 13)
+    {
+      event.preventDefault();
+      HistoryFilterChange();
+    }
+  });
+  natureInnerContainer.appendChild(naturesearch);
+  let naturesearchbutton = document.createElement("button");
+  naturesearchbutton.textContent = "Search";
+  naturesearchbutton.style.display = "inline";
+  naturesearchbutton.style.cursor = "pointer";
+  naturesearchbutton.style.marginLeft = ".25em";
+  naturesearchbutton.style.marginRight = ".25em";
+  naturesearchbutton.onclick = function ()
+  {
+    HistoryFilterChange();
+  }
+  let naturesearchClearbutton = document.createElement("button");
+  naturesearchClearbutton.textContent = "Clear";
+  naturesearchClearbutton.style.display = "inline";
+  naturesearchClearbutton.style.cursor = "pointer";
+  naturesearchClearbutton.style.marginLeft = ".25em";
+  naturesearchClearbutton.onclick = function ()
+  {
+    document.getElementById("nature_filter").value = "";
+    HistoryFilterChange();
+  }
+  natureInnerContainer.appendChild(naturesearchClearbutton);
+  natureInnerContainer.appendChild(naturesearchbutton);  
+  filterContainer.appendChild(natureOuterContainer);
+
   container.appendChild(filterContainer);
   return container;
 }
@@ -1340,6 +1234,8 @@ function HistoryFilterChange()
   historyfilters.emergency = document.querySelector('input[name="emergency"]:checked').value;
   historyfilters.district = document.getElementById("district_filter").value;
   historyfilters.searchText = document.getElementById("text_filter").value;
+  historyfilters.unit = document.getElementById("unit_filter").value;
+  historyfilters.nature = document.getElementById("nature_filter").value;
   ApplyHistoryFilter();
   LoadFilteredHistoricalCalls();
   UpdateHistoricalCallsMap(filteredlasthistoricaldata);
@@ -1350,12 +1246,16 @@ function ApplyHistoryFilter()
   let ct = historyfilters.callType.toUpperCase();  
   let emergency = historyfilters.emergency === "emergency";
   let searchtext = historyfilters.searchText.toUpperCase();
+  let unit = historyfilters.unit.trim().toUpperCase();
+  let nature = historyfilters.nature.trim().toUpperCase();
   filteredlasthistoricaldata = lasthistoricaldata.Records.filter(function (j)
   {
     let calltypecheck = true;  
     let emergencycheck = true;
     let districtcheck = true;
     let textcheck = true;
+    let unitcheck = true;
+    let naturecheck = true;
     if (historyfilters.callType !== 'all')
     {
       calltypecheck = j.CallType === ct;      
@@ -1371,12 +1271,16 @@ function ApplyHistoryFilter()
     if (searchtext.trim().length > 0)
     {
       textcheck = ((j.Street.indexOf(searchtext) > -1) || j.CCFR.indexOf(searchtext) > -1);
-      if (!textcheck)
-      {
-        textcheck = j.Units.filter(u => u.UnitName === searchtext).length > 0;
-      }
     }
-    return calltypecheck && emergencycheck && districtcheck && textcheck;
+    if (unit.length > 0)
+    {
+      unitcheck = j.Units.filter(u => u.UnitName === unit).length > 0;
+    }
+    if (nature.length > 0)
+    {
+      naturecheck = (j.NatureCode.indexOf(nature) > -1);
+    }
+    return calltypecheck && emergencycheck && districtcheck && textcheck && unitcheck && naturecheck;
   });
 
 }
@@ -1428,7 +1332,6 @@ function CreateHistoryLabelFilter(name, value, label)
   l.style.marginRight = ".5em";
   return l;
 }
-
 
 function LoadCADCalls(listaction, targetdiv)
 {
@@ -1533,8 +1436,8 @@ function LoadRadioData()
       currentRadioList = data.Records;
       UpdateRadioLayer(data.Records);      
       document.getElementById("li-tab-7").style.display = "block";
-      map.addLayer(RadioLayer);
-      map_layer_list.refresh();
+      if (!map || !RadioLayer) return;
+      map.addLayer(RadioLayer);      
       CreateRadioTable(data.Records);
     })
     .fail(function ()
@@ -1544,38 +1447,15 @@ function LoadRadioData()
     });
 }
 
-//function LoadExtraMapPoints()
-//{
-//  var symbols = ['http://static.arcgis.com/images/Symbols/Basic/LightBlueStickpin.png', 'http://static.arcgis.com/images/Symbols/Basic/OrangeBeacon.png', 'http://static.arcgis.com/images/Symbols/Basic/RedStickpin.png', 'http://static.arcgis.com/images/Symbols/Basic/BlackStickpin.png'];
-//  $.getJSON('./CallData/GetExtraMapPoints')
-//    .done(function (data)
-//    {
-//      if (data === null || data.Records === null || data.Records.length === 0) return;
-//      extraMapPoints = data.Records;
-//      console.log('extra map points', extraMapPoints);
-//      CalculatePoints();
-//      UpdateExtraMapPointsLayer(data.Records, symbols);      
-
-      
-//    })
-//    .fail(function ()
-//    {
-//      console.log('get extra map points data failed');      
-//    });
-//}
-
 function LoadCallerLocations()
 {
-  //console.log('load caller locations');
   $.getJSON('./CallData/GetCallerLocations')
     .done(function (data)
     {
       if (data === null || data.Records === null || data.Records.length === 0) return;
       callerLocations = data.Records;
-      //let button = document.getElementById("CallerLocations");
-      //if (button.style.display === "none") button.style.display = "block";
-      map.addLayer(CallerLocationsLayer);
-      map_layer_list.refresh();
+      if (!map || !CallerLocationsLayer) return;
+      map.addLayer(CallerLocationsLayer);      
       UpdateCallerLocationsLayer(data.Records);
     })
     .fail(function ()
@@ -1583,31 +1463,6 @@ function LoadCallerLocations()
       console.log('get caller lcations data failed');
     });
 }
-
-
-//function CalculatePoints()
-//{
-//  require(["esri/geometry/Point", "esri/SpatialReference", "esri/geometry/webMercatorUtils"],
-//    function (Point, SpatialReference, webMercatorUtils)
-//    {
-//      for (var i = 0; i < extraMapPoints.length; i++)
-//      {
-//        let point = extraMapPoints[i];
-//        point.base_point = null;
-//        point.final_point = null;
-//        point.visible_on_map = false;
-//        var longitude = point.longitude;
-//        var latitude = point.latitude;
-//        if (longitude !== 0 && latitude !== 0)
-//        {
-//          point.base_point = new Point(longitude, latitude, new SpatialReference({ wkid: 4326 }));
-//          point.final_point = webMercatorUtils.geographicToWebMercator(point.base_point);
-//        }
-//      }
-//    });
-//}
-
-
 
 function ShowRadioDataMessage(message)
 {
@@ -1743,7 +1598,7 @@ function CreateCallLayout(data, i, target) {
   x.push(lidata('', 'age', 'Age of Call', data.Age));
   x.push(lidata('', 'calltime', 'Calltime', data.FormattedCallTime));
   x.push(lidata('', 'district', 'District', data.District));
-  x.push(lidata('', 'nature', 'Nature Code', data.NatureCode));
+  x.push(lidata('', 'nature', 'Nature', data.NatureCode));
   x.push(lidataUrl('', 'street', 'Street', data.Location, data.MapURL));
   if (data.CrossStreet.length > 0) {
     x.push(lidata('', 'crossstreet', 'CrossStreet', data.CrossStreet));

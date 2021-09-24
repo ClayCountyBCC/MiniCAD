@@ -2,16 +2,17 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
   <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <!--<meta name="viewport" content="width=device-width, initial-scale=1" />-->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <meta http-equiv="refresh" content="43199">
   <link rel="icon" type="image/png" href="//static.arcgis.com/images/Symbols/SafetyHealth/FireTruck.png" />
 
   <title>MiniCAD</title>
-  <link href="CSS/CadMapper.css?v=20210921174200" rel="stylesheet" type="text/css" />
-  <link href="CSS/Main.css?v=20210921174200" rel="stylesheet" type="text/css" />
-  <link rel="stylesheet" href="//js.arcgis.com/3.37/esri/css/esri.css">
+  <link href="CSS/CadMapper.css?v=20210922093100" rel="stylesheet" type="text/css" />
+  <link href="CSS/Main.css?v=20210922093100" rel="stylesheet" type="text/css" />
+  <link rel="stylesheet" href="//js.arcgis.com/3.38/esri/css/esri.css">
   <link href="CSS/main-test.css" rel="stylesheet" />
-  <link href="CSS/test.css?v=20210921174200" rel="stylesheet" />
+  <link href="CSS/test.css?v=20210922093100" rel="stylesheet" />
   <script src="Scripts/Split-Grid.js"></script>
 
 </head>
@@ -22,7 +23,8 @@
       <li id="li-tab-2" class="tab-link" data-tab="tab-2" onclick="tabClick('tab-2')">Historical Calls</li>
       <li id="li-tab-3" class="tab-link" data-tab="tab-3" onclick="tabClick('tab-3')">Unit Status</li>
       <li id="li-tab-4" class="tab-link" data-tab="tab-4" onclick="tabClick('tab-4')">Advisories</li>
-      <li id="li-tab-5" class="tab-link" data-tab="tab-5" onclick="tabClick('tab-5')">Tracking</li>
+      <li style="display: none;"
+          id="li-tab-5" class="tab-link" data-tab="tab-5" onclick="tabClick('tab-5')">Tracking</li>
       <li id="li-tab-6" class="tab-link" data-tab="tab-6" onclick="tabClick('tab-6')">Map</li>
       <li style="display: none;"
           id="li-tab-7" class="tab-link" data-tab="tab-7" onclick="tabClick('tab-7')">
@@ -32,10 +34,6 @@
           id="li-tab-8" class="tab-link" data-tab="tab-8" onclick="tabClick('tab-8')">
         Test
       </li>
-      <li style="margin-left: auto; background-color: #C1E1C1;"
-          id="li-tab-basemap" class="tab-link" data-tab="tab-basemap" onclick="ToggleBaseMapControl()">Select Basemap</li>
-      <li style="background-color: #C1E1C1;"
-          id="li-tab-layer" class="tab-link" data-tab="tab-layer" onclick="ToggleLayerControl()">View Layer Control</li>
     </ul>
     <div id="tab-1" class="tab-content current">
       <div id="active">
@@ -241,8 +239,9 @@
           </div>
           <div id="HomeButton"></div>
           <div id="BasemapToggle"></div>
-          <div id="History" onclick="ShowHistory()" style="cursor:pointer;">7 Days</div>
-          <div id="USNG" onclick="ShowUSNG()" style="cursor:pointer;">USNG</div>
+          <div id="mapcontrol" onclick="ToggleMapControl()">
+            View Map Controls
+          </div>
           <div id="ShowAvailable">
             Show Available
             <img onclick="ShowAvailable(event, 'rescue')"
@@ -253,41 +252,13 @@
             <img onclick="ShowAvailable(event, 'animal')"
                  src="//static.arcgis.com/images/Symbols/OutdoorRecreation/Deer.png" />
           </div>
-          <div id="Radar" onclick="ShowRadar()" style="cursor:pointer;">Show Radar</div>
-          <div id="WeatherWarnings" onclick="ShowWeatherWarnings()" style="cursor:pointer;">Show Weather Warnings</div>
           <div id="ShowInactiveUnits"
                onclick="ToggleInactiveUnitVisibility()"
                style="cursor: pointer;"
                title="This button enables you to choose between seeing all units on the map or just Primary response units and those that are currently on a call or are moving.">
             Show Inactive Units
           </div>
-          <div id="CallerLocations"
-               onclick="ShowCallerLocationsLayer()"
-               style="cursor: pointer; display: none;"
-               title="This layer shows the calls that come in to the 911 circuit.  This includes all calls, not just Fire Rescue calls.">
-            <svg width="24" height="24" style="touch-action: none;">
-              <defs></defs>
-              <circle fill="rgb(0, 255, 255)"
-                      fill-opacity="0.5019607843137255"
-                      stroke="rgb(0, 0, 0)"
-                      stroke-opacity="1"
-                      stroke-width=".66"
-                      stroke-linecap="butt"
-                      stroke-linejoin="miter"
-                      stroke-miterlimit="1"
-                      cx="0"
-                      cy="0"
-                      r="8"
-                      fill-rule="evenodd"
-                      stroke-dasharray="none"
-                      dojoGfxStrokeStyle="solid"
-                      transform="matrix(1.00000000,0.00000000,0.00000000,1.00000000,15.00000000,15.00000000)"></circle>
-            </svg>
-            <span id="CallerLocationsText">
-              Show Caller Locations
-            </span>
 
-          </div>
         </div>
       </div>
     </div>
@@ -301,11 +272,11 @@
   </div>
   <script src="Scripts/js.cookie.min.js"></script>
   <script src="Scripts/jquery-1.11.1.js"></script>
-  <script src="//js.arcgis.com/3.37/"></script>
-  <script src="Scripts/CadMapper.js?v=20210921174200"></script>
-  <script src="Scripts/Main.js?v=20210921174200"></script>
-  <script src="Scripts/Replay.js?v=20210921174200"></script>
-  <script src="Scripts/locate.js?v=20210921174200"></script>
+  <script src="//js.arcgis.com/3.38/"></script>
+  <script src="Scripts/CadMapper.js?v=20210922093100"></script>
+  <script src="Scripts/Main.js?v=20210922093100"></script>
+  <script src="Scripts/Replay.js?v=20210922093100"></script>
+  <script src="Scripts/locate.js?v=20210922093100"></script>
   <!--<script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.1/dist/js.cookie.min.js"></script>-->
 
 

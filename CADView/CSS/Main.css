@@ -1005,7 +1005,8 @@ li.historyrow
         clear: none;
     }
     .CADData li, .CADData li label, .CADData li span{
-        min-width: 25%;
+        /*min-width: 25%;*/
+
     }
     .CADData, .notes, li.historynotes {
         font-size: 1.2em;
@@ -1016,8 +1017,12 @@ li.historyrow
             height: auto;
         }
                 
-        .CADData .nature, .CADData .street, .CADData .crossstreet {
-            min-width: 50%;
+        /*.CADData .nature, .CADData .street, .CADData .crossstreet {*/
+            /* original
+              min-width: 50%;
+            */
+            /*min-width: 30em;*/
+            /*max-width: 30em;
         }
         .CADData .district 
         {
@@ -1030,7 +1035,7 @@ li.historyrow
         .CADData .business 
         {
           min-width: 100%;
-        }
+        }*/
         /*.CADData .historynature,*/
     .unitlist {
         font-size: larger;
@@ -1053,6 +1058,18 @@ li.historyrow
   }*/
 
 }
+@media all and (min-width: 641px) and (max-width: 999px){
+  #gridcontainer
+  {
+    display: block;
+  }
+
+  #gridgutter
+  {
+    display: none;
+  }
+}
+
 @media all and (min-width: 361px) and (max-width: 640px) {    
     html, body, .tab-content, .tab-content > div {
         height: auto;
