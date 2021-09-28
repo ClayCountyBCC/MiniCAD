@@ -8,11 +8,11 @@
   <link rel="icon" type="image/png" href="//static.arcgis.com/images/Symbols/SafetyHealth/FireTruck.png" />
 
   <title>MiniCAD</title>
-  <link href="CSS/CadMapper.css?v=20210922093100" rel="stylesheet" type="text/css" />
-  <link href="CSS/Main.css?v=20210922093100" rel="stylesheet" type="text/css" />
+  <link href="CSS/CadMapper.css?v=20210927212900" rel="stylesheet" type="text/css" />
+  <link href="CSS/Main.css?v=20210927212900" rel="stylesheet" type="text/css" />
   <link rel="stylesheet" href="//js.arcgis.com/3.38/esri/css/esri.css">
   <link href="CSS/main-test.css" rel="stylesheet" />
-  <link href="CSS/test.css?v=20210922093100" rel="stylesheet" />
+  <link href="CSS/test.css?v=20210927212900" rel="stylesheet" />
   <script src="Scripts/Split-Grid.js"></script>
 
 </head>
@@ -38,6 +38,67 @@
     <div id="tab-1" class="tab-content current">
       <div id="active">
       </div>
+      <fieldset style="padding: .5em 1em .5em 1em; margin-left: 0; display: flex; flex-wrap: wrap; flex-direction: row; width: 100%;"
+                id="call_options">
+
+        <div style="display: flex; flex-direction: row; width: 100%; height: auto;"
+             id="call_options_header">
+          <span style="width: 50%; font-weight: bolder; font-size: 1.2em;">Call Options</span>
+          <a onclick="ToggleCallOptions()"
+             style="width: 50%; padding-right: 1em; text-align: end; cursor: pointer;">Show Call Options</a>
+        </div>
+        <div style="display: none;"
+             id="call_options_container">
+          <div style="width: 100%; margin-top: 1em;">
+            <label>Call Data Spacing:</label>
+            <input onchange="UpdateCallOptions()"
+                   style="margin-left: 1em;"
+                   type="radio" name="whitespace" id="whitespace_normal" value="normal" checked />
+            <label for="whitespace_normal">Default</label>
+            <input onchange="UpdateCallOptions()"
+                   style="margin-left: 1em;"
+                   type="radio" name="whitespace" id="whitespace_compact" value="compact" />
+            <label for="whitespace_compact">Compact</label>
+          </div>
+          <div style="width: 100%; margin-top: 1em;">
+            <input onchange="UpdateCallOptions()"
+                   type="checkbox" id="show_usng" value="true" checked />
+            <label for="show_usng">Show Call USNG</label>
+          </div>
+          <div style="width: 100%; margin-top: 1em;">
+            <input onchange="UpdateCallOptions()"
+                   type="checkbox" id="show_caller_usng" value="true" checked />
+            <label for="show_caller_usng">Show 911 Caller USNG</label>
+          </div>
+          <div style="width: 100%; margin-top: 1em;">
+            <label>Call Buttons:</label>
+            <input onchange="UpdateCallOptions()"
+                   style="margin-left: 1em;"
+                   type="radio" name="call_buttons" id="call_buttons_row" value="row" checked />
+            <label for="call_buttons_row">Buttons in Own Row</label>
+            <input onchange="UpdateCallOptions()"
+                   style="margin-left: 1em;"
+                   type="radio" name="call_buttons" id="call_buttons_mini" value="mini" />
+            <label for="call_buttons_mini">Mini Call Buttons</label>
+          </div>
+          <div style="width: 100%; margin-top: 1em;">
+            <label>Default Note View:</label>
+            <input onchange="UpdateCallOptions()"
+                   style="margin-left: 1em;"
+                   type="radio" name="note_view" id="note_view_compact" value="compact" checked />
+            <label for="note_view_compact">Compact</label>
+            <input onchange="UpdateCallOptions()"
+                   style="margin-left: 1em;"
+                   type="radio" name="note_view" id="note_view_detailed" value="detailed" />
+            <label for="note_view_detailed">Detailed</label>
+          </div>
+          <div style="width: 100%; margin-top: 1em;">
+            <input onchange="UpdateCallOptions()"
+                   type="checkbox" id="show_note_userid" value="true" checked />
+            <label for="show_note_userid">Show Note UserID Column</label>
+          </div>
+        </div>
+      </fieldset>
     </div>
     <div id="tab-2" class="tab-content">
       <div id="historical">
@@ -273,10 +334,10 @@
   <script src="Scripts/js.cookie.min.js"></script>
   <script src="Scripts/jquery-1.11.1.js"></script>
   <script src="//js.arcgis.com/3.38/"></script>
-  <script src="Scripts/CadMapper.js?v=20210922093100"></script>
-  <script src="Scripts/Main.js?v=20210922093100"></script>
-  <script src="Scripts/Replay.js?v=20210922093100"></script>
-  <script src="Scripts/locate.js?v=20210922093100"></script>
+  <script src="Scripts/CadMapper.js?v=20210927212900"></script>
+  <script src="Scripts/Main.js?v=20210927212900"></script>
+  <script src="Scripts/Replay.js?v=20210927212900"></script>
+  <script src="Scripts/locate.js?v=20210927212900"></script>
   <!--<script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.1/dist/js.cookie.min.js"></script>-->
 
 
@@ -350,6 +411,7 @@
         {
           document.getElementById("gridcontainer").style.gridTemplateColumns = current_split;
         }
+        LoadCallOptions();
         if (GoodCookies.get("Minicad_Show_Inactive_Units") !== undefined)
         {
           show_inactive_units = GoodCookies.get("Minicad_Show_Inactive_Units") === 'true';

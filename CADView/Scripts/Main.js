@@ -21,9 +21,127 @@ let historyfilters = {
 };
 let showHistoryFilters = true;
 let containerStyle;
+let callOptions = {
+  whitespace: 'normal' // or compact
+  , show_usng: true
+  , show_caller_usng: true
+  , default_notes_layout: 'compact' // or detailed
+  , show_userid_in_notes: true
+  , call_buttons_display: 'normal' // or mini
+};
+
+function ToggleCallOptions()
+{
+  let container = document.getElementById("call_options_container");
+  container.style.display = container.style.display === "none" ? "block" : "none";
+  if (container.style.display === "block") container.scrollIntoView();
+}
+
+function LoadSavedCallOptions()
+{
+  // do something with GoodCookie here
+}
+
+function UpdateCallOptions()
+{
+  callOptions.whitespace = document.querySelector('input[name="whitespace"]:checked').value;
+  callOptions.call_buttons_display = document.querySelector('input[name="call_buttons"]:checked').value;
+  callOptions.default_notes_layout = document.querySelector('input[name="note_view"]:checked').value;
+  callOptions.show_usng = document.getElementById("show_usng").checked;
+  callOptions.show_caller_usng = document.getElementById("show_caller_usng").checked;
+  callOptions.show_userid_in_notes = document.getElementById("show_note_userid").checked;
+  ApplyCallOptions();
+  SaveCallOptions();
+}
+
+function SaveCallOptions()
+{
+  GoodCookies.set("Minicad_call_options", JSON.stringify(callOptions), { sameSite: 'strict' });
+}
+
+function LoadCallOptions()
+{
+  let co = GoodCookies.get("Minicad_call_options");
+  if (co && co.length > 0)
+  {
+    callOptions = JSON.parse(co);
+  }
+  // let's apply it to the elements
+  document.getElementById("show_usng").checked = callOptions.show_usng;
+  document.getElementById("show_caller_usng").checked = callOptions.show_caller_usng;
+  document.getElementById("show_note_userid").checked = callOptions.show_userid_in_notes;
+  //whitespace_normal
+  document.getElementById("whitespace_normal").checked = callOptions.whitespace === "normal";
+  document.getElementById("call_buttons_mini").checked = callOptions.whitespace === "compact";
+  //call_buttons_row
+  document.getElementById("call_buttons_row").checked = callOptions.call_buttons_display === "row";
+  document.getElementById("call_buttons_mini").checked = callOptions.call_buttons_display === "mini";
+  // note layout
+  document.getElementById("note_view_compact").checked = callOptions.default_notes_layout === "compact";
+  document.getElementById("note_view_detailed").checked = callOptions.default_notes_layout === "detailed";
+  }
+
+function ApplyCallOptions()
+{
+  // whitespace
+  if (callOptions.whitespace === 'normal')
+  {
+    document.querySelectorAll("ol.CADData.compact").forEach(v => v.classList.remove("compact"));
+  }
+  else
+  {
+    document.querySelectorAll("ol.CADData").forEach(v => v.classList.add("compact"));
+  }
+  // USNG
+  if (callOptions.show_usng)
+  {
+    document.querySelectorAll("li.usng.hide").forEach(v => v.classList.remove("hide"));
+  }
+  else
+  {
+    document.querySelectorAll("li.usng").forEach(v => v.classList.add("hide"));
+  }
+  // Caller USNG
+  if (callOptions.show_caller_usng)
+  {
+    document.querySelectorAll("li.callerusng.hide").forEach(v => v.classList.remove("hide"));
+  }
+  else
+  {
+    document.querySelectorAll("li.callerusng").forEach(v => v.classList.add("hide"));
+  }
+  // Default Call Notes View
+  if (callOptions.default_notes_layout === "compact")
+  {
+    document.querySelectorAll(".notes.long").forEach(v => v.classList.replace("long", "short"));
+  }
+  else
+  {
+    document.querySelectorAll(".notes.short").forEach(v => v.classList.replace("short", "long"));
+  }
+  // UserID hide
+  if (callOptions.show_userid_in_notes)
+  {
+    document.querySelectorAll(".userid.hide").forEach(v => v.classList.remove("hide"));
+  }
+  else
+  {
+    document.querySelectorAll(".userid").forEach(v => v.classList.add("hide"));
+  }
+  if (callOptions.call_buttons_display === 'mini')
+  {
+    document.querySelectorAll(".minibuttons").forEach(v => v.classList.remove("hide"));
+    document.querySelectorAll("ol.CADDatabuttons").forEach(v => v.classList.add("hide"));
+  }
+  else
+  {
+    document.querySelectorAll(".minibuttons").forEach(v => v.classList.add("hide"));
+    document.querySelectorAll("ol.CADDatabuttons").forEach(v => v.classList.remove("hide"));
+  }
+}
 
 function ShowOnMap(lat, long) {
-    if (lat === 0) {
+    if (lat === 0 || lat === '0') {
         currentlong = -81.80;
         currentlat = 29.950; // lon, lat
     } else {
@@ -37,6 +155,7 @@ function ShowOnMap(lat, long) {
         ShowMap();
     }
 }
+
 function ShowMap(event)
 {
   require(["esri/geometry/Point"], function (Point)
@@ -561,6 +680,9 @@ function UpdateActiveCall(record, target, index) {
 
     //$call.find('.CADDatabuttons .mapbutton a').attr('href', 'https://maps.google.com/maps?saddr=&z=20&maptype=satellite&daddr=' +  record.MapURL);
     $call.find('.CADDatabuttons .mapbutton a').attr('href', 'javascript:ShowOnMap("' + record.Latitude + '","' + record.Longitude + '")');
+    $call.find('.minibuttons .minimapbutton').attr('onclick', 'ShowOnMap(' + record.Latitude + ', ' + record.Longitude + ')');
+    
+    
     $call.find('li.age span').text(record.Age);
     $call.find('li.district span').text(record.District);
     $call.find('li.nature span').text(record.NatureCode);
@@ -624,61 +746,74 @@ function HandleHistoricalCallsButton(record)
 {
   //x.push("   <li class='historybutton'><a id='calladdresshistory-" + data.IncidentID + "'>History</a></li>");
   //x.push("<ol class='historybyaddressbase' style='display: none;' id='historylist-" + data.IncidentID + "'>");
+  let minihistoricalcallsbutton = document.getElementById("mini-calladdresshistory-" + record.IncidentID);
   let historicalcallsbutton = document.getElementById("calladdresshistory-" + record.IncidentID);
   let historicalcallsContainer = document.getElementById("historylist-" + record.IncidentID);
   let detailsContainer = document.getElementById("detaillist-" + record.IncidentID);
-  if (historicalcallsbutton && !historicalcallsbutton.classList.contains("live") && historicalcallsContainer)
+  if (historicalcallsbutton && !historicalcallsbutton.classList.contains("live") && !minihistoricalcallsbutton.classList.contains("live") && historicalcallsContainer)
   {
     historicalcallsbutton.classList.add("live");
     historicalcallsbutton.parentElement.onclick = function ()
     {
-      if (historicalcallsContainer.style.display === "block")
-      {
-        historicalcallsContainer.style.display = "none";
-      }
-      else
-      {
-        if (historicalcallsContainer.childElementCount === 0 || (record && record.HistoricalCallsByAddress === null))
-        {
-          // let's load them
-          historicalcallsbutton.textContent = "Loading History...";
-          let requestURL = './CallData/GetHistoricalCallHistory?IncidentID=' + record.IncidentID;
-          $.getJSON(requestURL)
-            .done(function (data)
-            {
-              historicalcallsbutton.textContent = "History";
+      HistoricalCallsButtonClick(record, minihistoricalcallsbutton, historicalcallsbutton, historicalcallsContainer, detailsContainer);
+    }
+    minihistoricalcallsbutton.classList.add("live");
+    minihistoricalcallsbutton.onclick = function ()
+    {
+      HistoricalCallsButtonClick(record, minihistoricalcallsbutton, historicalcallsbutton, historicalcallsContainer, detailsContainer);
+    }
+  }
+}
 
-              if (data === null || data.Records === null)
-              {
-                record.HistoricalCallsByAddress = null; // we set this to null if we want to indicate an error state.             
-              }
-              else
-              {
-                record.HistoricalCallsByAddress = data.Records;
-              }
-              BuildHistoricalCalls(record, historicalcallsContainer);
-              historicalcallsContainer.style.display = "block";
-              detailsContainer.style.display = 'none';
-              RemoveInterval(record.IncidentID);
-            })
-            .fail(function ()
-            {
-              record.HistoricalCallsByAddress = null;
-              historicalcallsbutton.textContent = "History";
-              BuildHistoricalCalls(record, historicalcallsContainer);
-              console.log('Failed to load Call Detail');
-              historicalcallsContainer.style.display = "block";
-              detailsContainer.style.display = 'none';
-              RemoveInterval(record.IncidentID);
-            });
-        }
-        else
+function HistoricalCallsButtonClick(record, minihistoricalcallsbutton, historicalcallsbutton,
+  historicalcallsContainer, detailsContainer)
+{
+  if (historicalcallsContainer.style.display === "block")
+  {
+    historicalcallsContainer.style.display = "none";
+  }
+  else
+  {
+    if (historicalcallsContainer.childElementCount === 0 || (record && record.HistoricalCallsByAddress === null))
+    {
+      // let's load them
+      historicalcallsbutton.textContent = "Loading History...";      
+      let requestURL = './CallData/GetHistoricalCallHistory?IncidentID=' + record.IncidentID;
+      $.getJSON(requestURL)
+        .done(function (data)
         {
-          historicalcallsContainer.style.display = "block";  
+          historicalcallsbutton.textContent = "History";
+          if (data === null || data.Records === null)
+          {
+            record.HistoricalCallsByAddress = null; // we set this to null if we want to indicate an error state.             
+          }
+          else
+          {
+            record.HistoricalCallsByAddress = data.Records;
+          }
+          BuildHistoricalCalls(record, historicalcallsContainer);
+          historicalcallsContainer.style.display = "block";
+          detailsContainer.style.display = 'none';
+          // We have to remove the interval here just in case the call details were shown prior to viewing the
+          // call history.  One replaces the other.
+          RemoveInterval(record.IncidentID);
+        })
+        .fail(function ()
+        {
+          record.HistoricalCallsByAddress = null;
+          historicalcallsbutton.textContent = "History";
+          BuildHistoricalCalls(record, historicalcallsContainer);
+          console.log('Failed to load Call Detail');
+          historicalcallsContainer.style.display = "block";
           detailsContainer.style.display = 'none';
           RemoveInterval(record.IncidentID);
-        }
-      }
+        });
+    }
+    else
+    {
+      historicalcallsContainer.style.display = "block";
+      detailsContainer.style.display = 'none';
+      RemoveInterval(record.IncidentID);
     }
   }
 }
@@ -736,36 +871,48 @@ function HandleDetailsButton(record)
 {
   //x.push("   <li class='detailbutton'><a id='calldetail-" + data.IncidentID + "'>Detail</a></li>");
   //x.push("<ol class='calldetailbase' style='display: none;' id='detaillist-" + data.IncidentID + "'>");
+  let minidetailbutton = document.getElementById("mini-calldetail-" + record.IncidentID);
   let detailbutton = document.getElementById("calldetail-" + record.IncidentID);
   let detailsContainer = document.getElementById("detaillist-" + record.IncidentID);
   let historicalcallsContainer = document.getElementById("historylist-" + record.IncidentID);
   if (detailbutton && !detailbutton.classList.contains("live") && detailsContainer)    
   {
-    detailbutton.classList.add("live");
+    detailbutton.classList.add("live"); // live means that the button's onclick event has been added.
     detailbutton.onclick = function ()
     {
-      if (detailsContainer.style.display === "block")
-      {
-        // we need to hide the call details and reset the CallDetails part of the record.
-        // we're using the record.CallDetails value as our toggle.  If it is not null, we know we're displaying 
-        // those records at the moment.
-        RemoveInterval(record.IncidentID);
-        record.CallDetails = null;
-        detailsContainer.style.display = "none";
-        ClearElement(detailsContainer);
-      }
-      else
-      {
-        // let's load the calldetails and display them
-        detailbutton.textContent = "Loading Details...";      
-        GetAndUpdateCallDetails(record, detailbutton, detailsContainer, historicalcallsContainer);
-        let intervalid = setInterval(function ()
-        {
-          GetAndUpdateCallDetails(record, detailbutton, detailsContainer, historicalcallsContainer);
-        }, 10000);
-        activeIntervals.push({ IncidentID: record.IncidentID, IntervalID: intervalid });
-      }
+      DetailButtonClick(record, minidetailbutton, detailbutton, detailsContainer, historicalcallsContainer);
     }
+    minidetailbutton.classList.add("live");
+    minidetailbutton.onclick = function ()
+    {
+      DetailButtonClick(record, minidetailbutton, detailbutton, detailsContainer, historicalcallsContainer);
+    }
+  }
+}
+
+function DetailButtonClick(record, minidetailbutton, detailbutton, detailsContainer, historicalcallsContainer)
+{
+  if (detailsContainer.style.display === "block")
+  {
+    // we need to hide the call details and reset the CallDetails part of the record.
+    // we're using the record.CallDetails value as our toggle.  If it is not null, we know we're displaying 
+    // those records at the moment.
+    RemoveInterval(record.IncidentID);
+    record.CallDetails = null;
+    detailsContainer.style.display = "none";
+    ClearElement(detailsContainer);    
+  }
+  else
+  {
+    // let's load the calldetails and display them
+    minidetailbutton.textContent = "...";
+    detailbutton.textContent = "Loading Details...";
+    GetAndUpdateCallDetails(record, minidetailbutton, detailbutton, detailsContainer, historicalcallsContainer);
+    let intervalid = setInterval(function ()
+    {
+      GetAndUpdateCallDetails(record, minidetailbutton, detailbutton, detailsContainer, historicalcallsContainer);
+    }, 10000);
+    activeIntervals.push({ IncidentID: record.IncidentID, IntervalID: intervalid });
   }
 }
 
@@ -782,7 +929,7 @@ function RemoveInterval(IncidentID)
   }
 }
 
-function GetAndUpdateCallDetails(record, detailbutton, detailsContainer, historicalcallsContainer)
+function GetAndUpdateCallDetails(record, minidetailbutton, detailbutton, detailsContainer, historicalcallsContainer)
 {
   let timestamp = '';
   if (record && record.CallDetails && record.CallDetails.length > 0)
@@ -797,6 +944,7 @@ function GetAndUpdateCallDetails(record, detailbutton, detailsContainer, histori
   $.getJSON(requestURL)
     .done(function (data)
     {
+      minidetailbutton.textContent = "D";
       detailbutton.textContent = "Details";
 
       if (data === null || data.Records === null)
@@ -825,6 +973,7 @@ function GetAndUpdateCallDetails(record, detailbutton, detailsContainer, histori
     .fail(function ()
     {
       record.CallDetails = null;
+      minidetailbutton.textContent = "D";
       detailbutton.textContent = "Details";
       BuildCallDetails(record, detailsContainer);
       console.log('Failed to load Call Detail');
@@ -1593,8 +1742,35 @@ function ClearElement(node)
 function CreateCallLayout(data, i, target) {
   var x = $([
       "<div id='" + data.IncidentID + "' class='Call'>",
-      "<ol class='CADData'>"
+      "<ol class='CADData"
   ]);
+  //'>"
+  if (callOptions.whitespace === "normal")
+  {
+    x.push("'>");
+  }
+  else
+  {
+    x.push(" compact'>");
+  }
+  // Add Mini Buttons  
+  x.push("<span class='minibuttons ");
+  if (callOptions.call_buttons_display !== 'mini') x.push("hide");
+  x.push("'>")
+  x.push("<span class='minidetailbutton' id='mini-calldetail-" + data.IncidentID + "'>D</span>");
+  x.push("<span class='minihistorybutton' id='mini-calladdresshistory-" + data.IncidentID + "' title='This will show up to the last 30 calls to this address. If a lightbulb is showing, it means we have been to this address in the last 30 days.'>");
+  if (data.HasRecentVisit && target !== '#historical')
+  {
+    x.push("<img style='height: 1.1em; width: 1.1em; margin-left: 0;' src='//static.arcgis.com/images/Symbols/PeoplePlaces/Light.png' class='recentvisit' />");
+  }
+  else
+  {
+    x.push("H");
+  }
+  x.push("</span>");
+  //x.push("<span class='minimapbutton' onclick='ShowOnMap(&quot;" + data.Latitude + "&quot;, &quot;" + data.Longitude + "&quot;)'>M</span>");
+  x.push("<span class='minimapbutton' onclick='ShowOnMap(0, 0))'>M</span>");
+  x.push("</span>");
   x.push(lidata('', 'age', 'Age of Call', data.Age));
   x.push(lidata('', 'calltime', 'Calltime', data.FormattedCallTime));
   x.push(lidata('', 'district', 'District', data.District));
@@ -1612,17 +1788,44 @@ function CreateCallLayout(data, i, target) {
   }
   if (target === "#active") x.push(lidata('', 'staffdispatched', 'Staff Dispatched / Enroute', countManpower(data, ['Dispatched', 'En-Route'])));
   if (target === "#active") x.push(lidata('', 'staffarrived', 'Staff Arrived', countManpower(data, ['Arrived'])));
-  if (data.CallLocationUSNG.length > 0) {
-    x.push(lidata('', 'usng', 'USNG', data.CallLocationUSNG));
+  if (data.CallLocationUSNG.length > 0)
+  {
+    if (!callOptions.show_usng)
+    {
+      x.push(lidata('', 'usng hide', 'USNG', data.CallLocationUSNG));
+    }
+    else
+    {
+      x.push(lidata('', 'usng', 'USNG', data.CallLocationUSNG));
+    }
+    
   }
-  if (data.CallerLocationUSNG.length > 0) {
-    x.push(lidata('', 'callerusng', 'Caller Location', data.CallerLocationUSNG));
+  if (data.CallerLocationUSNG.length > 0)
+  {
+    if (!callOptions.show_caller_usng)
+    {
+      x.push(lidata('', 'callerusng hide', 'Caller Location', data.CallerLocationUSNG));
+    }
+    else
+    {
+      x.push(lidata('', 'callerusng', 'Caller Location', data.CallerLocationUSNG));
+    }
+    
     x.push(lidata('', 'callerlocationage', 'Caller Location Age', data.CallerLocationAge));
     x.push(lidata('', 'callerlocationconfidence', 'Caller Location Confidence', data.CallerLocationConfidence));
   }
 
   x.push("</ol>");
-  x.push("<ol class='notes short' id='active_notes-" + data.IncidentID + "' ");
+  x.push("<ol class='notes ");
+  if (callOptions.default_notes_layout === "compact")
+  {
+    x.push("short");
+  }
+  else
+  {
+    x.push("long");
+  }
+  x.push("' id='active_notes-" + data.IncidentID + "' ");
   x.push("onclick='ToggleNotes(\"" + data.IncidentID + "\", \"active\")'>");
   //x.push("    <li class='notes'><a href='javascript:ToggleNotes();'>");
   //x.push(data.Notes.toProperCase().replace(/\[/g, "<span class='linesep'></span><span class='dispatch'>[").replace(/(?:\r\n|\r|\n)/g, "</span>"));
@@ -1654,8 +1857,10 @@ function CreateCallLayout(data, i, target) {
 
   }
   x.push("</ol>");
-  x.push("<ol class='CADDatabuttons'>");
-  x.push("   <li class='detailbutton'><a id='calldetail-" + data.IncidentID + "'>Detail</a></li>");
+  x.push("<ol class='CADDatabuttons ");
+  if (callOptions.call_buttons_display === 'mini') x.push("hide");  
+  x.push("'>");
+  x.push("   <li class='detailbutton'><a id='calldetail-" + data.IncidentID + "'>Details</a></li>");
   x.push("   <li class='historybutton' title='This will show up to the last 30 calls to this address. If a lightbulb is showing, it means we have been to this address in the last 30 days.'><div class='historyhelper'><a id='calladdresshistory-" + data.IncidentID + "'>History</a>");
   if (data.HasRecentVisit && target !== '#historical')
   {
@@ -1743,7 +1948,6 @@ function getCallIndex(incidentId, data) {
     return -1;
 }
 
-
 function timeStamp(d)
 {
   // Create a date object with the current time
@@ -1780,24 +1984,4 @@ function timeStamp(d)
 
   // Return the formatted string
   return date.join("/") + " " + time.join(":") + " " + suffix;
-}
-
-function calculate_distance(compare_point, extra_map_points)
-{
-  if (this[compare_lookup_key] !== undefined) return this[compare_lookup_key];
-
-  let mylocation = this;
-  return require(["esri/geometry/Point", "esri/SpatialReference", "esri/geometry/webMercatorUtils"],
-    function (Point, SpatialReference, webMercatorUtils)
-    {
-      var pt1 = new Point(mylocation.my_point.Longitude, mylocation.my_point.Latitude, new SpatialReference({ wkid: 4326 }));
-      var pt2 = new Point(compare_point.Longitude, compare_point.Latitude, new SpatialReference({ wkid: 4326 }));
-      var pt1_web = webMercatorUtils.geographicToWebMercator(pt1);
-      var pt2_web = webMercatorUtils.geographicToWebMercator(pt2);
-      let distance = esri.geometry.getLength(pt1_web, pt2_web);
-      mylocation[compare_lookup_key] = distance;
-      mylocation.lookup_keys.push(compare_lookup_key);
-      mylocation.UpdateLocationDistances(compare_lookup_key, distance);
-      return distance;
-    });
 }

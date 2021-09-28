@@ -213,7 +213,7 @@ function mapInit() {
       if (lasthistoricaldata !== null) {
         UpdateHistoricalCallsMap(filteredlasthistoricaldata);
       }
-      map_layer_list = new LayerList({ map: map, showLegend: true }, document.getElementById("layercontrol"));
+      map_layer_list = new LayerList({ map: map }, document.getElementById("layercontrol"));
       map_layer_list.startup();
       map_layer_list.visible = false;  
       //ll.on("toggle", function (event)

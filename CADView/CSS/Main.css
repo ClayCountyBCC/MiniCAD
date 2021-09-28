@@ -144,7 +144,7 @@ ul.tabs li.title {
 }
 
 .tab-content.current {
-    display: inherit;
+    display: block;
 }
 /* end tab UI CSS */
 
@@ -164,6 +164,10 @@ li img.imghide {
     background-color: white;
 }
 
+.hide
+{
+  display: none !important;
+}
 
 #historyfilters.show
 {
@@ -408,7 +412,7 @@ fieldset {
     background-color: #ddd;
     padding: 0;
     margin: 0 auto;
-    margin-bottom: .5em;
+    margin-top: .5em;
 }
 
 .Call ol {
@@ -511,15 +515,18 @@ ol.notes, ol.historynotes
 
     ol.notes.long li span.userid, ol.historynotes.long li span.userid
     {
-      flex-basis: 15%;
+      /*flex-basis: 15%;*/
+      min-width: 5em;
     }
     ol.notes.long li span.timestamp, ol.historynotes.long li span.timestamp
     {
-      flex-basis: 20%;
+      /*flex-basis: 20%;*/
+      min-width: 10em;
     }
     ol.notes.long li span.text, ol.historynotes.long li span.text
     {
       flex-basis: 65%;
+      flex-grow: 1;
       word-break: break-word;
       word-wrap: break-word;
     }
@@ -579,23 +586,6 @@ ol.notes, ol.historynotes
     display: none;
   }
 
-/*  ol.notes.long li span.userid
-  {
-    display: inline;
-    width: 20%;
-  }
-
-  ol.notes.long li span.timestamp
-  {
-    display: inline;
-    width: 30%;
-  }
-  ol.notes.long li span.note
-  {
-    display: inline;
-    width: 50%;
-  }*/
-
 
 .dispatch {
     display: none;
@@ -652,7 +642,19 @@ ol.notes, ol.historynotes
     width: 100%;
 }
 
-.CADDatabuttons .historybutton, .historybyaddressbase, #opsGroups, .Ops {
+.minimapbutton, .minidetailbutton, .minihistorybutton
+{
+  border: 1px solid black;
+  font-weight: bolder;
+  padding-left: .5em;
+  padding-right: .5em;
+  margin-left: .5em;
+  float: left;
+  cursor: pointer;
+}
+
+
+.CADDatabuttons .historybutton, .historybyaddressbase, #opsGroups, .Ops, .minihistorybutton {
     background-color: lightsalmon;
 }
 ol.CADDatabuttons li.historybutton div.historyhelper a
@@ -678,10 +680,10 @@ ol.CADDatabuttons li.historybutton div.historyhelper a
 {
   height: 100%;  
   object-fit: contain;
-  margin: 0 0 0 1em;
+  margin: 0 0 0 1em; 
 }
 
-.CADDatabuttons .detailbutton, .calldetailbase, .calldetailbase .detailheader, #eventGroups, .Events {
+.CADDatabuttons .detailbutton, .calldetailbase, .calldetailbase .detailheader, #eventGroups, .Events, .minidetailbutton {
     background-color: lightgoldenrodyellow;
 }
 
@@ -700,7 +702,7 @@ ol.CADDatabuttons li.historybutton div.historyhelper a
     visibility: hidden;
 }*/
 
-.CADDatabuttons .mapbutton {
+.CADDatabuttons .mapbutton, .minimapbutton {
     background-color: lightblue;
 }
 
@@ -907,151 +909,179 @@ li.historyrow
 }*/
 /*================= END ADVISORY CSS=================*/
 /* ========== Begin media queries ========== */
-@media all and (min-width: 1000px) {
-    html, body {
-        height: 100% !important;
-    }
-    .tab-content{
-        height: calc(100% - 40px);
-        width: 45%;
-        float: left;
-        margin: 0 auto;
-        padding: 0;
-    }
+@media all and (min-width: 1000px)
+{
+  html, body
+  {
+    height: 100% !important;
+  }
+
+  .tab-content
+  {
+    height: calc(100% - 40px);
+    width: 45%;
+    float: left;
+    margin: 0 auto;
+    padding: 0;
+  }
 
 
   #gridgutter
   {
     display: block;
   }
-/*    .tab-content > div {
+  /*    .tab-content > div {
         height: calc(100% - 40px);
     }
 */
 
-    .maptab{
-        float: right;
-        display: inherit;
-        background: #ddd;
-        border: 1px black solid;
-        border-bottom: none;        
-        width: 55%;
-    }
-    #mapWindow {
-        width: 54%;
-        margin: 0 auto;
-        padding: 0;
-        border: none;
-    }
+  .maptab
+  {
+    float: right;
+    display: inherit;
+    background: #ddd;
+    border: 1px black solid;
+    border-bottom: none;
+    width: 55%;
+  }
 
-    #map {        
-        margin: 0 auto;
-        padding: 0;
-    }
+  #mapWindow
+  {
+    width: 54%;
+    margin: 0 auto;
+    padding: 0;
+    border: none;
+  }
 
-    .CADDatabuttons {
-        float: left;
-        width: 100%;
-        margin: 0 auto;
-        padding: 0;
-        height: 2em;
-        display: block;
-        margin-bottom: .5em;
-    }
+  #map
+  {
+    margin: 0 auto;
+    padding: 0;
+  }
 
-        .CADDatabuttons li a {
-            display: block;
-            text-align: center;
-            width: 100%;
-            height: 100%;
-            margin: 0 auto;
-            /*padding-top: .5em;
+  .CADDatabuttons
+  {
+    float: left;
+    width: 100%;
+    margin: 0 auto;
+    padding: 0;
+    height: 2em;
+    display: block;
+    margin-bottom: .5em;
+  }
+
+    .CADDatabuttons li a
+    {
+      display: block;
+      text-align: center;
+      width: 100%;
+      height: 100%;
+      margin: 0 auto;
+      /*padding-top: .5em;
             padding-bottom: .5em;*/
-            vertical-align: middle;
-            font-size: larger;
-        }
+      vertical-align: middle;
+      font-size: larger;
+    }
 
-        .CADDatabuttons li {
-            float: left;
-            margin: 0 auto;
-            width: 33.3%;
-            min-width: 0;
-            border-radius: 0;
-            padding: 0;
-            height: 100%;
-        }
+    .CADDatabuttons li
+    {
+      float: left;
+      margin: 0 auto;
+      width: 33.3%;
+      min-width: 0;
+      border-radius: 0;
+      padding: 0;
+      height: 100%;
+    }
 
-        .CADDatabuttons .detailbutton {
-            border-bottom-left-radius: 3px;
-            border-top-left-radius: 3px;
-            border-right: none;
-        }
+    .CADDatabuttons .detailbutton
+    {
+      border-bottom-left-radius: 3px;
+      border-top-left-radius: 3px;
+      border-right: none;
+    }
 
-        .CADDatabuttons .mapbutton {
-            border-bottom-right-radius: 3px;
-            border-top-right-radius: 3px;
-            border-left: none;
-        }
+    .CADDatabuttons .mapbutton
+    {
+      border-bottom-right-radius: 3px;
+      border-top-right-radius: 3px;
+      border-left: none;
+    }
 
-    /*#historical .CADDatabuttons li {
+  /*#historical .CADDatabuttons li {
         width: 50%;
     }
 
     #historical .CADDatabuttons .mapbutton {
         border-left: 1px solid black;
     }*/
-    .CADData {
-        float: left;
-        clear: none;
-    }
-    .CADData li, .CADData li label, .CADData li span{
-        /*min-width: 25%;*/
+  .CADData
+  {
+    float: left;
+    clear: none;
+  }
 
-    }
-    .CADData, .notes, li.historynotes {
-        font-size: 1.2em;
-        padding-left: 1em;
+    .CADData li, .CADData li label, .CADData li span
+    {
+      /*min-width: 25%;*/
     }
 
-        .CADData li, .calldetail li {
-            height: auto;
-        }
-                
-        /*.CADData .nature, .CADData .street, .CADData .crossstreet {*/
-            /* original
-              min-width: 50%;
-            */
-            /*min-width: 30em;*/
-            /*max-width: 30em;
-        }
-        .CADData .district 
-        {
-          min-width: 15%;
-        }
-        .CADData .usng
-        {
-          min-width: 50%;
-        }
-        .CADData .business 
-        {
-          min-width: 100%;
-        }*/
-        /*.CADData .historynature,*/
-    .unitlist {
-        font-size: larger;
+  .CADData, .notes, li.historynotes
+  {
+    font-size: 1.2em;
+    padding-left: 1em;
+  }
+
+    .CADData li, .calldetail li
+    {
+      height: auto;
     }
 
-    /*#UnitStatusHover {
+    .CADData .nature, .CADData .street, .CADData .crossstreet
+    {
+      min-width: 50%;
+    }
+
+    .CADData .district
+    {
+      min-width: 15%;
+    }
+
+    .CADData .usng
+    {
+      min-width: 50%;
+    }
+
+    .CADData .business
+    {
+      min-width: 100%;
+    }
+    .CADData.compact .business, .CADData.compact .nature, 
+    .CADData.compact .street, .CADData.compact .crossstreet, 
+    .CADData.compact .district, .CADData.compact .usng
+    {
+      width: auto;
+      min-width: 0;
+    }
+    /*.CADData .historynature,*/
+    .unitlist
+    {
+      font-size: larger;
+    }
+
+  /*#UnitStatusHover {
         width: 25%;
     }*/
   .calldetailbase .userid, .calldetailbase .desc, .calldetailbase .timestamp, .calldetailbase .unit
   {
     width: 50%;
   }
-    .calldetailbase .comments, .calldetailbase .usertyped  {
-        width: 100%;
-    }
-/*  .HistoryFilterContainer.Short.Outer, .HistoryFilterContainer.Short.Inner, .HistoryFilterContainer.Long.Inner, .HistoryFilterContainer.Long.Outer
+
+  .calldetailbase .comments, .calldetailbase .usertyped
+  {
+    width: 100%;
+  }
+  /*  .HistoryFilterContainer.Short.Outer, .HistoryFilterContainer.Short.Inner, .HistoryFilterContainer.Long.Inner, .HistoryFilterContainer.Long.Outer
   {
     flex-direction: row;
     width: 100%;
