@@ -27,7 +27,7 @@ let callOptions = {
   , show_caller_usng: true
   , default_notes_layout: 'compact' // or detailed
   , show_userid_in_notes: true
-  , call_buttons_display: 'normal' // or mini
+  , call_buttons_display: 'row' // or mini
 };
 
 function ToggleCallOptions()
@@ -44,9 +44,37 @@ function LoadSavedCallOptions()
 
 function UpdateCallOptions()
 {
-  callOptions.whitespace = document.querySelector('input[name="whitespace"]:checked').value;
-  callOptions.call_buttons_display = document.querySelector('input[name="call_buttons"]:checked').value;
-  callOptions.default_notes_layout = document.querySelector('input[name="note_view"]:checked').value;
+  let whitespace = document.querySelector('input[name="whitespace"]:checked');
+  if (whitespace)
+  {
+    callOptions.whitespace = whitespace.value;
+  }
+  else
+  {
+    document.getElementById("whitespace_normal").checked = true;
+    callOptions.whitespace = "normal";
+  }
+  let call_buttons = document.querySelector('input[name="call_buttons"]:checked');
+  if (call_buttons)
+  {
+    callOptions.call_buttons_display = call_buttons.value;
+  }
+  else
+  {
+    document.getElementById("call_buttons_row").checked = true;
+    callOptions.call_buttons_display = "row";
+  }
+  let note_view = document.querySelector('input[name="note_view"]:checked');
+  if (note_view)
+  {
+    callOptions.default_notes_layout = note_view.value;
+  }
+  else
+  {
+    document.getElementById("note_view_compact").checked = true;
+    callOptions.default_notes_layout = "compact";
+  }
+  
   callOptions.show_usng = document.getElementById("show_usng").checked;
   callOptions.show_caller_usng = document.getElementById("show_caller_usng").checked;
   callOptions.show_userid_in_notes = document.getElementById("show_note_userid").checked;
@@ -71,12 +99,27 @@ function LoadCallOptions()
   document.getElementById("show_caller_usng").checked = callOptions.show_caller_usng;
   document.getElementById("show_note_userid").checked = callOptions.show_userid_in_notes;
   //whitespace_normal
+  if (callOptions.whitespace !== "normal" && callOptions.whitespace !== "compact") 
+  {
+    console.log('callOptions whitespace invalid LoadCallOptions', callOptions.whitespace);
+    callOptions.whitespace = "normal";
+  }
   document.getElementById("whitespace_normal").checked = callOptions.whitespace === "normal";
   document.getElementById("call_buttons_mini").checked = callOptions.whitespace === "compact";
   //call_buttons_row
+  if (callOptions.call_buttons_display !== "row" && callOptions.call_buttons_display !== "mini")
+  {
+    console.log('callOptions call_buttons_display invalid LoadCallOptions', callOptions.call_buttons_display);
+    callOptions.call_buttons_display = "row";
+  }
   document.getElementById("call_buttons_row").checked = callOptions.call_buttons_display === "row";
   document.getElementById("call_buttons_mini").checked = callOptions.call_buttons_display === "mini";
   // note layout
+  if (callOptions.default_notes_layout !== "compact" && callOptions.default_notes_layout !== "detailed")
+  {
+    console.log('callOptions default notes layout invalid LoadCallOptions', callOptions.default_notes_layout);
+    callOptions.default_notes_layout = "compact";
+  }
   document.getElementById("note_view_compact").checked = callOptions.default_notes_layout === "compact";
   document.getElementById("note_view_detailed").checked = callOptions.default_notes_layout === "detailed";
   }
@@ -248,8 +291,11 @@ function tabClick(tab)
     }
     gutter.style.display = "block";
   }
-  map.resize(true);
-  map.reposition();
+  if (map)
+  {
+    map.resize(true);
+    map.reposition();
+  }
 }
 
 function LoadUnitTableLayout()

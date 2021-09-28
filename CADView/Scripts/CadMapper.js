@@ -906,7 +906,7 @@ function UpdateHistoricalCallsMap(data)
   require(["esri/symbols/PictureMarkerSymbol", "esri/InfoTemplate", "esri/graphic", "esri/geometry/Point", "esri/SpatialReference"],
     function (PictureMarkerSymbol, InfoTemplate, Graphic, Point, SpatialReference)
     {
-      map_layer_list.refresh();
+      if (map_layer_list) map_layer_list.refresh();
       if (HistoryLayer !== undefined)
       {
         HistoryLayer.clear();
