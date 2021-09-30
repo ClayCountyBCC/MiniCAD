@@ -265,11 +265,12 @@ function tabClick(tab)
   var tText = document.getElementById('li-' + tab).textContent;
   let container = document.getElementById("gridcontainer");
   let gutter = document.getElementById("gridgutter");
-  if (container.style.gridTemplateColumns !== '1fr')
-  {
-    containerStyle = container.style.gridTemplateColumns;
-    //GoodCookies.set("Minicad_current_split", containerStyle, { sameSite: 'strict' });
-  }
+  //if (container.style.gridTemplateColumns !== '1fr' && container.style.gridTemplateColumns !== '' && container.style.gridTemplateColumns !== '1fr 1fr')
+  //{
+  //  console.log('setting container style', container.style.gridTemplateColumns);
+  //  //containerStyle = container.style.gridTemplateColumns;
+  //  //GoodCookies.set("Minicad_current_split", containerStyle, { sameSite: 'strict' });
+  //}
 
   if (tText === 'Map')
   {
@@ -277,7 +278,7 @@ function tabClick(tab)
     {
       mapInit();
     }
-    containerStyle = container.style.gridTemplateColumns;
+    //containerStyle = container.style.gridTemplateColumns;
     container.style.gridTemplateColumns = "1fr";
     container.style.gridTemplateAreas = "'header' 'right' 'footer'";
     gutter.style.display = "none";
@@ -286,8 +287,9 @@ function tabClick(tab)
   {
     if ($(window).width() > 999)
     {
-      container.style.gridTemplateColumns = containerStyle;
       container.style.gridTemplateAreas = "'header header header' 'main gutter right' 'footer footer footer'";
+      container.style.gridTemplateColumns = containerStyle;
+      //grid-template-columns: 1fr auto 1fr;
     }
     gutter.style.display = "block";
   }
@@ -567,13 +569,15 @@ function buildUnitDisplay(item, classToUse)
     x.push(timeStamp(item.Timestamp));
     x.push("</li>");
   }
-
-  x.push("<li>Speed: ");
-  x.push(item.Speed.toString());
-  x.push("</li><li>");
-  x.push("Heading: ");
-  x.push(item.Heading.toString());
-  x.push("</li>");
+  if (item.Latitude > 0 && (item.Speed > 0 || item.Heading > 0))
+  {
+    x.push("<li>Speed: ");
+    x.push(item.Speed.toString());
+    x.push("</li><li>");
+    x.push("Heading: ");
+    x.push(item.Heading.toString());
+    x.push("</li>");
+  }
 
   var tmp = unitStatusClass(item);
   if (tmp !== item.UnitStatus)
