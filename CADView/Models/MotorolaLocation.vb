@@ -64,7 +64,8 @@ Namespace Models
         "boreej",
         "sasska",
         "brockwellm",
-        "oconorg"
+        "oconorg",
+        "haned"
       }
     End Function
 

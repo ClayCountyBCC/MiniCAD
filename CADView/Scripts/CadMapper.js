@@ -7,6 +7,7 @@ var geocoder;
 var locatorUrl = "https://maps.claycountygov.com:6080/arcgis/rest/services/Address_Site_Locator/GeocodeServer";
 var InciLayer, HistoryLayer, USNGOverlay, RadarLayer, fireResponse, CallerLocationsLayer, VehicleLayer,
   WeatherWarningLayer, LocationLayer, RadioLayer;
+var ParcelLayer;
 var locateButton;
 var WorldTranspo = null;
 var showAvailable = 0;
@@ -16,7 +17,7 @@ var map_layer_list = null;
 
 
 var never_hide_units = ['E11', 'E13', 'E14', 'E15', 'E17', 'E18',
-  'E19', 'E20', 'E22', 'E23', 'E24', 'E25', 'E26', 'R11', 'R13',
+  'E19', 'E20', 'L20', 'E22', 'E23', 'E24', 'E25', 'E26', 'L26', 'R11', 'R13',
   'R15', 'R17', 'R18', 'R19', 'R22', 'R22A', 'R23', 'R24', 'R25',
   'R26', 'BAT1', 'BAT2', 'CHIEF1', 'CHIEF2', 'CHIEF3', 'TR603',
   'T149', 'T209', 'T238'];
@@ -52,7 +53,7 @@ function mapInit() {
       parser.parse();
 
       map = new Map("map", {
-        basemap: 'streets-navigation-vector',//"osm",
+        basemap: "osm", //'streets-navigation-vector',//"osm",
         center: [-81.80, 29.950], // lon, lat
         zoom: 11,
         logo: false
@@ -122,6 +123,23 @@ function mapInit() {
       siteAddresses.id = "Address Points";
       map.addLayer(siteAddresses);
 
+      ParcelLayer = new ArcGISDynamicMapServiceLayer('https://maps.claycountygov.com:6443/arcgis/rest/services/Parcel/MapServer');
+      ParcelLayer.id = "Parcel Layer";
+      ParcelLayer.setScaleRange(2000, 1);
+      //ParcelLayer.hide();
+      //ParcelLayer.on("load", function ()
+      //{
+      //  console.log("parcel layer loaded");
+      //  console.log('Parcel Layer Min Scale 1', ParcelLayer.minScale);
+      //  ParcelLayer.setScaleRange(2000, 1);
+      //  console.log('Parcel Layer Min Scale 2', ParcelLayer.minScale);
+      //});
+      //ParcelLayer.maxScale = 4500;
+      //ParcelLayer.minScale = 4500;
+
+      
+      map.addLayer(ParcelLayer);
+
       WeatherWarningLayer = new ArcGISDynamicMapServiceLayer('//idpgis.ncep.noaa.gov/arcgis/rest/services/NWS_Forecasts_Guidance_Warnings/watch_warn_adv/MapServer');
       WeatherWarningLayer.refreshInterval = 5; // refreshInterval is in Minutes per the docs
 
@@ -172,7 +190,9 @@ function mapInit() {
       home.startup();
       
       // Setup USNG Layer
-      USNGOverlay = new ArcGISDynamicMapServiceLayer('https://maps1.arcgisonline.com/ArcGIS/rest/services/NGA_US_National_Grid/MapServer');
+      USNGOverlay = new ArcGISDynamicMapServiceLayer('https://maps.claycountygov.com:6443/arcgis/rest/services/US_National_Grid/MapServer');
+      //USNGOverlay = new ArcGISDynamicMapServiceLayer('https://maps1.arcgisonline.com/ArcGIS/rest/services/NGA_US_National_Grid/MapServer');
+      //USNGOverlay = new FeatureLayer('https://services2.arcgis.com/FiaPA4ga0iQKduv3/arcgis/rest/services/US_National_Grid_HFL_V/FeatureServer');
       USNGOverlay.id = "USNG Layer";
       map.addLayer(USNGOverlay);
       USNGOverlay.hide();
@@ -383,6 +403,8 @@ function UpdateUnits()
                   "contentType": "image/png",
                   "width": 30,
                   "height": 30
+                  //"width": 40,
+                  //"height": 40
                 });
                 var bgSymbol = new PictureMarkerSymbol({
                   "angle": 0,
@@ -392,6 +414,8 @@ function UpdateUnits()
                   "contentType": "image/png",
                   "width": 45,
                   "height": 45
+                  //"width": 60,
+                  //"height": 60
                 });
                 switch (data.Records[i].UnitStatus)
                 {
@@ -429,7 +453,7 @@ function UpdateUnits()
 
                 var textSymbol = new TextSymbol(data.Records[i].UnitName); //esri.symbol.TextSymbol(data.Records[i].UnitName);
                 textSymbol.setColor(new dojo.Color([0, 100, 0]));
-                textSymbol.setOffset(0, -25);
+                textSymbol.setOffset(0, -35);
                 textSymbol.setAlign(TextSymbol.ALIGN_MIDDLE);
 
 
@@ -440,15 +464,21 @@ function UpdateUnits()
                     break;
                   case "RESCUE":
                     symbol.url = "//static.arcgis.com/images/Symbols/SafetyHealth/Ambulance.png";
-                    //symbol.url = "./Content/images/Ambulance-R.png";
+                    //Draft - Rescue - Red with Stripe
+                    //symbol.url = "./Content/images/Draft - Rescue - Red with Stripe.png";
+                    //symbol.url = "./Content/images/Draft - Rescue - White with Stripe.png";
                     //if (heading > 179) symbol.url = "./Content/images/Ambulance-L.png";
                     break;
                   case "LADDER":
                     symbol.url = "./Content/images/Fire-engine.png";
+                    //symbol.url = "./Content/images/Draft - Ladder-2.png";
                     break;
 
                   case "ENGINE":
+                    //symbol.url = "./Content/images/Draft - Engine-2.png";
+                    //symbol.url = "./Content/images/Draft - Engine.png";
                     //symbol.url = "./Content/images/FancyFiretruck.png";
+                    //symbol.url = "./Content/images/Firetruck.png";
                     symbol.url = "//static.arcgis.com/images/Symbols/SafetyHealth/FireTruck.png";
                     break;
 

@@ -210,6 +210,11 @@ function ShowMap(event)
     } else
     {
       map.centerAndZoom(p, 16);
+      console.log('map extent', map.extent);
+      console.log('map scale', map.getScale());
+      console.log('map basemap', map.getBasemap(), map.getMaxScale(), map.getMinScale());
+
+      console.log('map', map);
     }
     currentlat = null;
     if (mapload !== undefined)

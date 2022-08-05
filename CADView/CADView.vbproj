@@ -140,6 +140,11 @@
     <Content Include="Content\images\circle-purple128.png" />
     <Content Include="Content\images\circle-red128.png" />
     <Content Include="Content\images\circle-yellow128.png" />
+    <Content Include="Content\images\Draft - Engine-2.png" />
+    <Content Include="Content\images\Draft - Engine.png" />
+    <Content Include="Content\images\Draft - Ladder-2.png" />
+    <Content Include="Content\images\Draft - Rescue - Red with Stripe.png" />
+    <Content Include="Content\images\Draft - Rescue - White with Stripe.png" />
     <Content Include="Content\images\FancyFiretruck.png" />
     <Content Include="Content\images\Fire-engine.png" />
     <Content Include="Content\images\LineSep.png" />
