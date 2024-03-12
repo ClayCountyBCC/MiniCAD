@@ -8,16 +8,17 @@
   <link rel="icon" type="image/png" href="//static.arcgis.com/images/Symbols/SafetyHealth/FireTruck.png" />
 
   <title>MiniCAD</title>
-  <link href="CSS/CadMapper.css?v=202206071235" rel="stylesheet" type="text/css" />
-  <link href="CSS/Main.css?v=20211118134800" rel="stylesheet" type="text/css" />
-  <link rel="stylesheet" href="//js.arcgis.com/3.40/esri/css/esri.css">
+  <link href="CSS/CadMapper.css?v=202403100828" rel="stylesheet" type="text/css" />
+  <link href="CSS/Main.css?v=202403100828" rel="stylesheet" type="text/css" />
+  <link rel="stylesheet" href="//js.arcgis.com/3.44/esri/css/esri.css">
   <link href="CSS/main-test.css" rel="stylesheet" />
-  <link href="CSS/test.css?v=20211118134800" rel="stylesheet" />
+  <link href="CSS/test.css?v=202403100828" rel="stylesheet" />
   <script src="Scripts/Split-Grid.js"></script>
 
 </head>
 <body>
   <div id="gridcontainer" class='container'>
+
     <ul class="tabs">
       <li id="li-tab-1" class="tab-link current" data-tab="tab-1" onclick="tabClick('tab-1')">Active Calls</li>
       <li id="li-tab-2" class="tab-link" data-tab="tab-2" onclick="tabClick('tab-2')">Historical Calls</li>
@@ -30,11 +31,20 @@
           id="li-tab-7" class="tab-link" data-tab="tab-7" onclick="tabClick('tab-7')">
         Radio
       </li>
-      <li style="display:none;"
+      <li style="display: none;"
           id="li-tab-8" class="tab-link" data-tab="tab-8" onclick="tabClick('tab-8')">
-        Test
+        Replay
+      </li>
+      <li style="display: none;"
+          id="li-tab-9" class="tab-link" data-tab="tab-9" onclick="tabClick('tab-9')">
+        Unit Admin
+      </li>
+      <li style="display: none;"
+          id="li-tab-10" class="tab-link" data-tab="tab-10" onclick="tabClick('tab-10')">
+        Accountability
       </li>
     </ul>
+
     <div id="tab-1" class="tab-content current">
       <div id="active">
       </div>
@@ -100,10 +110,12 @@
         </div>
       </fieldset>
     </div>
+
     <div id="tab-2" class="tab-content">
       <div id="historical">
       </div>
     </div>
+
     <div id="tab-3" class="tab-content">
       <div id="unit">
         <fieldset>
@@ -135,6 +147,10 @@
           <ol id="BRUSH"></ol>
         </fieldset>
         <fieldset>
+          <legend>Emergency Management</legend>
+          <ol id="EM"></ol>
+        </fieldset>
+        <fieldset>
           <legend>Logistics</legend>
           <ol id="LOGISTICS"></ol>
         </fieldset>
@@ -162,11 +178,16 @@
             <li><img src="//static.arcgis.com/images/Symbols/Shapes/BlackSquareLargeB.png" /><span class="legendtext">Unit's Location Updated more than 24 hours ago</span></li>
           </ol>
         </fieldset>
+        <fieldset id="unit_controls_toggle" style="display: none;">
+          <legend onclick="$('#unit_controls').toggle();" class="clickable">Edit Units</legend>
+        </fieldset>
       </div>
     </div>
+
     <div id="tab-4" class="tab-content">
       <div id="advisory"></div>
     </div>
+
     <div id="tab-5" class="tab-content">
       <div id="tracking">
         <div id="beta">
@@ -213,7 +234,6 @@
       </div>
     </div>
 
-
     <div id="tab-7" class="tab-content">
       <table style="width: calc(100% - 2em); margin: 1em 1em 1em 1em;">
         <thead>
@@ -256,6 +276,7 @@
         </tbody>
       </table>
     </div>
+
     <div id="tab-8" class="tab-content">
       <div id="replay">
         <div id="replay_options">
@@ -278,6 +299,61 @@
         </div>
       </div>
     </div>
+
+    <div id="tab-9" class="tab-content">
+      <div id="unit_control">
+
+        <table id="unit_control_table" style="width: calc(100% - 2em); margin: 1em 1em 1em 1em;">
+          <thead>
+            <tr>
+              <th style="text-align: left;"
+                  id="unit_control_status" colspan="3">Loading...</th>
+              <th style="text-align: center; vertical-align: middle;"
+                  colspan="2">
+                <button onclick="LoadUnitControlData()">
+                  Refresh Data
+                </button>
+              </th>
+            </tr>
+            <tr>
+              <th style="width: 20%;">Unit</th>
+              <th style="width: 25%;">Group</th>
+              <th style="width: 25%; text-align: center; vertical-align: middle;">Show in Minicad</th>
+              <th style="width: 20%; text-align: center; vertical-align: middle;">Primary Unit</th>
+              <th style="width: 10%;"></th>
+            </tr >
+            <tr >
+              <th>
+                <input type="text"
+                       placeholder="Filter Unit"
+                       onkeyup="FilterUnitControlUnit(this);"
+                       value=""
+                       style="width: 90%;" />
+              </th>
+              <th>
+                <select id="filter_unit_control_groups"
+                        onchange="FilterUnitControlGroup(this)"
+                        style="width: 90%;">
+                  <option value="-1" selected>Filter By Group</option>
+                </select>
+              </th>
+              <th colspan="3"></th>
+            </tr>
+          </thead>
+          <tbody id="unit_control_list">
+          </tbody>
+        </table>
+
+      </div>
+    </div>
+
+    <div id="tab-10" class="tab-content">
+      <div id="command"
+           style="margin: 1em 1em 1em 1em;">
+        This area is under construction.  Soon you will be able to assign units to command and accountability functions.
+      </div>
+    </div>
+
     <div id="gridgutter" class="gutter"></div>
     <div id="tab-6" class="tab-content maptab">
       <div id="mapWindow">
@@ -333,11 +409,11 @@
   </div>
   <script src="Scripts/js.cookie.min.js"></script>
   <script src="Scripts/jquery-1.11.1.js"></script>
-  <script src="//js.arcgis.com/3.40/"></script>
-  <script src="Scripts/CadMapper.js?v=20211118134800"></script>
-  <script src="Scripts/Main.js?v=20211118134800"></script>
-  <script src="Scripts/Replay.js?v=20211118134800"></script>
-  <script src="Scripts/locate.js?v=20211118134800"></script>
+  <script src="//js.arcgis.com/3.44/"></script>
+  <script src="Scripts/CadMapper.js?v=202403100828"></script>
+  <script src="Scripts/Main.js?v=202403100828"></script>
+  <script src="Scripts/Replay.js?v=202403100828"></script>
+  <script src="Scripts/locate.js?v=202403100828"></script>
   <!--<script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.1/dist/js.cookie.min.js"></script>-->
 
 
@@ -390,8 +466,9 @@
         setInterval(updateHistoricalCallsTable, 65500 * 5); // 5 mins
         setInterval(LoadAdvisoryTable, 63500 * 15); // 15 mins*/
         setInterval(LoadRadioData(), 35000);
+        setTimeout(() => { LoadUnitControlData() }, 21000); // We only want to hit this once, and after that, we'll let the user manually refresh it if needed.
         setInterval(LoadCallerLocations, 10050);
-
+        setTimeout(() => { GetAccountabilityData() }, 1000);
         if ($(window).width() > 999)
         {
           mapInit();

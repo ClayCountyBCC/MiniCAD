@@ -52,6 +52,45 @@ Public Class CallDataController
   End Function
 
   <HttpGet()>
+  Public Function GetUnitControlData() As JsonResult
+    Try
+      If CADData.IsInternal() AndAlso UnitControl.CheckAccess(Request.LogonUserIdentity.Name) Then
+        Dim Units As List(Of UnitControl) = UnitControl.GetUnits()
+        Return Json(New With {.Result = "OK", .Records = Units}, JsonRequestBehavior.AllowGet)
+      Else
+        Return Json(New With {.Result = "OK", .Records = Nothing}, JsonRequestBehavior.AllowGet)
+      End If
+    Catch ex As Exception
+      Tools.Log(ex, AppID, MachineName, Tools.Logging.LogType.Database)
+      Return Json(New With {.Result = "Error", .Records = Nothing})
+    End Try
+  End Function
+
+  <HttpPost()>
+  Public Function SaveUnitControlData(UC As UnitControl) As JsonResult
+    Try
+      If CADData.IsInternal() AndAlso UnitControl.CheckAccess(Request.LogonUserIdentity.Name) Then
+        Return Json(New With {.Result = "OK", .Records = UC.SaveUnit(UC, Request.LogonUserIdentity.Name)})
+      Else
+        Return Json(New With {.Result = "OK", .Records = Nothing}, JsonRequestBehavior.AllowGet)
+      End If
+    Catch ex As Exception
+      Tools.Log(ex, AppID, MachineName, Tools.Logging.LogType.Database)
+      Return Json(New With {.Result = "Error", .Records = Nothing})
+    End Try
+  End Function
+
+  <HttpGet()>
+  Public Function GetAccountabilityData() As JsonResult
+    Try
+      Return Json(New With {.Result = "OK", .Records = CADData.IsInternal}, JsonRequestBehavior.AllowGet)
+    Catch ex As Exception
+      Tools.Log(ex, AppID, MachineName, Tools.Logging.LogType.Database)
+      Return Nothing
+    End Try
+  End Function
+
+  <HttpGet()>
   Public Function GetReplayDataByCaseID(CaseID As String) As Replay
     Try
       Return Replay.GetCachedReplayByCaseID(CaseID)
@@ -124,7 +163,7 @@ Public Class CallDataController
       Dim myCache As Cache = HttpContext.Cache
       Dim ac As List(Of CADCall) = myCache(historyKey)
       If ac Is Nothing Then ' Not found, let's query for it
-        ac = CADCall.GetHistoricalCalls
+        ac = CADCall.GetHistoricalCalls()
         myCache.Insert(historyKey, ac, Nothing, Now.AddMinutes(5), TimeSpan.Zero)
       End If
       Return Json(New With {.Result = "OK", .Records = ac}, JsonRequestBehavior.AllowGet)

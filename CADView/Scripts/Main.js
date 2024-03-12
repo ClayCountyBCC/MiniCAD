@@ -6,6 +6,8 @@
 
 var vehicleSwaps = [];
 var currentRadioList = [];
+var currentUnitControlDataList = [];
+var unitControlGroups = [];
 var extraMapPoints = [];
 var callerLocations = [];
 var activeIntervals = [];
@@ -484,19 +486,31 @@ function UpdateUnitTable()
       {
         var item = data.Records[i];
         var currentUnit = $('#' + item.UnitName);
+        var currentUnitImg = $('#img-' + item.UnitName);
         if (currentUnit.length)
         {
           //currentUnit.attr('class', item.UnitStatus).attr("onclick", "ClickUnitStatus(event)"); //, '" + item.UnitName + "'
           currentUnit.attr('class', unitStatusClass(item)).attr("onclick", "ClickUnitStatus(event, '" + item.UnitName + "')"); //, '" + item.UnitName + "'
-          var $tmp = $('#img-' + item.UnitName);
-          if ($tmp.length)
+          currentUnitImg.attr('src', item.LocationStatus);
+          if (item.LocationStatus.length > 0)
           {
-            if (item.LocationStatus.length === 0)
-            {
-              $tmp.attr('class', 'imghide');
-            }
-            $tmp.attr("src", item.LocationStatus); //, '" + item.UnitName + "'
+            currentUnitImg.attr('class', '');
           }
+          else
+          {
+            currentUnitImg.attr('class', 'imghide');
+          }
+          
+          //var $tmp = $('#img-' + item.UnitName);
+
+          //if ($tmp.length)
+          //{
+          //  if (item.LocationStatus.length === 0)
+          //  {
+          //    $tmp.attr('class', 'imghide');
+          //  }
+          //  $tmp.attr("src", item.LocationStatus); //, '" + item.UnitName + "'
+          //}
         }
 
       }
@@ -1624,8 +1638,9 @@ function LoadCADCalls(listaction, targetdiv)
         }
       }
     })
-    .fail(function ()
+    .fail(function (eFailed)
     {
+      console.log('loadcaddata failed', eFailed);
       ShowMessage('Error attempting to get a list of calls.  Are you connected to the internet?', targetdiv);
     });
 }
@@ -1649,6 +1664,155 @@ function LoadRadioData()
       console.log('get radio data failed');
       ShowRadioDataMessage("There was an error loading the radio data.");
     });
+}
+
+function LoadUnitControlData()
+{
+  ShowUnitControlDataMessage("Loading...");
+  $.getJSON('./CallData/GetUnitControlData')
+    .done(function (data)
+    {
+      unitControlGroups = [... new Set(data.Records.map(item => item.group_name))];
+      PopulateUnitControlDataGroups(document.getElementById("filter_unit_control_groups"));
+      if (data === null || data.Records === null || data.Records.length === 0) return;
+      currentUnitControlDataList = data.Records;
+      document.getElementById("li-tab-9").style.display = "block";
+      CreateUnitControlDataTable(data.Records);
+      ShowUnitControlDataMessage("Data updated at " + new Date().toLocaleTimeString("en-US") + ".");
+    })
+    .fail(function ()
+    {
+      console.log('get unit control data failed');
+      ShowUnitControlDataMessage("There was an error loading the unit control data.");
+    });
+}
+
+function SaveUnitControlData(unitdata, td, savebutton)
+{
+  savebutton.disabled = true;
+  savebutton.innerText = "Saving...";
+  $.post('./CallData/SaveUnitControlData', unitdata, 'json')
+    .done(function (data)
+    {
+      console.log('Save Unit Control Data return', data);
+      savebutton.disabled = false;
+      savebutton.innerText = "Saved!";
+      window.setTimeout(function (j)
+      {
+        savebutton.innerText = "Save";
+      }, 10000);
+    })
+    .fail(function ()
+    {
+      console.log('Failed to save Unit Control Data');
+      savebutton.disabled = false;
+      savebutton.innerText = "Error Saving";
+      alert("There was an error attempting to save your data.  Please try again and contact MIS if this situation persists.");
+      window.setTimeout(function (j)
+      {
+        savebutton.innerText = "Save";
+      }, 10000);
+    });
+}
+
+function GetAccountabilityData()
+{
+  $.getJSON('./CallData/GetAccountabilityData')
+    .done(function (data)
+    {
+      console.log('accountability data ', data);
+      if (data === null || data.Records === null || data.Records.length === 0) return;
+      if (data.Records)
+      {
+        document.getElementById("li-tab-10").style.display = "block";
+      }
+    })
+    .fail(function ()
+    {
+    });
+}
+
+function CreateAndPopulateUnitControlDataSelect(current_value)
+{
+  let select = document.createElement("select");
+  PopulateUnitControlDataGroups(select);
+  select.value = current_value;
+  return select;
+}
+
+function PopulateUnitControlDataGroups(select)
+{
+  for (let i = 0; i < unitControlGroups.length; i++)
+  {
+    let o = document.createElement("option");
+    o.text = unitControlGroups[i];
+    o.value = unitControlGroups[i];
+    select.appendChild(o);
+  }
+}
+
+function CreatePopulateUnitControlCheckbox(checked)
+{
+  let input = document.createElement("input");
+  input.type = "checkbox";
+  input.checked = checked;
+  return input;
+}
+
+function ShowUnitControlDataMessage(message)
+{
+  let e = document.getElementById("unit_control_status");
+  if (!e) return;
+  e.innerText = message;
+}
+
+function CreateUnitControlDataTable(units)
+{
+  var tbody = document.getElementById("unit_control_list");
+  ClearElement(tbody);
+  for (var i = 0; i < units.length; i++)
+  {
+    var unit = units[i];
+    tbody.appendChild(CreateUnitControlDataRow(unit));
+  }
+}
+
+function CreateUnitControlDataRow(unit)
+{
+  var tr = document.createElement("tr");
+  let unitcode_td = CreateRadioTableCell(unit.unitcode);
+  unitcode_td.style.textAlign = "left";
+  tr.appendChild(unitcode_td);
+  let group_td = CreateRadioTableCell("");
+  let show_minicad_td = CreateRadioTableCell("");
+  let is_primary_td = CreateRadioTableCell("");
+  let select_group = CreateAndPopulateUnitControlDataSelect(unit.group_name);
+  group_td.appendChild(select_group); 
+  let check_show_minicad = CreatePopulateUnitControlCheckbox(unit.show_in_minicad);
+  show_minicad_td.appendChild(check_show_minicad);
+  let check_is_primary = CreatePopulateUnitControlCheckbox(unit.is_primary_unit);
+  is_primary_td.appendChild(check_is_primary);  
+  tr.appendChild(group_td);
+  tr.appendChild(show_minicad_td);
+  tr.appendChild(is_primary_td);
+  tr.style.borderBottom = "1px dotted gray";
+  let buttonTd = CreateRadioTableCell("");
+  let saveButton = document.createElement("button");
+  saveButton.onclick = function ()
+  {
+    // do something here to show it's saved.
+    let uc = {
+      unitcode: unit.unitcode,
+      group_name: select_group.value,
+      show_in_minicad: check_show_minicad.checked,
+      is_primary_unit: check_is_primary.checked
+    }
+    SaveUnitControlData(uc, buttonTd, saveButton);
+  };
+  saveButton.appendChild(document.createTextNode("Save"));
+  buttonTd.appendChild(saveButton);
+  tr.appendChild(buttonTd);
+  return tr;
 }
 
 function LoadCallerLocations()
@@ -1678,6 +1842,34 @@ function ShowRadioDataMessage(message)
   td.colSpan = 4;
   tr.appendChild(td);
   tbody.appendChild(tr);
+}
+
+function FilterUnitControlUnit(input)
+{
+  var filter = input.value.toUpperCase();
+  if (filter.length > 0)
+  {
+    var filtered = currentUnitControlDataList.filter(function (j) { return j.unitcode.toUpperCase().indexOf(filter) > -1; });
+    CreateUnitControlDataTable(filtered);
+  }
+  else
+  {
+    CreateUnitControlDataTable(currentUnitControlDataList);
+  }
+}
+
+function FilterUnitControlGroup(select)
+{
+  var filter = select.value.toUpperCase();
+  if (filter !== "-1")
+  {
+    var filtered = currentUnitControlDataList.filter(function (j) { return j.group_name.toUpperCase().indexOf(filter) > -1; });
+    CreateUnitControlDataTable(filtered);
+  }
+  else
+  {
+    CreateUnitControlDataTable(currentUnitControlDataList);
+  }
 }
 
 function CreateRadioTable(radios)
@@ -1759,6 +1951,8 @@ function CreateRadioTableCell(value)
   var td = document.createElement("td");
   td.style.paddingTop = ".25em";
   td.style.paddingBottom = ".25em";
+  td.style.textAlign = "center";
+  td.style.verticalAlign = "middle";
   td.appendChild(document.createTextNode(value));
   return td;
 }
@@ -1959,14 +2153,18 @@ function countUnitManpower(u) {
 
 function getVehicleSwaps(ul) {
   vehicleSwaps = [];
-  for (var i = 0; i < ul.length; i++) {
-    if (ul[i].Location.indexOf("USING") > -1) {
+  for (var i = 0; i < ul.length; i++)
+  {
+    if (ul[i].Location.indexOf("USING") > -1)
+    {
       var x = {
         main_unit: ul[i].Location.replace("USING", "").trim(),
         spare_unit: ul[i].UnitName.trim(),
-        is_same_unittype: function () {
-          if (this.main_unit.length === 0 || this.spare_unit.length === 0) return true;
-          return (this.main_unit.substring(0, 1) === this.spare_unit.replace("V", "").substring(0, 1));
+        is_same_unittype: function ()
+        {
+          return true;
+          //if (this.main_unit.length === 0 || this.spare_unit.length === 0) return true;
+          //return (this.main_unit.substring(0, 1) === this.spare_unit.replace("V", "").substring(0, 1));
         }
       };
       vehicleSwaps.push(x);

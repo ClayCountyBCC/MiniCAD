@@ -6,7 +6,7 @@ var defaultExtent = null;
 var geocoder;
 var locatorUrl = "https://maps.claycountygov.com:6080/arcgis/rest/services/Address_Site_Locator/GeocodeServer";
 var InciLayer, HistoryLayer, USNGOverlay, RadarLayer, fireResponse, CallerLocationsLayer, VehicleLayer,
-  WeatherWarningLayer, LocationLayer, RadioLayer;
+  WeatherWarningLayer, LocationLayer, RadioLayer, BoaterSkipDay;
 var ParcelLayer;
 var locateButton;
 var WorldTranspo = null;
@@ -18,9 +18,9 @@ var map_layer_list = null;
 
 var never_hide_units = ['E11', 'E13', 'E14', 'E15', 'E17', 'E18',
   'E19', 'E20', 'L20', 'E22', 'E23', 'E24', 'E25', 'E26', 'L26', 'R11', 'R13',
-  'R15', 'R17', 'R18', 'R19', 'R22', 'R22A', 'R23', 'R24', 'R25',
+  'R14', 'R15', 'R17', 'R18', 'R19', 'R22', 'R22A', 'R23', 'R24', 'R25',
   'R26', 'BAT1', 'BAT2', 'CHIEF1', 'CHIEF2', 'CHIEF3', 'TR603',
-  'T149', 'T209', 'T238'];
+  'T149', 'T209', 'T238', 'CHIEF6', 'CHIEF8'];
 var temporarily_show_unit = [];
 var availStatus = ["Available", "Available-Out-of-District"];
 
@@ -35,20 +35,30 @@ function IsFairTime() {
 
 }
 
+function IsBoaterSkipDayTime()
+{
+  var d = new Date();
+  var month = d.getMonth();
+  var day = d.getDate();
+  return ((month === 5 && day > 15) || (month === 6 && day < 8));
+}
+
 function mapInit() {
   if (map !== null || mapresizing === true) { return false; }
   mapresizing = true;
   require([
     "esri/map",
+    "esri/config",
     "esri/layers/ArcGISDynamicMapServiceLayer",
     "esri/dijit/BasemapGallery",
     "esri/dijit/LayerList",
     "esri/dijit/HomeButton",
     "esri/layers/GraphicsLayer",
     "dojo/parser",
-    "esri/layers/ArcGISImageServiceLayer"],
-  function (Map, ArcGISDynamicMapServiceLayer, BasemapGallery, LayerList, HomeButton, GraphicsLayer,  parser, 
-              ArcGISImageServiceLayer) {
+    "esri/layers/ArcGISImageServiceLayer",
+    "esri/layers/WMSLayer"],
+  function (Map, esriConfig, ArcGISDynamicMapServiceLayer, BasemapGallery, LayerList, HomeButton, GraphicsLayer,  parser, 
+              ArcGISImageServiceLayer, WMSLayer) {
     if (map === null) {
       parser.parse();
 
@@ -58,6 +68,10 @@ function mapInit() {
         zoom: 11,
         logo: false
       });
+      console.log('config', esriConfig);
+      esriConfig.defaults.io.corsEnabledServers.push("opengeo.ncep.noaa.gov");
+      esriConfig.defaults.io.corsEnabledServers.push("apps.claycountygov.com");
+      esriConfig.defaults.io.corsEnabledServers.push("public.claycountygov.com");
       //map.on("load", function ()
       //{
       //  // let's load some data from the cookies.
@@ -115,6 +129,12 @@ function mapInit() {
         fairAccess.id = "Fair Access";
         map.addLayer(fairAccess);
       }
+      if (IsBoaterSkipDayTime())
+      {
+        var BoaterSkipDayMap = new ArcGISImageServiceLayer('https://maps.claycountygov.com:6443/arcgis/rest/services/BoaterSkipDay/MapServer');
+        BoaterSkipDayMap.id = "Fair Map";
+        map.addLayer(BoaterSkipDayMap);
+      }
       fireResponse = new ArcGISDynamicMapServiceLayer('https://maps.claycountygov.com:6443/arcgis/rest/services/Fire_Response/MapServer');
       fireResponse.id = "Fire Districts";
       map.addLayer(fireResponse); // was port 6080 for regular http
@@ -140,19 +160,24 @@ function mapInit() {
       
       map.addLayer(ParcelLayer);
 
-      WeatherWarningLayer = new ArcGISDynamicMapServiceLayer('//idpgis.ncep.noaa.gov/arcgis/rest/services/NWS_Forecasts_Guidance_Warnings/watch_warn_adv/MapServer');
+      WeatherWarningLayer = new WMSLayer('https://opengeo.ncep.noaa.gov/geoserver/wwa/warnings/ows?service=wms&version=1.3.0&request=GetCapabilities');
+        //'//idpgis.ncep.noaa.gov/arcgis/rest/services/NWS_Forecasts_Guidance_Warnings/watch_warn_adv/MapServer');
       WeatherWarningLayer.refreshInterval = 5; // refreshInterval is in Minutes per the docs
 
       WeatherWarningLayer.id = "Weather Warnings";
       WeatherWarningLayer.hide();
+      WeatherWarningLayer.visibleLayers.push("warnings");
       map.addLayer(WeatherWarningLayer);
 
-      RadarLayer = new ArcGISDynamicMapServiceLayer('//idpgis.ncep.noaa.gov/arcgis/rest/services/NWS_Observations/radar_base_reflectivity/MapServer');
+      RadarLayer = new WMSLayer('https://opengeo.ncep.noaa.gov/geoserver/conus/conus_bref_qcd/ows?service=wms&version=1.3.0&request=GetCapabilities');
+        //'//idpgis.ncep.noaa.gov/arcgis/rest/services/NWS_Observations/radar_base_reflectivity/MapServer');
       RadarLayer.setRefreshInterval(1); // this was previously set to 30000, but this value is in Minutes so that was wrong.
-      RadarLayer.setDisableClientCaching(true);
+      //RadarLayer.setDisableClientCaching(true);
       RadarLayer.id = "NOAA Weather";
       RadarLayer.opacity = .5;
       RadarLayer.hide();
+      RadarLayer.visibleLayers.push("conus_bref_qcd");
+
       map.addLayer(RadarLayer);
 
       let bmg = new BasemapGallery({
@@ -236,6 +261,12 @@ function mapInit() {
       map_layer_list = new LayerList({ map: map }, document.getElementById("layercontrol"));
       map_layer_list.startup();
       map_layer_list.visible = false;  
+      map_layer_list.on("toggle", function (evt)
+      {
+
+        console.log('layerlist toggle', evt);
+        console.log('map layer', map_layer_list.layers);
+      });
       //ll.on("toggle", function (event)
       //{
       //  let layerIndex = event.layerIndex;
@@ -623,7 +654,8 @@ function HandleTemporarilyShowUnitExpirations()
 
 function ShowInactiveUnits(unit)
 {
-  if (show_inactive_units || never_hide_units.indexOf(unit.UnitName) > -1) return true;
+  //if (show_inactive_units || never_hide_units.indexOf(unit.UnitName) > -1 || (unit.Staff && unit.Staff.length > 0)) return true;
+  if (show_inactive_units || unit.is_primary_unit || (unit.Staff && unit.Staff.length > 0)) return true;
 
   // Need to handle the Temporarily Shown units here
   HandleTemporarilyShowUnitExpirations();

@@ -30,8 +30,6 @@ Namespace Models
     Public CST As String = ConfigurationManager.ConnectionStrings("Telestaff").ConnectionString
     Public GIS As String = ConfigurationManager.ConnectionStrings("GIS").ConnectionString
 
-
-
     Public Function Get_Data(Of T)(query As String, cs As String) As List(Of T)
       Try
 
@@ -58,7 +56,7 @@ Namespace Models
 
     Public Shared Function IsInternal() As Boolean
       Select Case Environment.MachineName.ToUpper
-        Case "CLAYBCCIIS01", "MISSL01"
+        Case "CLAYBCCIIS01", "MISSL01", "MISCD01"
           Return True
         Case Else
           Return False

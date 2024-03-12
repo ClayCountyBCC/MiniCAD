@@ -78,10 +78,13 @@ Namespace Models
           Return Note.GetAllNotesToCallDetail()
 
         Case "HistoricalCalls"
+          Return CADCall.GetHistoricalCalls()
         Case "MotorolaLocations"
           Return MotorolaLocation.GetLocations()
         Case "RadioAccess"
           Return MotorolaLocation.GetRadioAccessUsers()
+        Case "UnitControlAccess"
+          Return UnitControl.GetAccessUsers()
       End Select
       Return Nothing
     End Function

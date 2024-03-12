@@ -215,7 +215,7 @@ ORDER  BY
       Dim au As List(Of ActiveUnit) = ActiveUnit.GetUnitStatus()
       Dim Notes As List(Of Note) = Note.GetCachedNotes()
       Dim query As String = "
-SELECT
+SELECT TOP 650
   NULL AS latitude
   ,NULL AS longitude
   ,NULL AS confidence
@@ -273,6 +273,9 @@ ORDER  BY
 
         Dim L As New List(Of CADCall)(From dbRow In DS.Tables(0).AsEnumerable()
                                       Select GetCallByDataRow(dbRow, au, Notes))
+
+        'Dim L As New List(Of CADCall)(From dbRow In DS.Tables(0).AsEnumerable()
+        '                              Select GetCallByDataRow(dbRow, au, Nothing))
         Return L
       Catch ex As Exception
         Tools.Log(ex, CADData.AppID, MachineName, Tools.Logging.LogType.Database)
@@ -324,7 +327,9 @@ ORDER  BY
           .BusinessName = dr("business").ToString.Trim()
           .GeoX = dr("geox")
           .GeoY = dr("geoy")
+
           If .GeoX > 0 Then
+
             Dim ll As LatLong = cd.Convert_SP_To_LatLong(.GeoX, .GeoY)
             .Longitude = ll.Longitude
             .Latitude = ll.Latitude

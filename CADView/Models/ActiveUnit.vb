@@ -20,6 +20,8 @@ Namespace Models
     Public Property Speed As Double
     Public Property Heading As Double
     Public Property LocationType As String = ""
+    Public Property is_primary_unit As Boolean = False
+    Public Property show_in_minicad As Boolean = False
     Public ReadOnly Property LocationStatus As String
       Get
         If Timestamp = Date.MinValue Then
@@ -99,9 +101,12 @@ SELECT
   ,longitude
   ,latitude
   ,date_last_communicated
+  ,data_source
+  ,is_primary_unit
+  ,show_in_minicad
 FROM
   cad.dbo.vwMinicadUnitKindAndStatus
-ORDER  BY
+ORDER  BY  
   kind ASC
   ,unitcode ASC"
       Dim DS As DataSet = D.Get_Dataset(query)
@@ -128,6 +133,8 @@ ORDER  BY
           '.UnitStatus = ConvertStatus(dr("transtype"))
           .UnitType = CType(dr("kind"), String).Trim
           .HomeStation = dr("homestbt").ToString.Trim
+          .is_primary_unit = dr("is_primary_unit")
+          .show_in_minicad = dr("show_in_minicad")
           ' The purpose of this next bit of code is to identify when a unit is available but out of their home district.
 
           'If .District.Length > 1 AndAlso .HomeStation.Length > 0 AndAlso
@@ -152,7 +159,7 @@ ORDER  BY
             If IsDBNull(dr("timestamp")) Then
               ' If we don't have a timestamp, we should see if we have lat/long data from the UTD table.
               If Not IsDBNull(dr("date_last_communicated")) AndAlso dr("latitude") <> 0 Then
-                .LocationType = "AVL"
+                .LocationType = dr("data_source") '"AVL"
                 .Timestamp = dr("date_last_communicated")
                 .Latitude = dr("latitude")
                 .Longitude = dr("longitude")
@@ -164,7 +171,7 @@ ORDER  BY
               ' Here we'll make a determination, if the datelastcommunicated is greater than the timestamp, we'll use that.
               If Not IsDBNull(dr("date_last_communicated")) AndAlso dr("date_last_communicated") > dr("timestamp") AndAlso dr("latitude") <> 0 Then
                 .Timestamp = dr("date_last_communicated")
-                .LocationType = "AVL"
+                .LocationType = dr("data_source") '"AVL"
                 .Latitude = dr("latitude")
                 .Longitude = dr("longitude")
                 Dim p As Point = c.Convert_LatLong_To_SP(.Latitude, .Longitude)
