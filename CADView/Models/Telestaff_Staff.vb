@@ -113,7 +113,7 @@ ORDER  BY
         Dim unitperQuery As String = "
 SELECT 
   primekey ListOrder
-  ,unitcode Unit
+  ,LTRIM(RTRIM(unitcode)) Unit
   ,name Staff
   ,'' Position
   ,intime StartTime
