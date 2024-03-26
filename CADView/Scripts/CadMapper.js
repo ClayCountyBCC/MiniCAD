@@ -48,6 +48,7 @@ function mapInit() {
   mapresizing = true;
   require([
     "esri/map",
+    "esri/layers/OpenStreetMapLayer",
     "esri/config",
     "esri/layers/ArcGISDynamicMapServiceLayer",
     "esri/dijit/BasemapGallery",
@@ -57,17 +58,19 @@ function mapInit() {
     "dojo/parser",
     "esri/layers/ArcGISImageServiceLayer",
     "esri/layers/WMSLayer"],
-  function (Map, esriConfig, ArcGISDynamicMapServiceLayer, BasemapGallery, LayerList, HomeButton, GraphicsLayer,  parser, 
-              ArcGISImageServiceLayer, WMSLayer) {
+    function (Map, OpenStreetMapLayer, esriConfig, ArcGISDynamicMapServiceLayer,
+      BasemapGallery, LayerList, HomeButton, GraphicsLayer, parser, 
+      ArcGISImageServiceLayer, WMSLayer) {
     if (map === null) {
       parser.parse();
 
       map = new Map("map", {
-        basemap: "osm", //'streets-navigation-vector',//"osm",
+        basemap: 'streets-navigation-vector',//"osm", "OpenStreetMap" //c29cfb7875fc4b97b58ba6987c460862
         center: [-81.80, 29.950], // lon, lat
         zoom: 11,
         logo: false
       });
+
       console.log('config', esriConfig);
       esriConfig.defaults.io.corsEnabledServers.push("opengeo.ncep.noaa.gov");
       esriConfig.defaults.io.corsEnabledServers.push("apps.claycountygov.com");
@@ -186,6 +189,11 @@ function mapInit() {
         useVectorBasemaps: true
       }, document.getElementById("basemapcontrol"));
       bmg.startup();
+      bmg.on("load", function ()
+      {
+        bmg.select("basemap_16");
+      });
+
       // this works but randomly fails. So I won't use this for the basemap.
       //bmg.on("selection-change", function ()
       //{
