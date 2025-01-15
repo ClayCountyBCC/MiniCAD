@@ -317,16 +317,25 @@
             </tr>
             <tr>
               <th style="width: 20%;">Unit</th>
-              <th style="width: 25%;">Group</th>
-              <th style="width: 25%; text-align: center; vertical-align: middle;">Show in Minicad</th>
-              <th style="width: 20%; text-align: center; vertical-align: middle;">Primary Unit</th>
+              <th style="width: 20%;">Vehicle</th>
+              <th style="width: 20%;">Group</th>
+              <th style="width: 15%; text-align: center; vertical-align: middle;">Show in Minicad</th>
+              <th style="width: 15%; text-align: center; vertical-align: middle;">Primary Unit</th>
               <th style="width: 10%;"></th>
             </tr >
-            <tr >
+            <tr>
+
               <th>
                 <input type="text"
                        placeholder="Filter Unit"
                        onkeyup="FilterUnitControlUnit(this);"
+                       value=""
+                       style="width: 90%;" />
+              </th>
+              <th>
+                <input type="text"
+                       placeholder="Filter Vehicle"
+                       onkeyup="FilterUnitControlVehicle(this);"
                        value=""
                        style="width: 90%;" />
               </th>

@@ -1673,6 +1673,8 @@ function LoadUnitControlData()
     .done(function (data)
     {
       unitControlGroups = [... new Set(data.Records.map(item => item.group_name))];
+      unitControlGroups.push('DELETE UNIT');
+
       PopulateUnitControlDataGroups(document.getElementById("filter_unit_control_groups"));
       if (data === null || data.Records === null || data.Records.length === 0) return;
       currentUnitControlDataList = data.Records;
@@ -1783,6 +1785,9 @@ function CreateUnitControlDataRow(unit)
   let unitcode_td = CreateRadioTableCell(unit.unitcode);
   unitcode_td.style.textAlign = "left";
   tr.appendChild(unitcode_td);
+  let vehicle_td = CreateRadioTableCell(unit.vehicle_id);
+  vehicle_td.style.textAlign = "left";
+  tr.appendChild(vehicle_td);
   let group_td = CreateRadioTableCell("");
   let show_minicad_td = CreateRadioTableCell("");
   let is_primary_td = CreateRadioTableCell("");
@@ -1792,6 +1797,8 @@ function CreateUnitControlDataRow(unit)
   show_minicad_td.appendChild(check_show_minicad);
   let check_is_primary = CreatePopulateUnitControlCheckbox(unit.is_primary_unit);
   is_primary_td.appendChild(check_is_primary);  
+  
+
   tr.appendChild(group_td);
   tr.appendChild(show_minicad_td);
   tr.appendChild(is_primary_td);
@@ -1850,6 +1857,20 @@ function FilterUnitControlUnit(input)
   if (filter.length > 0)
   {
     var filtered = currentUnitControlDataList.filter(function (j) { return j.unitcode.toUpperCase().indexOf(filter) > -1; });
+    CreateUnitControlDataTable(filtered);
+  }
+  else
+  {
+    CreateUnitControlDataTable(currentUnitControlDataList);
+  }
+}
+
+function FilterUnitControlVehicle(input)
+{
+  var filter = input.value.toUpperCase();
+  if (filter.length > 0)
+  {
+    var filtered = currentUnitControlDataList.filter(function (j) { return j.vehicle_id.toUpperCase().indexOf(filter) > -1; });
     CreateUnitControlDataTable(filtered);
   }
   else

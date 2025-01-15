@@ -40,7 +40,13 @@ Public Class CallDataController
         Dim CIP As New CacheItemPolicy With {
           .AbsoluteExpiration = Now.AddMinutes(1)
         }
-        Dim Locations As List(Of MotorolaLocation) = myCache.GetItem("MotorolaLocations", CIP)
+        Dim Locations As List(Of MotorolaLocation)
+        If MotorolaLocation.CheckAccess_All(Request.LogonUserIdentity.Name) Then
+          Locations = myCache.GetItem("MotorolaLocations_All", CIP)
+        Else
+          Locations = myCache.GetItem("MotorolaLocations", CIP)
+        End If
+
         Return Json(New With {.Result = "OK", .Records = Locations}, JsonRequestBehavior.AllowGet)
       Else
         Return Json(New With {.Result = "OK", .Records = Nothing}, JsonRequestBehavior.AllowGet)

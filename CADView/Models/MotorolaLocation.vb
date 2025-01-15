@@ -43,13 +43,38 @@ Namespace Models
       Return C.Get_Data(Of MotorolaLocation)(query, C.CAD)
     End Function
 
+    Public Shared Function Get_All_Locations() As List(Of MotorolaLocation)
+      Dim query As String = $"
+      USE Tracking;
+
+      SELECT
+        D.device_id
+        ,D.alias device_alias
+        ,L.timestamp
+        ,L.latitude
+        ,L.longitude
+      FROM motorola_locations L
+      INNER JOIN motorola_devices D ON L.device_id = D.device_id
+      ORDER BY alias"
+      Dim C As New CADData()
+
+      Return C.Get_Data(Of MotorolaLocation)(query, C.CAD)
+    End Function
+
     Public Shared Function CheckAccess(name As String) As Boolean
       Dim AccessCIP As New CacheItemPolicy With {
         .AbsoluteExpiration = Now.AddHours(8)
       }
       Dim accesslist As List(Of String) = myCache.GetItem("RadioAccess", AccessCIP)
       Return accesslist.Contains(name.ToLower().Replace("claybcc\", ""))
+    End Function
 
+    Public Shared Function CheckAccess_All(name As String) As Boolean
+      Dim AccessCIP As New CacheItemPolicy With {
+        .AbsoluteExpiration = Now.AddHours(8)
+      }
+      Dim accesslist As List(Of String) = myCache.GetItem("RadioAccess_All", AccessCIP)
+      Return accesslist.Contains(name.ToLower().Replace("claybcc\", ""))
     End Function
 
     Public Shared Function GetRadioAccessUsers() As List(Of String)
@@ -65,7 +90,17 @@ Namespace Models
         "sasska",
         "brockwellm",
         "oconorg",
-        "haned"
+        "haned",
+        "robinsonf",
+        "cashm"
+      }
+    End Function
+
+    Public Shared Function Get_All_RadioAccessUsers() As List(Of String)
+      '
+      Return New List(Of String) From
+        {
+        "robinsonf"
       }
     End Function
 
