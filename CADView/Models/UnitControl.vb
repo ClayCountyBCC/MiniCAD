@@ -166,12 +166,11 @@ Public Class UnitControl
 {
 "mccartneyd",
 "devink",
-"segarsj"
+"segarsj",
+"fortunej"
 }
   End Function
 
-  Public Shared Function GetUnitControlHistory() As List(Of UnitControlHistory)
-  End Function
 
   Public Shared Function CheckAccess(name As String) As Boolean
     Dim AccessCIP As New CacheItemPolicy With {

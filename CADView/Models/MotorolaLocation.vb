@@ -92,7 +92,8 @@ Namespace Models
         "oconorg",
         "haned",
         "robinsonf",
-        "cashm"
+        "cashm",
+        "fortunej"
       }
     End Function
 
