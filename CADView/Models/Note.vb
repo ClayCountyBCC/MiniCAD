@@ -47,147 +47,149 @@ Namespace Models
       Dim query As String = "
         SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
 
-        DECLARE @StartDate DATE = CAST(DATEADD(DAY, -8, GETDATE()) AS DATE);        
+DECLARE @StartDate DATE = CAST(DATEADD(DAY, -8, GETDATE()) AS DATE);        
 
-        WITH OpenIncidents AS (
+WITH OpenIncidents AS (
 
-          SELECT
-            inci_id
-          FROM incident
-          WHERE
-            inci_id != ''
-            AND cancelled = 0
+  SELECT
+    inci_id
+  FROM incident
+  WHERE
+    inci_id != ''
+    AND cancelled = 0
 
-        ), ClosedIncidents AS (
+), ClosedIncidents AS (
 
-          SELECT
-            inci_id
-          FROM inmain
-          WHERE
-            cancelled = 0
-            AND CAST(calltime AS DATE) > @StartDate
+  SELECT
+    inci_id
+  FROM inmain
+  WHERE
+    cancelled = 0
+    AND CAST(calltime AS DATE) > @StartDate
 
-        ), AllIncidents AS (
+), AllIncidents AS (
 
-          SELECT
-            inci_id
-          FROM OpenIncidents
+  SELECT
+    inci_id
+  FROM OpenIncidents
 
-          UNION
+  UNION
 
-          SELECT
-            inci_id
-          FROM ClosedIncidents
+  SELECT
+    inci_id
+  FROM ClosedIncidents
 
-        )
+)
 
-        SELECT
-          N.id note_id  
-          ,0 log_id
-          ,N.datetime timestamp
-          ,N.eventid inci_id
-          ,N.notes raw_note  
-          ,'' raw_unitcode
-          ,userid          
-        FROM cad.dbo.incinotes N
-        INNER JOIN AllIncidents I ON N.eventid = I.inci_id
+SELECT
+  N.id note_id  
+  ,0 log_id
+  ,N.datetime timestamp
+  ,N.eventid inci_id
+  ,N.notes raw_note  
+  ,'' raw_unitcode
+  ,userid          
+FROM cad.dbo.incinotes N
+INNER JOIN AllIncidents I ON N.eventid = I.inci_id
 
-        UNION ALL
+UNION ALL
 
-        SELECT
-          0 note_id
-          ,L.logid log_id
-          ,L.timestamp
-          ,LTRIM(RTRIM(L.inci_id)) inci_id
-          ,LTRIM(RTRIM(L.unitcode)) + ' > ' + L.comments raw_note
-          ,L.unitcode raw_unitcode
-          ,LTRIM(RTRIM(L.userid)) userid
-        FROM cad.dbo.log L
-        INNER JOIN OpenIncidents I ON L.inci_id = I.inci_id
-        WHERE 
-          transtype='A'          
-          AND LEN(comments) > 0
-          AND PATINDEX(';', comments) = 0
+SELECT
+  0 note_id
+  ,L.logid log_id
+  ,L.timestamp
+  ,LTRIM(RTRIM(L.inci_id)) inci_id
+  ,LTRIM(RTRIM(L.unitcode)) + ' > ' + L.comments raw_note
+  ,L.unitcode raw_unitcode
+  ,LTRIM(RTRIM(L.userid)) userid
+FROM cad.dbo.log L
+INNER JOIN OpenIncidents I ON L.inci_id = I.inci_id
+WHERE 
+  transtype='A'          
+  AND LEN(comments) > 0
+  AND PATINDEX(';', comments) = 0
+  AND PATINDEX('%AUTO-ARRIVING%', UPPER(comments)) = 0
 
-        UNION ALL
+UNION ALL
 
-        SELECT
-          0 note_id
-          ,L.incilogid log_id
-          ,L.timestamp
-          ,LTRIM(RTRIM(L.inci_id)) inci_id
-          ,LTRIM(RTRIM(L.unitcode)) + ' > ' + L.comments raw_note
-          ,L.unitcode raw_unitcode
-          ,LTRIM(RTRIM(L.userid)) userid
-        FROM cad.dbo.incilog L
-        INNER JOIN ClosedIncidents I ON L.inci_id = I.inci_id
-        WHERE 
-          transtype='A'          
-          AND LEN(comments) > 0
-          AND PATINDEX('%STAT/BEAT%', UPPER(comments)) = 0
+SELECT
+  0 note_id
+  ,L.incilogid log_id
+  ,L.timestamp
+  ,LTRIM(RTRIM(L.inci_id)) inci_id
+  ,LTRIM(RTRIM(L.unitcode)) + ' > ' + L.comments raw_note
+  ,L.unitcode raw_unitcode
+  ,LTRIM(RTRIM(L.userid)) userid
+FROM cad.dbo.incilog L
+INNER JOIN ClosedIncidents I ON L.inci_id = I.inci_id
+WHERE 
+  transtype='A'          
+  AND LEN(comments) > 0
+  AND PATINDEX('%STAT/BEAT%', UPPER(comments)) = 0
+  AND PATINDEX('%AUTO-ARRIVING%', UPPER(comments)) = 0
 
-        UNION ALL
+UNION ALL
 
-        SELECT
-          0 note_id
-          ,L.logid log_id
-          ,L.timestamp
-          ,LTRIM(RTRIM(L.inci_id)) inci_id
-          ,LTRIM(RTRIM(L.unitcode)) + ' > ' + L.comments raw_note
-          ,L.unitcode raw_unitcode
-          ,LTRIM(RTRIM(L.userid)) userid
-        FROM cad.dbo.log L
-        INNER JOIN OpenIncidents I ON L.inci_id = I.inci_id
-        WHERE 
-          transtype='M'  
-          OR (transtype='... ' AND LEFT(descript, 1) = 'M')
+SELECT
+  0 note_id
+  ,L.logid log_id
+  ,L.timestamp
+  ,LTRIM(RTRIM(L.inci_id)) inci_id
+  ,LTRIM(RTRIM(L.unitcode)) + ' > ' + L.comments raw_note
+  ,L.unitcode raw_unitcode
+  ,LTRIM(RTRIM(L.userid)) userid
+FROM cad.dbo.log L
+INNER JOIN OpenIncidents I ON L.inci_id = I.inci_id
+WHERE 
+  transtype='M'  
+  OR (transtype='... ' AND LEFT(descript, 1) = 'M')
 
-        UNION ALL
+UNION ALL
 
-        SELECT
-          0 note_id
-          ,L.incilogid log_id
-          ,L.timestamp
-          ,LTRIM(RTRIM(L.inci_id)) inci_id
-          ,LTRIM(RTRIM(L.unitcode)) + ' > ' + L.comments raw_note
-          ,L.unitcode raw_unitcode
-          ,LTRIM(RTRIM(L.userid)) userid
-        FROM cad.dbo.incilog L
-        INNER JOIN ClosedIncidents I ON L.inci_id = I.inci_id
-        WHERE 
-          transtype='M'
-          OR (transtype='... ' AND LEFT(descript, 1) = 'M')
+SELECT
+  0 note_id
+  ,L.incilogid log_id
+  ,L.timestamp
+  ,LTRIM(RTRIM(L.inci_id)) inci_id
+  ,LTRIM(RTRIM(L.unitcode)) + ' > ' + L.comments raw_note
+  ,L.unitcode raw_unitcode
+  ,LTRIM(RTRIM(L.userid)) userid
+FROM cad.dbo.incilog L
+INNER JOIN ClosedIncidents I ON L.inci_id = I.inci_id
+WHERE 
+  transtype='M'
+  OR (transtype='... ' AND LEFT(descript, 1) = 'M')
 
-        UNION ALL
+UNION ALL
 
-        SELECT
-          0 note_id
-          ,L.logid log_id
-          ,L.timestamp
-          ,LTRIM(RTRIM(L.inci_id)) inci_id
-          ,LTRIM(RTRIM(REPLACE(REPLACE(descript, '{', ''), '}', '>'))) raw_note
-          ,L.unitcode raw_unitcode
-          ,LTRIM(RTRIM(L.userid)) userid
-        FROM cad.dbo.log L
-        INNER JOIN OpenIncidents I ON L.inci_id = I.inci_id
-        WHERE           
-          LEFT(descript, 1) = '{'
+SELECT
+  0 note_id
+  ,L.logid log_id
+  ,L.timestamp
+  ,LTRIM(RTRIM(L.inci_id)) inci_id
+  ,LTRIM(RTRIM(REPLACE(REPLACE(descript, '{', ''), '}', '>'))) raw_note
+  ,L.unitcode raw_unitcode
+  ,LTRIM(RTRIM(L.userid)) userid
+FROM cad.dbo.log L
+INNER JOIN OpenIncidents I ON L.inci_id = I.inci_id
+WHERE           
+  LEFT(descript, 1) = '{'
 
-        UNION ALL
+UNION ALL
 
-        SELECT
-          0 note_id
-          ,L.incilogid log_id
-          ,L.timestamp
-          ,LTRIM(RTRIM(L.inci_id)) inci_id
-          ,LTRIM(RTRIM(REPLACE(REPLACE(descript, '{', ''), '}', '>'))) raw_note
-          ,L.unitcode raw_unitcode
-          ,LTRIM(RTRIM(L.userid)) userid
-        FROM cad.dbo.incilog L
-        INNER JOIN ClosedIncidents I ON L.inci_id = I.inci_id
-        WHERE           
-          LEFT(descript, 1) = '{'
-        ORDER BY timestamp DESC, log_id ASC
+SELECT
+  0 note_id
+  ,L.incilogid log_id
+  ,L.timestamp
+  ,LTRIM(RTRIM(L.inci_id)) inci_id
+  ,LTRIM(RTRIM(REPLACE(REPLACE(descript, '{', ''), '}', '>'))) raw_note
+  ,L.unitcode raw_unitcode
+  ,LTRIM(RTRIM(L.userid)) userid
+FROM cad.dbo.incilog L
+INNER JOIN ClosedIncidents I ON L.inci_id = I.inci_id
+WHERE           
+  LEFT(descript, 1) = '{'
+ORDER BY timestamp DESC, log_id ASC
 "
       Dim C As New CADData()
       Return C.Get_Data(Of Note)(query, C.CAD)

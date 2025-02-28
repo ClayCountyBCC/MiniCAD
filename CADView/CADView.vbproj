@@ -171,8 +171,6 @@
       <DependentUpon>compilerconfig.json</DependentUpon>
     </None>
     <Content Include="ConnectionStrings.config" />
-    <None Include="My Project\PublishProfiles\CADView Production.pubxml" />
-    <None Include="My Project\PublishProfiles\CADView DV10.pubxml" />
     <Content Include="index-old.html" />
     <Content Include="Scripts\js.cookie.min.js" />
     <Content Include="Scripts\locate.js" />

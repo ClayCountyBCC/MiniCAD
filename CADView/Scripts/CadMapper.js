@@ -31,8 +31,7 @@ function IsFairTime() {
   var d = new Date();
   var month = d.getMonth();
   var day = d.getDate();
-  return ((month === 1 && day > 25) || month === 2  || (month === 3 && day < 14));
-
+  return ((month === 2 && day > 26) || (month === 3 && day < 20));
 }
 
 function IsBoaterSkipDayTime()

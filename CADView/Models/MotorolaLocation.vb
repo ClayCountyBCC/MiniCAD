@@ -78,8 +78,8 @@ Namespace Models
     End Function
 
     Public Shared Function GetRadioAccessUsers() As List(Of String)
-      '
-      Return New List(Of String) From
+            '
+            Return New List(Of String) From
         {
         "mccartneyd",
         "naglet",
@@ -88,13 +88,12 @@ Namespace Models
         "motesd",
         "boreej",
         "sasska",
-        "brockwellm",
-        "oconorg",
         "haned",
         "robinsonf",
-        "cashm"
+        "cashm",
+        "fortunej"
       }
-    End Function
+        End Function
 
     Public Shared Function Get_All_RadioAccessUsers() As List(Of String)
       '

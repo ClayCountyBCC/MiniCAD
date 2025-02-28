@@ -161,14 +161,15 @@ Public Class UnitControl
   End Function
 
   Public Shared Function GetAccessUsers() As List(Of String)
-    '
-    Return New List(Of String) From
+        '
+        Return New List(Of String) From
 {
 "mccartneyd",
 "devink",
-"segarsj"
+"segarsj",
+"fortunej"
 }
-  End Function
+    End Function
 
   Public Shared Function GetUnitControlHistory() As List(Of UnitControlHistory)
   End Function
