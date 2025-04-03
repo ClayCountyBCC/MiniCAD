@@ -56,8 +56,8 @@ Namespace Models
 
     Public Shared Function IsInternal() As Boolean
       Select Case Environment.MachineName.ToUpper
-        Case "CLAYBCCIIS01", "MISSL01", "MISCD01"
-          Return True
+                Case "CLAYBCCIIS01", "MISSL01", "MISCD01", "MISHL32"
+                    Return True
         Case Else
           Return False
       End Select

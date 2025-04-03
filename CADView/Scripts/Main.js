@@ -261,7 +261,6 @@ function ToggleHistoryFilters(element)
     element.textContent = "Hide Filters";
   }
 }
-
 function tabClick(tab)
 {
   currenttab = tab;
@@ -278,25 +277,23 @@ function tabClick(tab)
   //  //containerStyle = container.style.gridTemplateColumns;
   //  //GoodCookies.set("Minicad_current_split", containerStyle, { sameSite: 'strict' });
   //}
-
   if (tText === 'Map')
   {
     if (map === null)
     {
       mapInit();
     }
-    //containerStyle = container.style.gridTemplateColumns;
+    containerStyle = container.style.gridTemplateColumns;
     container.style.gridTemplateColumns = "1fr";
     container.style.gridTemplateAreas = "'header' 'right' 'footer'";
     gutter.style.display = "none";
-
   } else
   {
     if ($(window).width() > 999)
     {
       container.style.gridTemplateAreas = "'header header header' 'main gutter right' 'footer footer footer'";
       container.style.gridTemplateColumns = containerStyle;
-      //grid-template-columns: 1fr auto 1fr;
+        //grid-template-columns: 1fr auto 1fr;
     }
     gutter.style.display = "block";
   }

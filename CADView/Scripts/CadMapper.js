@@ -134,15 +134,15 @@ function mapInit() {
         BoaterSkipDayMap.id = "Fair Map";
         map.addLayer(BoaterSkipDayMap);
       }
-      fireResponse = new ArcGISDynamicMapServiceLayer('https://maps.claycountygov.com:6443/arcgis/rest/services/Fire_Response/MapServer');
+        fireResponse = new ArcGISDynamicMapServiceLayer('https://maps.claycountygov.com/server/rest/services/Fire_Districts/MapServer');
       fireResponse.id = "Fire Districts";
       map.addLayer(fireResponse); // was port 6080 for regular http
       
-      var siteAddresses = new ArcGISDynamicMapServiceLayer('https://maps.claycountygov.com:6443/arcgis/rest/services/SiteAddresses/MapServer');
+        var siteAddresses = new ArcGISDynamicMapServiceLayer('https://maps.claycountygov.com/server/rest/services/Addresses_Public/MapServer');
       siteAddresses.id = "Address Points";
       map.addLayer(siteAddresses);
 
-      ParcelLayer = new ArcGISDynamicMapServiceLayer('https://maps.claycountygov.com:6443/arcgis/rest/services/Parcel/MapServer');
+        ParcelLayer = new ArcGISDynamicMapServiceLayer('https://maps.claycountygov.com/server/rest/services/Parcel/MapServer');
       ParcelLayer.id = "Parcel Layer";
       ParcelLayer.setScaleRange(2000, 1);
       //ParcelLayer.hide();
