@@ -1152,6 +1152,7 @@ function BuildNotes(record)
   for (let i = 0; i < record.Notes.length; i++) 
   {
     let note = record.Notes[i];
+      //if (record.Notes[i + 1] && record.Notes[i].timestamp > record.Notes[i + 1]) alert("Timestamps out of order" + record.Notes[i] + record.Notes[i + 1]);
     if (!document.getElementById("normalcall-note-" + note.log_id.toString() + '-' + note.note_id.toString()))
     {
       if (prepend)
@@ -1684,6 +1685,15 @@ function LoadUnitControlData()
       console.log('get unit control data failed');
       ShowUnitControlDataMessage("There was an error loading the unit control data.");
     });
+}
+
+function LoadRadioTrackerLink() {
+    ShowUnitControlDataMessage("Loading...");
+    $.getJSON('./CallData/GetRadioTrackerLink')
+        .done(function (data) {
+            if (data === null || data.Link === null || data.Link.length === 0) return;
+            document.getElementById("li-tab-11").style.display = "block";
+        });
 }
 
 function SaveUnitControlData(unitdata, td, savebutton)

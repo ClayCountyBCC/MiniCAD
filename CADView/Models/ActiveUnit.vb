@@ -73,8 +73,8 @@ Namespace Models
         Dim li As New List(Of ActiveUnit)(From dbRow In ds.Tables(0).AsEnumerable() Select GetUnitsByDataRow(dbRow))
         Return li
       Catch ex As Exception
-        Tools.Log(ex, CADData.AppID, MachineName, Tools.Logging.LogType.Database)
-        Return Nothing
+                Utils.NewErrorLog.Log(ex, CADData.AppID, MachineName, Tools.Logging.LogType.Database)
+                Return Nothing
       End Try
     End Function
 
@@ -115,8 +115,8 @@ ORDER  BY
                                          Select GetActiveUnitsByDataRow(dbRow, StaffList))
         Return L
       Catch ex As Exception
-        Tools.Log(ex, CADData.AppID, MachineName, Tools.Logging.LogType.Database)
-        Return Nothing
+                Utils.NewErrorLog.Log(ex, CADData.AppID, MachineName, Tools.Logging.LogType.Database)
+                Return Nothing
       End Try
     End Function
 
@@ -205,8 +205,8 @@ ORDER  BY
         a.UpdateUnitStatus()
         Return a
       Catch ex As Exception
-        Tools.Log(ex, CADData.AppID, MachineName, Tools.Logging.LogType.Database)
-        Return Nothing
+                Utils.NewErrorLog.Log(ex, CADData.AppID, MachineName, Tools.Logging.LogType.Database)
+                Return Nothing
       End Try
     End Function
 
@@ -231,8 +231,8 @@ ORDER  BY
         a.UpdateUnitStatus()
         Return a
       Catch ex As Exception
-        Tools.Log(ex, CADData.AppID, MachineName, Tools.Logging.LogType.Database)
-        Return Nothing
+                Utils.NewErrorLog.Log(ex, CADData.AppID, MachineName, Tools.Logging.LogType.Database)
+                Return Nothing
       End Try
     End Function
 

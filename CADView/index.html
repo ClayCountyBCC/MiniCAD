@@ -43,6 +43,9 @@
           id="li-tab-10" class="tab-link" data-tab="tab-10" onclick="tabClick('tab-10')">
         Accountability
       </li>
+      <li id="li-tab-11" onclick="window.location.href='https://apps.claycountygov.com/radiotracker'" style="display: none;">
+          Radio Tracker
+      </li>
     </ul>
 
     <div id="tab-1" class="tab-content current">
@@ -476,7 +479,8 @@
         setInterval(LoadAdvisoryTable, 63500 * 15); // 15 mins*/
         setInterval(LoadRadioData(), 35000);
         setTimeout(() => { LoadUnitControlData() }, 21000); // We only want to hit this once, and after that, we'll let the user manually refresh it if needed.
-        setInterval(LoadCallerLocations, 10050);
+          setTimeout(() => { LoadRadioTrackerLink() }, 1000); // We only want to hit this once to see if the user is allowed to view the RadioTracker tab link
+          setInterval(LoadCallerLocations, 10050);
         setTimeout(() => { GetAccountabilityData() }, 1000);
         if ($(window).width() > 999)
         {

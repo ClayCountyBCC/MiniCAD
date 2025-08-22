@@ -112,8 +112,8 @@ Public Class UnitControl
         Return i > 0
       End Using
     Catch ex As Exception
-      Tools.Log(ex, CADData.AppID, "", Tools.Logging.LogType.Database)
-      Return False
+            Utils.NewErrorLog.Log(ex, CADData.AppID, "", Tools.Logging.LogType.Database)
+            Return False
     End Try
   End Function
 
@@ -155,8 +155,8 @@ Public Class UnitControl
         Return i > 0
       End Using
     Catch ex As Exception
-      Tools.Log(ex, CADData.AppID, "", Tools.Logging.LogType.Database)
-      Return False
+            Utils.NewErrorLog.Log(ex, CADData.AppID, "", Tools.Logging.LogType.Database)
+            Return False
     End Try
   End Function
 

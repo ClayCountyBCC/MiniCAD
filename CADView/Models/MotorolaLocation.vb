@@ -81,16 +81,7 @@ Namespace Models
             '
             Return New List(Of String) From
         {
-        "mccartneyd",
-        "naglet",
-        "devink",
-        "mockl",
-        "motesd",
-        "boreej",
-        "sasska",
-        "haned",
         "robinsonf",
-        "cashm",
         "fortunej"
       }
         End Function

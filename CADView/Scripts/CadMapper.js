@@ -39,7 +39,7 @@ function IsBoaterSkipDayTime()
   var d = new Date();
   var month = d.getMonth();
   var day = d.getDate();
-  return ((month === 5 && day > 15) || (month === 6 && day < 8));
+  return (month === 5 && day < 10);
 }
 
 function mapInit() {
@@ -130,8 +130,8 @@ function mapInit() {
       }
       if (IsBoaterSkipDayTime())
       {
-        var BoaterSkipDayMap = new ArcGISImageServiceLayer('https://maps.claycountygov.com:6443/arcgis/rest/services/BoaterSkipDay/MapServer');
-        BoaterSkipDayMap.id = "Fair Map";
+          var BoaterSkipDayMap = new ArcGISDynamicMapServiceLayer('https://maps.claycountygov.com:6443/arcgis/rest/services/BoaterSkipDay/MapServer');
+        BoaterSkipDayMap.id = "Boater Skip Day Map";
         map.addLayer(BoaterSkipDayMap);
       }
         fireResponse = new ArcGISDynamicMapServiceLayer('https://maps.claycountygov.com/server/rest/services/Fire_Districts/MapServer');

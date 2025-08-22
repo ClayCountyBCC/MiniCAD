@@ -1,8 +1,9 @@
-﻿Imports System.Web.Caching
+﻿Imports System.Environment
 Imports System.Runtime.Caching
+Imports System.Web.Caching
 Imports System.Web.Mvc
 Imports CADView.Models
-Imports System.Environment
+Imports CADView.Utils
 'Imports System.Runtime.Caching
 
 
@@ -20,79 +21,97 @@ Public Class CallDataController
     Try
       Return Json(New With {.Result = "success", .Records = GetUpdatedUnitStatus()}, JsonRequestBehavior.AllowGet)
     Catch ex As Exception
-      Tools.Log(ex, AppID, MachineName, Tools.Logging.LogType.Database)
-      Return Json(New With {.Result = "Error", .Records = Nothing})
+            NewErrorLog.Log(ex, AppID, MachineName, Tools.Logging.LogType.Database)
+            Return Json(New With {.Result = "Error", .Records = Nothing})
     End Try
   End Function
 
   Private Function GetUpdatedUnitStatus() As List(Of ActiveUnit)
-    Dim CIP As New CacheItemPolicy With {
+        Dim CIP As New CacheItemPolicy With {
       .AbsoluteExpiration = Now.AddSeconds(6)
     }
-    Dim au As List(Of ActiveUnit) = myCache.GetItem(unitStatusKey, CIP)
+        Dim au As List(Of ActiveUnit) = myCache.GetItem(unitStatusKey, CIP)
     Return au
   End Function
 
-  <HttpGet()>
-  Public Function GetRadioLocations() As JsonResult
-    Try
-      If CADData.IsInternal() AndAlso MotorolaLocation.CheckAccess(Request.LogonUserIdentity.Name) Then
-        Dim CIP As New CacheItemPolicy With {
+    <HttpGet()>
+    Public Function GetRadioLocations() As JsonResult
+        Try
+            If CADData.IsInternal() AndAlso MotorolaLocation.CheckAccess(Request.LogonUserIdentity.Name) Then
+                Dim CIP As New CacheItemPolicy With {
           .AbsoluteExpiration = Now.AddMinutes(1)
         }
-        Dim Locations As List(Of MotorolaLocation)
-        If MotorolaLocation.CheckAccess_All(Request.LogonUserIdentity.Name) Then
-          Locations = myCache.GetItem("MotorolaLocations_All", CIP)
-        Else
-          Locations = myCache.GetItem("MotorolaLocations", CIP)
-        End If
+                Dim Locations As List(Of MotorolaLocation)
+                If MotorolaLocation.CheckAccess_All(Request.LogonUserIdentity.Name) Then
+                    Locations = myCache.GetItem("MotorolaLocations_All", CIP)
+                Else
+                    Locations = myCache.GetItem("MotorolaLocations", CIP)
+                End If
 
-        Return Json(New With {.Result = "OK", .Records = Locations}, JsonRequestBehavior.AllowGet)
-      Else
-        Return Json(New With {.Result = "OK", .Records = Nothing}, JsonRequestBehavior.AllowGet)
-      End If
-    Catch ex As Exception
-      Tools.Log(ex, AppID, MachineName, Tools.Logging.LogType.Database)
-      Return Json(New With {.Result = "Error", .Records = Nothing})
-    End Try
-  End Function
+                Return Json(New With {.Result = "OK", .Records = Locations}, JsonRequestBehavior.AllowGet)
+            Else
+                Return Json(New With {.Result = "OK", .Records = Nothing}, JsonRequestBehavior.AllowGet)
+            End If
+        Catch ex As Exception
+            NewErrorLog.Log(ex, AppID, MachineName, Tools.Logging.LogType.Database)
+            Return Json(New With {.Result = "Error", .Records = Nothing})
+        End Try
+    End Function
 
-  <HttpGet()>
-  Public Function GetUnitControlData() As JsonResult
-    Try
-      If CADData.IsInternal() AndAlso UnitControl.CheckAccess(Request.LogonUserIdentity.Name) Then
-        Dim Units As List(Of UnitControl) = UnitControl.GetUnits()
-        Return Json(New With {.Result = "OK", .Records = Units}, JsonRequestBehavior.AllowGet)
-      Else
-        Return Json(New With {.Result = "OK", .Records = Nothing}, JsonRequestBehavior.AllowGet)
-      End If
-    Catch ex As Exception
-      Tools.Log(ex, AppID, MachineName, Tools.Logging.LogType.Database)
-      Return Json(New With {.Result = "Error", .Records = Nothing})
-    End Try
-  End Function
+    <HttpGet()>
+    Public Function GetRadioTrackerLink() As JsonResult
+        Dim accessList As New List(Of String) From {"fortunej", "robinsonf", "segarsj", "alversb", "dolezelb", "foxa", "hansteinl",
+                                                    "kuykendalld", "marting", "smithr", "viguej", "herreraj", "leed", "mockl",
+                                                    "motesd", "boreej", "devint", "futchk", "whiter"}
+        Try
+            Dim currentUser = Request.LogonUserIdentity.Name.ToLower().Replace("claybcc\", "")
+            If CADData.IsInternal() AndAlso (accessList.Contains(currentUser)) Then
+                Return Json(New With {.Result = "OK", .Link = "https://apps.claycountygov.com/radiotracker"}, JsonRequestBehavior.AllowGet)
+            Else
+                Return Json(New With {.Result = "OK", .Link = Nothing}, JsonRequestBehavior.AllowGet)
+            End If
+        Catch ex As Exception
+            NewErrorLog.Log(ex, AppID, MachineName, Tools.Logging.LogType.Database)
+            Return Json(New With {.Result = "Error", .Link = Nothing})
+        End Try
+    End Function
 
-  <HttpPost()>
-  Public Function SaveUnitControlData(UC As UnitControl) As JsonResult
-    Try
-      If CADData.IsInternal() AndAlso UnitControl.CheckAccess(Request.LogonUserIdentity.Name) Then
-        Return Json(New With {.Result = "OK", .Records = UC.SaveUnit(UC, Request.LogonUserIdentity.Name)})
-      Else
-        Return Json(New With {.Result = "OK", .Records = Nothing}, JsonRequestBehavior.AllowGet)
-      End If
-    Catch ex As Exception
-      Tools.Log(ex, AppID, MachineName, Tools.Logging.LogType.Database)
-      Return Json(New With {.Result = "Error", .Records = Nothing})
-    End Try
-  End Function
+    <HttpGet()>
+    Public Function GetUnitControlData() As JsonResult
+        Try
+            If CADData.IsInternal() AndAlso UnitControl.CheckAccess(Request.LogonUserIdentity.Name) Then
+                Dim Units As List(Of UnitControl) = UnitControl.GetUnits()
+                Return Json(New With {.Result = "OK", .Records = Units}, JsonRequestBehavior.AllowGet)
+            Else
+                Return Json(New With {.Result = "OK", .Records = Nothing}, JsonRequestBehavior.AllowGet)
+            End If
+        Catch ex As Exception
+            NewErrorLog.Log(ex, AppID, MachineName, Tools.Logging.LogType.Database)
+            Return Json(New With {.Result = "Error", .Records = Nothing})
+        End Try
+    End Function
 
-  <HttpGet()>
+    <HttpPost()>
+    Public Function SaveUnitControlData(UC As UnitControl) As JsonResult
+        Try
+            If CADData.IsInternal() AndAlso UnitControl.CheckAccess(Request.LogonUserIdentity.Name) Then
+                Return Json(New With {.Result = "OK", .Records = UC.SaveUnit(UC, Request.LogonUserIdentity.Name)})
+            Else
+                Return Json(New With {.Result = "OK", .Records = Nothing}, JsonRequestBehavior.AllowGet)
+            End If
+        Catch ex As Exception
+            NewErrorLog.Log(ex, AppID, MachineName, Tools.Logging.LogType.Database)
+            Return Json(New With {.Result = "Error", .Records = Nothing})
+        End Try
+    End Function
+
+    <HttpGet()>
   Public Function GetAccountabilityData() As JsonResult
     Try
       Return Json(New With {.Result = "OK", .Records = CADData.IsInternal}, JsonRequestBehavior.AllowGet)
     Catch ex As Exception
-      Tools.Log(ex, AppID, MachineName, Tools.Logging.LogType.Database)
-      Return Nothing
+            NewErrorLog.Log(ex, AppID, MachineName, Tools.Logging.LogType.Database)
+            Return Nothing
     End Try
   End Function
 
@@ -101,8 +120,8 @@ Public Class CallDataController
     Try
       Return Replay.GetCachedReplayByCaseID(CaseID)
     Catch ex As Exception
-      Tools.Log(ex, AppID, MachineName, Tools.Logging.LogType.Database)
-      Return Nothing
+            NewErrorLog.Log(ex, AppID, MachineName, Tools.Logging.LogType.Database)
+            Return Nothing
     End Try
   End Function
 
@@ -112,8 +131,8 @@ Public Class CallDataController
       If Duration > 12 Then Duration = 12
       Return New Replay(StartDate, StartDate.AddHours(Duration))
     Catch ex As Exception
-      Tools.Log(ex, AppID, MachineName, Tools.Logging.LogType.Database)
-      Return Nothing
+            NewErrorLog.Log(ex, AppID, MachineName, Tools.Logging.LogType.Database)
+            Return Nothing
     End Try
   End Function
 
@@ -128,8 +147,8 @@ Public Class CallDataController
       End If
 
     Catch ex As Exception
-      Tools.Log(ex, AppID, MachineName, Tools.Logging.LogType.Database)
-      Return Json(New With {.Result = "Error", .Records = Nothing})
+            NewErrorLog.Log(ex, AppID, MachineName, Tools.Logging.LogType.Database)
+            Return Json(New With {.Result = "Error", .Records = Nothing})
     End Try
   End Function
 
@@ -144,8 +163,8 @@ Public Class CallDataController
       End If
       Return Json(New With {.Result = "OK", .Records = AC, .TotalRecordCount = AC.Count}, JsonRequestBehavior.AllowGet)
     Catch ex As Exception
-      Tools.Log(ex, AppID, MachineName, Tools.Logging.LogType.Database)
-      Return Json(New With {.Result = "Error", .Records = Nothing})
+            NewErrorLog.Log(ex, AppID, MachineName, Tools.Logging.LogType.Database)
+            Return Json(New With {.Result = "Error", .Records = Nothing})
     End Try
   End Function
 
@@ -159,8 +178,8 @@ Public Class CallDataController
       End If
       Return Json(New With {.Result = "OK", .Records = ac, .TotalRecordCount = ac.Count}, JsonRequestBehavior.AllowGet)
     Catch ex As Exception
-      Tools.Log(ex, AppID, MachineName, Tools.Logging.LogType.Database)
-      Return Json(New With {.Result = "Error", .Records = Nothing})
+            NewErrorLog.Log(ex, AppID, MachineName, Tools.Logging.LogType.Database)
+            Return Json(New With {.Result = "Error", .Records = Nothing})
     End Try
   End Function
 
@@ -174,8 +193,8 @@ Public Class CallDataController
       End If
       Return Json(New With {.Result = "OK", .Records = ac}, JsonRequestBehavior.AllowGet)
     Catch ex As Exception
-      Tools.Log(ex, AppID, MachineName, Tools.Logging.LogType.Database)
-      Return Json(New With {.Result = "Error", .Records = Nothing})
+            NewErrorLog.Log(ex, AppID, MachineName, Tools.Logging.LogType.Database)
+            Return Json(New With {.Result = "Error", .Records = Nothing})
     End Try
   End Function
 
@@ -184,8 +203,8 @@ Public Class CallDataController
       Dim CD As List(Of CallDetail) = CallDetail.GetCallDetail(IncidentID, Timestamp)
       Return Json(New With {.Result = "OK", .Records = CD}, JsonRequestBehavior.AllowGet)
     Catch ex As Exception
-      Tools.Log(ex, AppID, MachineName, Tools.Logging.LogType.Database)
-      Return Json(New With {.Result = "Error", .Records = Nothing})
+            NewErrorLog.Log(ex, AppID, MachineName, Tools.Logging.LogType.Database)
+            Return Json(New With {.Result = "Error", .Records = Nothing})
     End Try
   End Function
 
@@ -197,8 +216,8 @@ Public Class CallDataController
       Dim HistoricalCalls = HistoricalCall.GetCachedHistoricalCallsByIncidentID(IncidentID)
       Return Json(New With {.Result = "OK", .Records = HistoricalCalls}, JsonRequestBehavior.AllowGet)
     Catch ex As Exception
-      Tools.Log(ex, AppID, MachineName, Tools.Logging.LogType.Database)
-      Return Json(New With {.Result = "Error", .Records = Nothing})
+            NewErrorLog.Log(ex, AppID, MachineName, Tools.Logging.LogType.Database)
+            Return Json(New With {.Result = "Error", .Records = Nothing})
     End Try
   End Function
 

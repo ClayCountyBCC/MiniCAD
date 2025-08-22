@@ -199,8 +199,8 @@ ORDER  BY
 
         Return L
       Catch ex As Exception
-        Tools.Log(ex, CADData.AppID, MachineName, Tools.Logging.LogType.Database)
-        Return Nothing
+                Utils.NewErrorLog.Log(ex, CADData.AppID, MachineName, Tools.Logging.LogType.Database)
+                Return Nothing
       End Try
     End Function
 
@@ -215,7 +215,7 @@ ORDER  BY
       Dim au As List(Of ActiveUnit) = ActiveUnit.GetUnitStatus()
       Dim Notes As List(Of Note) = Note.GetCachedNotes()
       Dim query As String = "
-SELECT TOP 650
+SELECT TOP 600
   NULL AS latitude
   ,NULL AS longitude
   ,NULL AS confidence
@@ -278,8 +278,8 @@ ORDER  BY
         '                              Select GetCallByDataRow(dbRow, au, Nothing))
         Return L
       Catch ex As Exception
-        Tools.Log(ex, CADData.AppID, MachineName, Tools.Logging.LogType.Database)
-        Return Nothing
+                Utils.NewErrorLog.Log(ex, CADData.AppID, MachineName, Tools.Logging.LogType.Database)
+                Return Nothing
       End Try
     End Function
 
@@ -360,8 +360,8 @@ ORDER  BY
         End With
         Return c
       Catch ex As Exception
-        Tools.Log(ex, CADData.AppID, MachineName, Tools.Logging.LogType.Database)
-        Return Nothing
+                Utils.NewErrorLog.Log(ex, CADData.AppID, MachineName, Tools.Logging.LogType.Database)
+                Return Nothing
       End Try
     End Function
 
@@ -444,8 +444,8 @@ ORDER  BY
         End If
         Return Nothing
       Catch ex As Exception
-        Tools.Log(ex, CADData.AppID, MachineName, Tools.Logging.LogType.Database)
-        Return Nothing
+                Utils.NewErrorLog.Log(ex, CADData.AppID, MachineName, Tools.Logging.LogType.Database)
+                Return Nothing
       End Try
     End Function
 

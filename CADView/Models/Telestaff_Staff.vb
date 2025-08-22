@@ -2,31 +2,165 @@
 Imports System.Environment
 
 Namespace Models
-  Public Class Telestaff_Staff
-    Public Property Unit As String ' The unit assigned, will need to specially handle "E/L 20"
-    Public Property Position As String = ""
-    Public Property Staff As String ' a list of staff
-    Public Property ListOrder As Integer ' The order to display the units in
-    Public Property StartTime As Date
-    Public Property EndTime As Date
+    Public Class Telestaff_Staff
+        Public Property Unit As String ' The unit assigned, will need to specially handle "E/L 20"
+        Public Property Position As String = ""
+        Public Property Staff As String ' a list of staff
+        Public Property ListOrder As Integer ' The order to display the units in
+        Public Property StartTime As Date
+        Public Property EndTime As Date
 
-    Public Shared Function GetCurrentStaffing() As List(Of Telestaff_Staff)
-      Return GetStaffingBasedOnTime(DateTime.Now, DateTime.Now)
-    End Function
+        Public Shared Function GetCurrentStaffing() As List(Of Telestaff_Staff)
+            'Return New List(Of Telestaff_Staff)() This is the fix for when on-prem telestaff dies ------------------------------------------------------------------
+            'Return GetStaffingBasedOnTime(DateTime.Now, DateTime.Now) This was used for On-prem
+            Return GetStaffingFromTelestaffCloud()
+        End Function
 
-    Public Shared Function GetStaffingBasedOnTime(StartTime As Date, EndTime As Date) As List(Of Telestaff_Staff)
-      ' This is not going to work very well, I will need to use each Unit's dispatch time 
-      ' rather than a general call start time
-      ' What I might do is just pull all of the entries for all units between
-      ' the call's start and end time and then manually compare the unit dispatch time with those ranges.
-      Dim c As New CADData()
-      Dim ts_dp As New DynamicParameters
-      Dim up_dp As New DynamicParameters
-      ts_dp.Add("@Start", StartTime)
-      ts_dp.Add("@End", EndTime)
-      up_dp.Add("@Start", StartTime)
-      up_dp.Add("@End", EndTime)
-      Dim query As String = "
+        Public Shared Function GetStaffingFromTelestaffCloud() As List(Of Telestaff_Staff)
+            Dim query As String = "
+DECLARE @ShiftStart DATETIME;
+SELECT @ShiftStart = 
+	CASE
+		WHEN DATEPART(HOUR, GETDATE()) < 8
+			THEN DATEADD(HOUR, 8, DATEADD(DAY, DATEDIFF(DAY, 1, GETDATE()), 0)) -- Get 8AM of Yesterday's date
+			ELSE DATEADD(HOUR, 8, DATEADD(DAY, DATEDIFF(DAY, 0, GETDATE()), 0)) -- Get 8AM of Todays date
+		END;
+
+WITH RawCadStaffCTE AS (
+	SELECT 
+		primekey, 
+		emdept_id AS EmployeeId,
+		LTRIM(RTRIM(unitcode)) AS Unit,
+		name AS Name
+	FROM
+		cad.dbo.unitper
+	WHERE outtime is NULL OR outtime > @ShiftStart
+),
+
+RankedCadStaffCTE AS (
+	SELECT	primekey,
+			EmployeeId,
+			Unit,
+			Name, 
+			ROW_NUMBER() OVER (PARTITION BY Unit ORDER BY primekey DESC) AS RowNumber
+    FROM RawCadStaffCTE
+),
+
+CadStaffCTE AS (
+	SELECT 
+		primekey, 
+		EmployeeId, 
+		Unit,
+		Name
+	FROM RankedCadStaffCTE
+	WHERE RowNumber = 1
+),
+
+TelestaffCTE AS (
+	SELECT
+		CASE
+		  WHEN LEFT(physicalUnitAbrvCh, 2) = 'BC'
+		  THEN 'BAT' + RIGHT(physicalUnitAbrvCh, 1)
+		  ELSE
+			CASE
+			  WHEN physicalUnitAbrvCh = 'R22ABLE'
+			  THEN 'R22A'
+			  ELSE physicalUnitAbrvCh
+			END
+		END AS Unit,
+		posJobAbrvCh AS Position,
+		CONCAT(
+        CASE posJobAbrvCh
+            WHEN 'O' THEN 'Officer'
+            WHEN 'E' THEN 'Engineer'
+            WHEN 'FF' THEN 'Firefighter'
+            ELSE posJobAbrvCh
+        END, ' ', rscMasterNameCh) AS Staff,
+		rscEmployeeIDCh AS EmployeeId,
+		displayOrderGm AS ListOrder,
+		shiftStartDt AS StartTime,
+		shiftEndDt AS EndTime
+	FROM Staffing
+	WHERE 
+		staffingStartDt < GETDATE() 
+		AND staffingEndDt > GETDATE()
+		AND physicalUnitAbrvCh NOT IN ( 'ADM', 'LOGS', 'TR', 'CCU', 'EM', 'PREV', 'HG', 'PR', '{una}' )
+		AND physicalUnitAbrvCh NOT LIKE 'E/L%'
+
+	UNION
+
+	SELECT
+		REPLACE(physicalUnitAbrvCh, 'E/L', 'E') AS Unit,
+		posJobAbrvCh AS Position,
+		rscMasterNameCh AS Staff,
+		rscEmployeeIDCh AS EmployeeId,
+		displayOrderGm AS ListOrder,
+		shiftStartDt AS StartTime,
+		shiftEndDt AS EndTime
+	FROM Staffing
+	WHERE physicalUnitAbrvCh LIKE 'E/L%'
+
+	UNION
+
+	SELECT
+		REPLACE(physicalUnitAbrvCh, 'E/L', 'L') AS Unit,
+		posJobAbrvCh AS Position,
+		rscMasterNameCh AS Staff,
+		rscEmployeeIDCh AS EmployeeId,
+		displayOrderGm AS ListOrder,
+		shiftStartDt AS StartTime,
+		shiftEndDt AS EndTime
+	FROM Staffing
+	WHERE physicalUnitAbrvCh LIKE 'E/L%'
+)
+
+SELECT 
+    Unit,
+    Position,
+    Staff,
+    EmployeeId,
+    ListOrder,
+    StartTime,
+    EndTime
+FROM TelestaffCTE
+
+UNION ALL
+
+SELECT 
+    Unit,
+    NULL AS Position,
+    Name AS Staff,
+    EmployeeId,
+    NULL AS ListOrder,
+    NULL AS StartTime,
+    NULL AS EndTime
+FROM CadStaffCTE
+WHERE EmployeeId NOT IN (SELECT EmployeeId FROM TelestaffCTE)
+	AND Unit NOT IN (SELECT Unit FROM TelestaffCTE)"
+
+            Dim C As New CADData()
+            Try
+                Dim result = C.Get_Data(Of Telestaff_Staff)(query, C.TSC)
+                Return result
+            Catch ex As Exception
+                Utils.NewErrorLog.Log(ex, CADData.AppID, MachineName, Tools.Logging.LogType.Database)
+                Return Nothing
+            End Try
+        End Function
+
+        Public Shared Function GetStaffingBasedOnTime(StartTime As Date, EndTime As Date) As List(Of Telestaff_Staff)
+            ' This is not going to work very well, I will need to use each Unit's dispatch time 
+            ' rather than a general call start time
+            ' What I might do is just pull all of the entries for all units between
+            ' the call's start and end time and then manually compare the unit dispatch time with those ranges.
+            Dim c As New CADData()
+            Dim ts_dp As New DynamicParameters
+            Dim up_dp As New DynamicParameters
+            ts_dp.Add("@Start", StartTime)
+            ts_dp.Add("@End", EndTime)
+            up_dp.Add("@Start", StartTime)
+            up_dp.Add("@End", EndTime)
+            Dim query As String = "
 SELECT
   CASE
     WHEN LEFT(U.unit_abrv_ch
@@ -80,37 +214,37 @@ WHERE
 ORDER  BY
   U.unit_abrv_ch ASC
   ,P.pos_no_in ASC "
-      Try
-        Dim tmp = c.Get_Data(Of Telestaff_Staff)(query, ts_dp, c.CST)
+            Try
+                Dim tmp = c.Get_Data(Of Telestaff_Staff)(query, ts_dp, c.CST)
 
-        ' Now we need to handle an outlier type of unit. E/L20, what we're going to do is just break out the users
-        ' assigned to E/L20 (or generically anything with a "/") and then assign them to both
-        Dim unitnumberRegex = "(?<unitnumber>\d+)"
-        Dim staff = (From t In tmp Where t.Unit.Contains("/") Select t)
-        Dim tmp2 As New List(Of Telestaff_Staff)
-        For Each s In staff
-          Dim matches = Regex.Matches(s.Unit, unitnumberRegex)
-          If matches.Count() > 0 Then
-            Dim unitnumber = matches.Item(0).Groups("unitnumber").Value
-            Dim test = s.Unit.Replace(unitnumber, "").Split("/")
-            s.Unit = test(0) & unitnumber
-            For i As Integer = 1 To test.GetUpperBound(0)
-              Dim x As New Telestaff_Staff With {
-                .Unit = test(i) & unitnumber,
-                .Staff = s.Staff,
-                .Position = s.Position,
-                .ListOrder = s.ListOrder
-              }
-              tmp2.Add(x)
-            Next
+                ' Now we need to handle an outlier type of unit. E/L20, what we're going to do is just break out the users
+                ' assigned to E/L20 (or generically anything with a "/") and then assign them to both
+                Dim unitnumberRegex = "(?<unitnumber>\d+)"
+                Dim staff = (From t In tmp Where t.Unit.Contains("/") Select t)
+                Dim tmp2 As New List(Of Telestaff_Staff)
+                For Each s In staff
+                    Dim matches = Regex.Matches(s.Unit, unitnumberRegex)
+                    If matches.Count() > 0 Then
+                        Dim unitnumber = matches.Item(0).Groups("unitnumber").Value
+                        Dim test = s.Unit.Replace(unitnumber, "").Split("/")
+                        s.Unit = test(0) & unitnumber
+                        For i As Integer = 1 To test.GetUpperBound(0)
+                            Dim x As New Telestaff_Staff With {
+                              .Unit = test(i) & unitnumber,
+                              .Staff = s.Staff,
+                              .Position = s.Position,
+                              .ListOrder = s.ListOrder
+                            }
+                            tmp2.Add(x)
+                        Next
 
-          End If
+                    End If
 
-        Next
-        tmp.AddRange(tmp2)
-        ' Now let's find the other units from the unitper table in CAD
-        ' first we're going to get a list of the units already returned from Telestaff so we'll know we can exclude those
-        Dim unitperQuery As String = "
+                Next
+                tmp.AddRange(tmp2)
+                ' Now let's find the other units from the unitper table in CAD
+                ' first we're going to get a list of the units already returned from Telestaff so we'll know we can exclude those
+                Dim unitperQuery As String = "
 SELECT 
   primekey ListOrder
   ,LTRIM(RTRIM(unitcode)) Unit
@@ -129,19 +263,19 @@ WHERE
 ORDER BY unitcode ASC, primekey ASC
 "
 
-        Dim cadstaff = c.Get_Data(Of Telestaff_Staff)(unitperQuery, up_dp, c.CAD)
-        Dim currentunits = (From t In tmp Select t.Unit).Distinct().ToList
-        tmp.AddRange((From cs In cadstaff
-                      Where Not currentunits.Contains(cs.Unit)
-                      Select cs).ToList)
+                Dim cadstaff = c.Get_Data(Of Telestaff_Staff)(unitperQuery, up_dp, c.CAD)
+                Dim currentunits = (From t In tmp Select t.Unit).Distinct().ToList
+                tmp.AddRange((From cs In cadstaff
+                              Where Not currentunits.Contains(cs.Unit)
+                              Select cs).ToList)
 
-        Return tmp
-      Catch ex As Exception
-        Tools.Log(ex, CADData.AppID, MachineName, Tools.Logging.LogType.Database)
-        Return Nothing
-      End Try
-    End Function
+                Return tmp
+            Catch ex As Exception
+                Utils.NewErrorLog.Log(ex, CADData.AppID, MachineName, Tools.Logging.LogType.Database)
+                Return Nothing
+            End Try
+        End Function
 
-  End Class
+    End Class
 End Namespace
 
