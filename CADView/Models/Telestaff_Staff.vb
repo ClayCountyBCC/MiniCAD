@@ -18,14 +18,6 @@ Namespace Models
 
         Public Shared Function GetStaffingFromTelestaffCloud() As List(Of Telestaff_Staff)
             Dim query As String = "
-DECLARE @ShiftStart DATETIME;
-SELECT @ShiftStart = 
-	CASE
-		WHEN DATEPART(HOUR, GETDATE()) < 8
-			THEN DATEADD(HOUR, 8, DATEADD(DAY, DATEDIFF(DAY, 1, GETDATE()), 0)) -- Get 8AM of Yesterday's date
-			ELSE DATEADD(HOUR, 8, DATEADD(DAY, DATEDIFF(DAY, 0, GETDATE()), 0)) -- Get 8AM of Todays date
-		END;
-
 WITH RawCadStaffCTE AS (
 	SELECT 
 		primekey, 
@@ -34,7 +26,7 @@ WITH RawCadStaffCTE AS (
 		name AS Name
 	FROM
 		cad.dbo.unitper
-	WHERE outtime is NULL OR outtime > @ShiftStart
+	WHERE outtime is NULL
 ),
 
 RankedCadStaffCTE AS (
