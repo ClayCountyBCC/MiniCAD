@@ -57,6 +57,8 @@ TelestaffCTE AS (
 			CASE
 			  WHEN physicalUnitAbrvCh = 'R22ABLE'
 			  THEN 'R22A'
+			  WHEN physicalUnitAbrvCh = 'TR/S603'
+			  THEN 'TR603'
 			  ELSE physicalUnitAbrvCh
 			END
 		END AS Unit,
